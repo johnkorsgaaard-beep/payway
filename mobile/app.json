@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "Payway",
+    "slug": "payway",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a2f5b"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "fo.payway.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Payway bruger kameraet til at scanne QR-koder for betaling",
+        "NSContactsUsageDescription": "Payway bruger dine kontakter til at finde modtagere",
+        "NSFaceIDUsageDescription": "Payway bruger Face ID til at bekræfte betalinger"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a2f5b"
+      },
+      "package": "fo.payway.app",
+      "permissions": [
+        "CAMERA",
+        "READ_CONTACTS",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "VIBRATE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Payway bruger kameraet til QR-scanning"
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Payway bruger Face ID til at bekræfte betalinger"
+        }
+      ],
+      "expo-secure-store",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.fo.payway",
+          "enableApplePay": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
+  }
+}
