@@ -42,7 +42,7 @@ const FAQ: FaqItem[] = [
   },
 ];
 
-export function SupportScreen() {
+export function SupportScreen({ navigation }: any) {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
@@ -101,16 +101,16 @@ export function SupportScreen() {
 
           <TouchableOpacity
             style={styles.contactRow}
-            onPress={() => Linking.openURL('tel:+298123456')}
+            onPress={() => navigation.navigate('LiveChat')}
           >
-            <View style={styles.contactIcon}>
-              <Ionicons name="call" size={20} color={COLORS.accent} />
+            <View style={[styles.contactIcon, { backgroundColor: '#e8eef5' }]}>
+              <Ionicons name="chatbubbles" size={20} color={COLORS.primary} />
             </View>
             <View style={styles.contactInfo}>
-              <Text style={styles.contactTitle}>Telefon</Text>
-              <Text style={styles.contactValue}>+298 123 456</Text>
+              <Text style={styles.contactTitle}>Live Chat</Text>
+              <Text style={styles.contactValue}>Chat med vores AI-assistent</Text>
             </View>
-            <Ionicons name="open-outline" size={16} color={COLORS.textLight} />
+            <Ionicons name="chevron-forward" size={16} color={COLORS.textLight} />
           </TouchableOpacity>
 
           <View style={styles.divider} />

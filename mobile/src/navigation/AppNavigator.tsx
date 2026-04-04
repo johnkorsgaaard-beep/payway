@@ -25,6 +25,10 @@ import { SupportScreen } from '../screens/SupportScreen';
 import { TermsScreen } from '../screens/TermsScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
 import { RequestScreen } from '../screens/RequestScreen';
+import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
+import { CookiePolicyScreen } from '../screens/CookiePolicyScreen';
+import { DataProcessingScreen } from '../screens/DataProcessingScreen';
+import { LiveChatScreen } from '../screens/LiveChatScreen';
 import { COLORS } from '../utils/constants';
 
 const Stack = createNativeStackNavigator();
@@ -161,8 +165,12 @@ export function AppNavigator() {
             <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notifikationer' }} />
             <Stack.Screen name="KYC" component={KycScreen} options={{ title: 'Verifikation' }} />
             <Stack.Screen name="Support" component={SupportScreen} options={{ title: 'Hjælp & Support' }} />
-            <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Vilkår' }} />
+            <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Vilkår & Betingelser' }} />
+            <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ title: 'Privatlivspolitik' }} />
+            <Stack.Screen name="CookiePolicy" component={CookiePolicyScreen} options={{ title: 'Cookiepolitik' }} />
+            <Stack.Screen name="DataProcessing" component={DataProcessingScreen} options={{ title: 'Databehandling' }} />
             <Stack.Screen name="About" component={TermsScreen} options={{ title: 'Om Payway' }} />
+            <Stack.Screen name="LiveChat" component={LiveChatScreen} options={{ title: 'Live Chat' }} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Rediger profil' }} />
             <Stack.Screen name="PersonChat" component={PersonChatScreen} options={{ title: '' }} />
             <Stack.Screen name="GroupDetail" component={GroupDetailScreen} options={{ title: 'Gruppe' }} />

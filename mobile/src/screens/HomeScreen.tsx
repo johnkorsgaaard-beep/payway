@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   seeAll: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.accent,
+    color: COLORS.text,
   },
   emptyState: {
     alignItems: 'center',
