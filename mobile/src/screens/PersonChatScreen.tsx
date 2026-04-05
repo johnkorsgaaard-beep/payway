@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 
 interface Transfer {
@@ -49,6 +50,8 @@ const MOCK_CHAT: Record<string, Transfer[]> = {
 };
 
 export function PersonChatScreen({ route, navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const { person } = route.params;
   const transfers = MOCK_CHAT[person.id] || [];
   const listRef = useRef<FlatList>(null);
@@ -84,7 +87,7 @@ export function PersonChatScreen({ route, navigation }: any) {
             <Ionicons
               name={isSent ? 'arrow-up' : 'arrow-down'}
               size={14}
-              color={isSent ? COLORS.primary : COLORS.success}
+              color={isSent ? C.primary : C.success}
             />
             <Text style={styles.bubbleDirection}>
               {isSent ? 'Sendt' : 'Modtaget'}
@@ -107,14 +110,14 @@ export function PersonChatScreen({ route, navigation }: any) {
       <View style={styles.summary}>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryLabel}>Sendt</Text>
-          <Text style={[styles.summaryValue, { color: COLORS.text }]}>
+          <Text style={[styles.summaryValue, { color: C.text }]}>
             {formatDKK(totalSent)}
           </Text>
         </View>
         <View style={styles.summaryDivider} />
         <View style={styles.summaryItem}>
           <Text style={styles.summaryLabel}>Modtaget</Text>
-          <Text style={[styles.summaryValue, { color: COLORS.success }]}>
+          <Text style={[styles.summaryValue, { color: C.success }]}>
             {formatDKK(totalReceived)}
           </Text>
         </View>
@@ -123,7 +126,7 @@ export function PersonChatScreen({ route, navigation }: any) {
           <Text style={styles.summaryLabel}>Balance</Text>
           <Text style={[
             styles.summaryValue,
-            netBalance > 0 ? { color: COLORS.success } : netBalance < 0 ? { color: COLORS.danger } : { color: COLORS.textSecondary },
+            netBalance > 0 ? { color: C.success } : netBalance < 0 ? { color: C.danger } : { color: C.textSecondary },
           ]}>
             {netBalance === 0 ? 'Settled ✓' : netBalance > 0 ? `+${formatDKK(netBalance)}` : `-${formatDKK(Math.abs(netBalance))}`}
           </Text>
@@ -161,20 +164,21 @@ export function PersonChatScreen({ route, navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   summary: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     marginHorizontal: SPACING.md,
     marginTop: SPACING.sm,
     borderRadius: 14,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   summaryItem: {
     flex: 1,
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontSize: 11,
     fontWeight: '500',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   summaryValue: {
     fontSize: 14,
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
   },
   summaryDivider: {
     width: 1,
-    backgroundColor: COLORS.border,
+    backgroundColor: C.border,
     marginVertical: 2,
   },
   chatList: {
@@ -208,12 +212,12 @@ const styles = StyleSheet.create({
   dateLine: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.border,
+    backgroundColor: C.border,
   },
   dateText: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.textLight,
+    color: C.textLight,
   },
   bubble: {
     maxWidth: '75%',
@@ -223,15 +227,15 @@ const styles = StyleSheet.create({
   },
   bubbleSent: {
     alignSelf: 'flex-end',
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderBottomRightRadius: 4,
   },
   bubbleReceived: {
     alignSelf: 'flex-start',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   bubbleHeader: {
     flexDirection: 'row',
@@ -252,11 +256,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   amountReceived: {
-    color: COLORS.success,
+    color: C.success,
   },
   bubbleDesc: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: 2,
   },
   bubbleDescSent: {
@@ -267,9 +271,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.md,
     paddingBottom: SPACING.xl,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    borderTopColor: C.border,
     gap: SPACING.sm,
   },
   sendButton: {
@@ -278,7 +282,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 14,
   },
@@ -293,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     borderRadius: 14,
     paddingVertical: 14,
   },
@@ -303,3 +307,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+}

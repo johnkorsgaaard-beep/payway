@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 
 interface Member {
@@ -72,6 +73,8 @@ const MOCK_EXPENSES: Record<string, Expense[]> = {
 };
 
 export function GroupDetailScreen({ route, navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const { group } = route.params;
   const members = MOCK_MEMBERS[group.id] || [];
   const [expenses, setExpenses] = useState(MOCK_EXPENSES[group.id] || []);
@@ -180,7 +183,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
             <View style={styles.memberBalanceCol}>
               {member.balance === 0 ? (
                 <View style={styles.settledBadge}>
-                  <Ionicons name="checkmark-circle" size={14} color={COLORS.success} />
+                  <Ionicons name="checkmark-circle" size={14} color={C.success} />
                   <Text style={styles.settledText}>Settled</Text>
                 </View>
               ) : (
@@ -206,7 +209,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Udgifter</Text>
           <TouchableOpacity style={styles.addExpenseBtn} onPress={() => setShowForm(!showForm)}>
-            <Ionicons name={showForm ? 'close-circle' : 'add-circle'} size={20} color={COLORS.primary} />
+            <Ionicons name={showForm ? 'close-circle' : 'add-circle'} size={20} color={C.primary} />
             <Text style={styles.addExpenseText}>{showForm ? 'Luk' : 'Tilføj'}</Text>
           </TouchableOpacity>
         </View>
@@ -218,7 +221,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
               value={newTitle}
               onChangeText={setNewTitle}
               placeholder="Hvad er udgiften?"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={C.textLight}
             />
             <View style={styles.addFormRow}>
               <TextInput
@@ -226,7 +229,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
                 value={newAmount}
                 onChangeText={setNewAmount}
                 placeholder="Beløb (kr)"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 keyboardType="numeric"
               />
               <TouchableOpacity style={styles.addFormButton} onPress={handleAddExpense}>
@@ -237,7 +240,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
 
             {/* Receipt */}
             <TouchableOpacity style={styles.receiptBtn} onPress={showReceiptOptions}>
-              <Ionicons name="camera-outline" size={20} color={COLORS.primary} />
+              <Ionicons name="camera-outline" size={20} color={C.primary} />
               <Text style={styles.receiptBtnText}>
                 {receiptImage ? 'Skift kvittering' : 'Tilføj kvittering'}
               </Text>
@@ -249,7 +252,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
                   style={styles.receiptRemove}
                   onPress={() => setReceiptImage(null)}
                 >
-                  <Ionicons name="close-circle" size={24} color={COLORS.danger} />
+                  <Ionicons name="close-circle" size={24} color={C.danger} />
                 </TouchableOpacity>
               </View>
             )}
@@ -259,7 +262,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
         {expenses.map((expense) => (
           <View key={expense.id} style={styles.expenseRow}>
             <View style={styles.expenseIcon}>
-              <Ionicons name="receipt-outline" size={18} color={COLORS.primary} />
+              <Ionicons name="receipt-outline" size={18} color={C.primary} />
             </View>
             <View style={styles.expenseInfo}>
               <Text style={styles.expenseTitle}>{expense.title}</Text>
@@ -286,10 +289,11 @@ export function GroupDetailScreen({ route, navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -314,16 +318,16 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: COLORS.text,
+    color: C.text,
   },
   headerSub: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: 2,
   },
   totalCard: {
     marginTop: SPACING.md,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xl,
@@ -353,7 +357,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: SPACING.sm,
   },
   addExpenseBtn: {
@@ -365,23 +369,23 @@ const styles = StyleSheet.create({
   addExpenseText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
   },
   memberRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   memberAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -400,11 +404,11 @@ const styles = StyleSheet.create({
   memberName: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
+    color: C.text,
   },
   memberPaid: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: 1,
   },
   memberBalanceCol: {
@@ -416,14 +420,14 @@ const styles = StyleSheet.create({
   },
   memberOwes: {
     fontSize: 11,
-    color: COLORS.textLight,
+    color: C.textLight,
     marginTop: 1,
   },
   positive: {
-    color: COLORS.success,
+    color: C.success,
   },
   negative: {
-    color: COLORS.danger,
+    color: C.danger,
   },
   settledBadge: {
     flexDirection: 'row',
@@ -433,17 +437,17 @@ const styles = StyleSheet.create({
   settledText: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.success,
+    color: C.success,
   },
   expenseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   expenseIcon: {
     width: 36,
@@ -460,37 +464,37 @@ const styles = StyleSheet.create({
   expenseTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
+    color: C.text,
   },
   expensePaidBy: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: 1,
   },
   expenseAmount: {
     fontSize: 15,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
   },
   addForm: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     marginBottom: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
     gap: SPACING.sm,
   },
   addFormInput: {
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     borderRadius: 10,
     paddingHorizontal: SPACING.md,
     paddingVertical: 12,
     fontSize: 15,
     fontWeight: '500',
-    color: COLORS.text,
+    color: C.text,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   addFormRow: {
     flexDirection: 'row',
@@ -500,7 +504,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 10,
     paddingHorizontal: SPACING.md,
     paddingVertical: 12,
@@ -518,13 +522,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderStyle: 'dashed',
   },
   receiptBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
   },
   receiptPreview: {
     position: 'relative',
@@ -549,7 +553,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: SPACING.sm,
     marginHorizontal: SPACING.md,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
   },
@@ -559,3 +563,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+}

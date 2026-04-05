@@ -11,7 +11,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { api } from '../services/api';
 import { useAuth } from '../store/auth';
@@ -44,6 +45,8 @@ interface Card {
 type PayMethod = 'apple_pay' | 'card';
 
 export function TopUpScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [amount, setAmount] = useState('');
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<string>('');
@@ -187,7 +190,7 @@ export function TopUpScreen({ navigation }: any) {
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="0"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -223,13 +226,13 @@ export function TopUpScreen({ navigation }: any) {
             <Ionicons
               name="logo-apple"
               size={22}
-              color={payMethod === 'apple_pay' ? '#000' : COLORS.textSecondary}
+              color={payMethod === 'apple_pay' ? '#000' : C.textSecondary}
             />
             <Text style={[styles.methodText, payMethod === 'apple_pay' && styles.methodTextActive]}>
               Apple Pay
             </Text>
             {payMethod === 'apple_pay' && (
-              <Ionicons name="checkmark-circle" size={18} color={COLORS.accent} />
+              <Ionicons name="checkmark-circle" size={18} color={C.accent} />
             )}
           </TouchableOpacity>
           <TouchableOpacity
@@ -239,13 +242,13 @@ export function TopUpScreen({ navigation }: any) {
             <Ionicons
               name="card"
               size={22}
-              color={payMethod === 'card' ? COLORS.accent : COLORS.textSecondary}
+              color={payMethod === 'card' ? C.accent : C.textSecondary}
             />
             <Text style={[styles.methodText, payMethod === 'card' && styles.methodTextActive]}>
               Betalingskort
             </Text>
             {payMethod === 'card' && (
-              <Ionicons name="checkmark-circle" size={18} color={COLORS.accent} />
+              <Ionicons name="checkmark-circle" size={18} color={C.accent} />
             )}
           </TouchableOpacity>
         </View>
@@ -262,13 +265,13 @@ export function TopUpScreen({ navigation }: any) {
                 <Ionicons
                   name="card"
                   size={20}
-                  color={selectedCard === card.id ? COLORS.accent : COLORS.textSecondary}
+                  color={selectedCard === card.id ? C.accent : C.textSecondary}
                 />
                 <Text style={[styles.cardText, selectedCard === card.id && styles.cardTextActive]}>
                   {card.brand.toUpperCase()} •••• {card.last4}
                 </Text>
                 {selectedCard === card.id && (
-                  <Ionicons name="checkmark-circle" size={20} color={COLORS.accent} />
+                  <Ionicons name="checkmark-circle" size={20} color={C.accent} />
                 )}
               </TouchableOpacity>
             ))}
@@ -277,7 +280,7 @@ export function TopUpScreen({ navigation }: any) {
 
         {payMethod === 'card' && cards.length === 0 && (
           <View style={styles.noCards}>
-            <Ionicons name="card-outline" size={32} color={COLORS.textLight} />
+            <Ionicons name="card-outline" size={32} color={C.textLight} />
             <Text style={styles.noCardsText}>Ingen kort tilføjet</Text>
             <TouchableOpacity
               style={styles.addCardButton}
@@ -325,11 +328,12 @@ export function TopUpScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
   banner: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 20,
     padding: SPACING.xl,
     alignItems: 'center',
@@ -354,45 +358,45 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.7)',
     marginTop: 4,
   },
-  label: { fontSize: 14, fontWeight: '600', color: COLORS.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
+  label: { fontSize: 14, fontWeight: '600', color: C.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
   input: {
-    backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
     borderRadius: 12, paddingHorizontal: SPACING.md, paddingVertical: 14,
-    fontSize: 16, color: COLORS.text,
+    fontSize: 16, color: C.text,
   },
   amountInput: { fontSize: 36, fontWeight: '800', paddingVertical: 24 },
   quickAmounts: { flexDirection: 'row', gap: SPACING.xs, marginTop: SPACING.md, flexWrap: 'wrap' },
   quickButton: {
-    flex: 1, minWidth: 60, backgroundColor: COLORS.surface, borderWidth: 1,
-    borderColor: COLORS.border, borderRadius: 10, paddingVertical: 10, alignItems: 'center',
+    flex: 1, minWidth: 60, backgroundColor: C.surface, borderWidth: 1,
+    borderColor: C.border, borderRadius: 10, paddingVertical: 10, alignItems: 'center',
   },
-  quickButtonActive: { backgroundColor: '#e8faf0', borderColor: COLORS.accent },
-  quickText: { fontSize: 13, fontWeight: '600', color: COLORS.textSecondary },
-  quickTextActive: { color: COLORS.accent },
+  quickButtonActive: { backgroundColor: '#e8faf0', borderColor: C.accent },
+  quickText: { fontSize: 13, fontWeight: '600', color: C.textSecondary },
+  quickTextActive: { color: C.accent },
   methodRow: { gap: SPACING.sm },
   methodOption: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
     borderRadius: 12, padding: SPACING.md, marginBottom: SPACING.xs,
   },
-  methodActive: { borderColor: COLORS.accent, backgroundColor: '#e8faf0' },
-  methodText: { flex: 1, fontSize: 15, fontWeight: '600', color: COLORS.textSecondary },
-  methodTextActive: { color: COLORS.accent },
+  methodActive: { borderColor: C.accent, backgroundColor: '#e8faf0' },
+  methodText: { flex: 1, fontSize: 15, fontWeight: '600', color: C.textSecondary },
+  methodTextActive: { color: C.accent },
   cardSection: { marginTop: SPACING.sm },
   cardRow: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.surface,
-    borderWidth: 1, borderColor: COLORS.border, borderRadius: 12,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
+    borderWidth: 1, borderColor: C.border, borderRadius: 12,
     padding: SPACING.md, marginBottom: SPACING.sm, gap: SPACING.sm,
   },
-  cardRowActive: { borderColor: COLORS.accent, backgroundColor: '#e8faf0' },
-  cardText: { flex: 1, fontSize: 14, fontWeight: '600', color: COLORS.textSecondary },
-  cardTextActive: { color: COLORS.accent },
+  cardRowActive: { borderColor: C.accent, backgroundColor: '#e8faf0' },
+  cardText: { flex: 1, fontSize: 14, fontWeight: '600', color: C.textSecondary },
+  cardTextActive: { color: C.accent },
   noCards: { alignItems: 'center', paddingVertical: SPACING.xl, gap: SPACING.sm },
-  noCardsText: { fontSize: 14, color: COLORS.textSecondary },
+  noCardsText: { fontSize: 14, color: C.textSecondary },
   addCardButton: { marginTop: SPACING.sm },
-  addCardText: { fontSize: 14, fontWeight: '600', color: COLORS.accent },
+  addCardText: { fontSize: 14, fontWeight: '600', color: C.accent },
   button: {
-    backgroundColor: COLORS.accent, borderRadius: 12,
+    backgroundColor: C.accent, borderRadius: 12,
     paddingVertical: 16, alignItems: 'center', marginTop: SPACING.lg,
   },
   buttonDisabled: { opacity: 0.5 },
@@ -404,3 +408,4 @@ const styles = StyleSheet.create({
   applePayContent: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
   applePayText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
+}

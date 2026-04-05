@@ -5,7 +5,8 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 interface Section {
   title: string;
@@ -115,6 +116,8 @@ Payway forbeholder sig retten til at lukke eller fryse konti ved mistanke om mis
 ];
 
 export function TermsScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -138,16 +141,18 @@ export function TermsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text },
-  updated: { fontSize: 13, color: COLORS.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text },
+  updated: { fontSize: 13, color: C.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   section: { marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text, marginBottom: SPACING.sm },
-  sectionBody: { fontSize: 14, color: COLORS.textSecondary, lineHeight: 22 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm },
+  sectionBody: { fontSize: 14, color: C.textSecondary, lineHeight: 22 },
   footer: {
     backgroundColor: '#e8faf0', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.md,
   },
-  footerText: { fontSize: 13, color: COLORS.accent, textAlign: 'center' },
+  footerText: { fontSize: 13, color: C.accent, textAlign: 'center' },
 });
+}

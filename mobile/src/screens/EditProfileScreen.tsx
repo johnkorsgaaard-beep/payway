@@ -13,10 +13,13 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { useAuth } from '../store/auth';
 
 export function EditProfileScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const { user, updateUser } = useAuth();
 
   const [name, setName] = useState(user?.name || '');
@@ -160,7 +163,7 @@ export function EditProfileScreen({ navigation }: any) {
                 value={paywayTag}
                 onChangeText={(v) => setPaywayTag(sanitizeTag(v))}
                 placeholder="ditbrugernavn"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 autoCapitalize="none"
                 autoCorrect={false}
               />
@@ -173,13 +176,13 @@ export function EditProfileScreen({ navigation }: any) {
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Navn</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="person-outline" size={20} color={COLORS.primary} style={styles.inputIcon} />
+              <Ionicons name="person-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 value={name}
                 onChangeText={setName}
                 placeholder="Dit fulde navn"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 autoCapitalize="words"
               />
             </View>
@@ -188,13 +191,13 @@ export function EditProfileScreen({ navigation }: any) {
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Email</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="mail-outline" size={20} color={COLORS.primary} style={styles.inputIcon} />
+              <Ionicons name="mail-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 value={email}
                 onChangeText={setEmail}
                 placeholder="din@email.com"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -204,13 +207,13 @@ export function EditProfileScreen({ navigation }: any) {
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Telefonnummer</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="call-outline" size={20} color={COLORS.primary} style={styles.inputIcon} />
+              <Ionicons name="call-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 value={phone}
                 onChangeText={setPhone}
                 placeholder="+298 123 456"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 keyboardType="phone-pad"
               />
             </View>
@@ -235,10 +238,11 @@ export function EditProfileScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -257,7 +261,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -273,16 +277,16 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: COLORS.background,
+    borderColor: C.background,
   },
   avatarHint: {
     textAlign: 'center',
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: SPACING.sm,
     marginBottom: SPACING.lg,
   },
@@ -296,16 +300,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginLeft: SPACING.xs,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     paddingHorizontal: SPACING.md,
   },
   inputIcon: {
@@ -314,26 +318,26 @@ const styles = StyleSheet.create({
   tagPrefix: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.primary,
+    color: C.primary,
     marginRight: SPACING.xs,
   },
   input: {
     flex: 1,
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.text,
+    color: C.text,
     paddingVertical: 14,
   },
   hint: {
     fontSize: 12,
-    color: COLORS.textLight,
+    color: C.textLight,
     marginLeft: SPACING.xs,
     marginTop: 2,
   },
   saveButton: {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.xl,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
@@ -347,3 +351,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+}

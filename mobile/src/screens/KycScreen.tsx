@@ -8,14 +8,9 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { useAuth } from '../store/auth';
-
-const STATUS_CONFIG: Record<string, { color: string; bg: string; label: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  NONE: { color: COLORS.danger, bg: '#fef2f2', label: 'Ikke verificeret', icon: 'close-circle' },
-  BASIC: { color: COLORS.warning, bg: '#fef3c7', label: 'Basis verificeret', icon: 'alert-circle' },
-  VERIFIED: { color: COLORS.success, bg: '#f0fdf4', label: 'Fuldt verificeret', icon: 'checkmark-circle' },
-};
 
 interface Tier {
   level: string;
@@ -27,8 +22,17 @@ interface Tier {
 }
 
 export function KycScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   const { user } = useAuth();
   const status = user?.kycStatus || 'NONE';
+
+  const STATUS_CONFIG: Record<string, { color: string; bg: string; label: string; icon: keyof typeof Ionicons.glyphMap }> = {
+    NONE: { color: C.danger, bg: '#fef2f2', label: 'Ikke verificeret', icon: 'close-circle' },
+    BASIC: { color: C.warning, bg: '#fef3c7', label: 'Basis verificeret', icon: 'alert-circle' },
+    VERIFIED: { color: C.success, bg: '#f0fdf4', label: 'Fuldt verificeret', icon: 'checkmark-circle' },
+  };
+
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.NONE;
 
   const tiers: Tier[] = [
@@ -77,7 +81,7 @@ export function KycScreen() {
               <Text style={styles.tierTitle}>{tier.title}</Text>
               {tier.completed ? (
                 <View style={styles.completedBadge}>
-                  <Ionicons name="checkmark" size={14} color={COLORS.success} />
+                  <Ionicons name="checkmark" size={14} color={C.success} />
                   <Text style={styles.completedText}>Opfyldt</Text>
                 </View>
               ) : (
@@ -95,7 +99,7 @@ export function KycScreen() {
                   <Ionicons
                     name={tier.completed ? 'checkmark-circle' : 'ellipse-outline'}
                     size={18}
-                    color={tier.completed ? COLORS.success : COLORS.textLight}
+                    color={tier.completed ? C.success : C.textLight}
                   />
                   <Text style={[styles.reqText, tier.completed && styles.reqDone]}>
                     {req}
@@ -114,7 +118,7 @@ export function KycScreen() {
         ))}
 
         <View style={styles.infoBox}>
-          <Ionicons name="lock-closed" size={16} color={COLORS.primary} />
+          <Ionicons name="lock-closed" size={16} color={C.primary} />
           <Text style={styles.infoText}>
             Dine dokumenter krypteres og bruges kun til verifikationsformål i henhold til gældende lovgivning.
           </Text>
@@ -124,44 +128,46 @@ export function KycScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl },
   statusCard: {
     borderRadius: 16, padding: SPACING.xl, alignItems: 'center',
     marginBottom: SPACING.lg, gap: SPACING.xs,
   },
   statusLabel: { fontSize: 18, fontWeight: '800' },
-  statusSub: { fontSize: 13, color: COLORS.textSecondary, textAlign: 'center' },
+  statusSub: { fontSize: 13, color: C.textSecondary, textAlign: 'center' },
   tierCard: {
-    backgroundColor: COLORS.surface, borderRadius: 16, padding: SPACING.lg,
-    borderWidth: 1, borderColor: COLORS.border, marginBottom: SPACING.md,
+    backgroundColor: C.surface, borderRadius: 16, padding: SPACING.lg,
+    borderWidth: 1, borderColor: C.border, marginBottom: SPACING.md,
   },
   tierHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  tierTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
+  tierTitle: { fontSize: 16, fontWeight: '700', color: C.text },
   completedBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: '#dcfce7', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10,
   },
-  completedText: { fontSize: 12, fontWeight: '600', color: COLORS.success },
+  completedText: { fontSize: 12, fontWeight: '600', color: C.success },
   pendingBadge: {
     backgroundColor: '#fef3c7', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10,
   },
-  pendingText: { fontSize: 12, fontWeight: '600', color: COLORS.warning },
-  tierDesc: { fontSize: 14, color: COLORS.textSecondary, marginTop: SPACING.sm },
-  tierLimits: { fontSize: 13, fontWeight: '600', color: COLORS.primary, marginTop: SPACING.xs },
+  pendingText: { fontSize: 12, fontWeight: '600', color: C.warning },
+  tierDesc: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.sm },
+  tierLimits: { fontSize: 13, fontWeight: '600', color: C.primary, marginTop: SPACING.xs },
   reqList: { marginTop: SPACING.md, gap: SPACING.sm },
   reqRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-  reqText: { fontSize: 14, color: COLORS.text },
-  reqDone: { color: COLORS.textSecondary, textDecorationLine: 'line-through' },
+  reqText: { fontSize: 14, color: C.text },
+  reqDone: { color: C.textSecondary, textDecorationLine: 'line-through' },
   uploadButton: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.sm,
-    backgroundColor: COLORS.accent, borderRadius: 12, paddingVertical: 14, marginTop: SPACING.md,
+    backgroundColor: C.accent, borderRadius: 12, paddingVertical: 14, marginTop: SPACING.md,
   },
   uploadText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   infoBox: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
     backgroundColor: '#e8faf0', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.sm,
   },
-  infoText: { flex: 1, fontSize: 12, color: COLORS.primary, lineHeight: 18 },
+  infoText: { flex: 1, fontSize: 12, color: C.primary, lineHeight: 18 },
 });
+}

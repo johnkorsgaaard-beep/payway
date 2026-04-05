@@ -1,5 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api, setTokens, clearTokens, getToken } from '../services/api';
+
+const ONBOARDING_KEY = 'payway_onboarding_done';
 
 interface User {
   id: string;
@@ -24,6 +27,7 @@ interface User {
 }
 
 let globalUser: User | null = null;
+let globalOnboardingDone = false;
 const listeners = new Set<() => void>();
 
 function emitChange() {
@@ -113,5 +117,23 @@ export function useAuth() {
     }
   }, []);
 
-  return { user, isAuthenticated, isLoading: false, register, login, logout, refreshUser, updateUser, skipLogin };
+  const hasSeenOnboarding = globalOnboardingDone;
+
+  const completeOnboarding = useCallback(async () => {
+    globalOnboardingDone = true;
+    emitChange();
+    try { await AsyncStorage.setItem(ONBOARDING_KEY, '1'); } catch {}
+  }, []);
+
+  const loadOnboardingState = useCallback(async () => {
+    try {
+      const val = await AsyncStorage.getItem(ONBOARDING_KEY);
+      if (val === '1' && !globalOnboardingDone) {
+        globalOnboardingDone = true;
+        emitChange();
+      }
+    } catch {}
+  }, []);
+
+  return { user, isAuthenticated, isLoading: false, register, login, logout, refreshUser, updateUser, skipLogin, hasSeenOnboarding, completeOnboarding, loadOnboardingState };
 }

@@ -1,8 +1,34 @@
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '../utils/constants';
+import { isNetworkError } from '../hooks/useNetworkStatus';
 
 const TOKEN_KEY = 'payway_token';
 const REFRESH_TOKEN_KEY = 'payway_refresh_token';
+
+export class NetworkError extends Error {
+  readonly isOffline = true;
+  constructor(message = 'Ingen internetforbindelse. Tjek din forbindelse og prøv igen.') {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
+
+export class ServerError extends Error {
+  readonly statusCode: number;
+  constructor(statusCode: number, message?: string) {
+    super(message || getServerMessage(statusCode));
+    this.name = 'ServerError';
+    this.statusCode = statusCode;
+  }
+}
+
+function getServerMessage(status: number): string {
+  if (status >= 500) return 'Serveren er midlertidigt utilgængelig. Prøv igen om lidt.';
+  if (status === 429) return 'For mange forsøg. Vent venligst et øjeblik.';
+  if (status === 403) return 'Du har ikke adgang til denne funktion.';
+  if (status === 404) return 'Den anmodede ressource blev ikke fundet.';
+  return `Der opstod en fejl (${status}). Prøv igen.`;
+}
 
 export async function getToken(): Promise<string | null> {
   return SecureStore.getItemAsync(TOKEN_KEY);
@@ -28,10 +54,18 @@ async function request<T>(
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: { ...headers, ...(options?.headers as Record<string, string>) },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers: { ...headers, ...(options?.headers as Record<string, string>) },
+    });
+  } catch (err) {
+    if (isNetworkError(err)) {
+      throw new NetworkError();
+    }
+    throw new NetworkError('Kunne ikke forbinde til serveren. Tjek din internetforbindelse.');
+  }
 
   if (res.status === 401) {
     const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
@@ -60,7 +94,7 @@ async function request<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.message || `Error ${res.status}`);
+    throw new ServerError(res.status, body.message);
   }
 
   return res.json();
