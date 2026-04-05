@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text } from 'react-native';
+import { Image, View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,6 +20,7 @@ import { CardsScreen } from '../screens/CardsScreen';
 import { ChangePinScreen } from '../screens/ChangePinScreen';
 import { BiometricsScreen } from '../screens/BiometricsScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { NotificationCenterScreen } from '../screens/NotificationCenterScreen';
 import { KycScreen } from '../screens/KycScreen';
 import { SupportScreen } from '../screens/SupportScreen';
 import { TermsScreen } from '../screens/TermsScreen';
@@ -29,6 +30,7 @@ import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
 import { CookiePolicyScreen } from '../screens/CookiePolicyScreen';
 import { DataProcessingScreen } from '../screens/DataProcessingScreen';
 import { LiveChatScreen } from '../screens/LiveChatScreen';
+import { TransactionDetailScreen } from '../screens/TransactionDetailScreen';
 import { COLORS } from '../utils/constants';
 
 const Stack = createNativeStackNavigator();
@@ -62,7 +64,7 @@ function MainTabs() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: '',
           headerLeft: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 16 }}>
@@ -76,11 +78,26 @@ function MainTabs() {
               </Text>
             </View>
           ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.getParent()?.navigate('NotificationCenter')}
+              style={{ marginRight: 16, position: 'relative' }}
+            >
+              <Ionicons name="notifications-outline" size={24} color={COLORS.primary} />
+              <View style={{
+                position: 'absolute', top: -3, right: -4,
+                width: 16, height: 16, borderRadius: 8,
+                backgroundColor: COLORS.danger, justifyContent: 'center', alignItems: 'center',
+              }}>
+                <Text style={{ color: '#fff', fontSize: 9, fontWeight: '800' }}>3</Text>
+              </View>
+            </TouchableOpacity>
+          ),
           tabBarLabel: 'Hjem',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
-        }}
+        })}
       />
       <Tab.Screen
         name="Transfers"
@@ -163,6 +180,7 @@ export function AppNavigator() {
             <Stack.Screen name="ChangePin" component={ChangePinScreen} options={{ title: 'Skift PIN' }} />
             <Stack.Screen name="Biometrics" component={BiometricsScreen} options={{ title: 'Biometri' }} />
             <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notifikationer' }} />
+            <Stack.Screen name="NotificationCenter" component={NotificationCenterScreen} options={{ title: 'Notifikationer' }} />
             <Stack.Screen name="KYC" component={KycScreen} options={{ title: 'Verifikation' }} />
             <Stack.Screen name="Support" component={SupportScreen} options={{ title: 'Hjælp & Support' }} />
             <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Vilkår & Betingelser' }} />
@@ -176,6 +194,7 @@ export function AppNavigator() {
             <Stack.Screen name="GroupDetail" component={GroupDetailScreen} options={{ title: 'Gruppe' }} />
             <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ title: 'Ny gruppe', presentation: 'modal' }} />
             <Stack.Screen name="History" component={HistoryScreen} options={{ title: 'Historik' }} />
+            <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} options={{ title: 'Detaljer' }} />
             <Stack.Screen
               name="Request"
               component={RequestScreen}

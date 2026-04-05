@@ -6,6 +6,7 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING } from '../utils/constants';
@@ -38,7 +39,7 @@ const TYPE_LABELS: Record<string, string> = {
   WITHDRAWAL: 'Udbetaling',
 };
 
-export function HistoryScreen() {
+export function HistoryScreen({ navigation }: any) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -90,7 +91,11 @@ export function HistoryScreen() {
   };
 
   const renderItem = ({ item: tx }: { item: Transaction }) => (
-    <View style={styles.txRow}>
+    <TouchableOpacity
+      style={styles.txRow}
+      activeOpacity={0.7}
+      onPress={() => navigation.navigate('TransactionDetail', { transaction: tx })}
+    >
       <View style={styles.txIcon}>
         <Ionicons
           name={TYPE_ICONS[tx.type] || 'ellipse'}
@@ -123,7 +128,7 @@ export function HistoryScreen() {
         </Text>
         <Text style={styles.txTime}>{formatTime(tx.createdAt)}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   if (loading) {

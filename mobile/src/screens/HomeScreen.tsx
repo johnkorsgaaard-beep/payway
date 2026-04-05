@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING } from '../utils/constants';
@@ -162,7 +161,12 @@ export function HomeScreen({ navigation }: any) {
           </View>
         ) : (
           transactions.map((tx) => (
-            <View key={tx.id} style={styles.txRow}>
+            <TouchableOpacity
+              key={tx.id}
+              style={styles.txRow}
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('TransactionDetail', { transaction: tx })}
+            >
               <View style={styles.txIcon}>
                 <Ionicons
                   name={TYPE_ICONS[tx.type] || 'ellipse'}
@@ -191,7 +195,7 @@ export function HomeScreen({ navigation }: any) {
                 {tx.direction === 'incoming' ? '+' : '-'}
                 {formatDKK(tx.amount)}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))
         )}
       </View>
