@@ -11,7 +11,8 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 
 interface MemberDraft {
@@ -24,6 +25,8 @@ interface MemberDraft {
 type SplitMode = 'equal' | 'percentage';
 
 export function CreateGroupScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState('🍻');
   const emojiInputRef = useRef<TextInput>(null);
@@ -112,7 +115,7 @@ export function CreateGroupScreen({ navigation }: any) {
               value={name}
               onChangeText={setName}
               placeholder="Fx Fredagsbar, Roomies..."
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={C.textLight}
             />
           </View>
         </View>
@@ -128,7 +131,7 @@ export function CreateGroupScreen({ navigation }: any) {
               <Ionicons
                 name="git-compare-outline"
                 size={20}
-                color={splitMode === 'equal' ? COLORS.primary : COLORS.textSecondary}
+                color={splitMode === 'equal' ? C.primary : C.textSecondary}
               />
               <Text style={[styles.splitText, splitMode === 'equal' && styles.splitTextActive]}>
                 Lige deling
@@ -142,7 +145,7 @@ export function CreateGroupScreen({ navigation }: any) {
               <Ionicons
                 name="pie-chart-outline"
                 size={20}
-                color={splitMode === 'percentage' ? COLORS.primary : COLORS.textSecondary}
+                color={splitMode === 'percentage' ? C.primary : C.textSecondary}
               />
               <Text style={[styles.splitText, splitMode === 'percentage' && styles.splitTextActive]}>
                 Procent
@@ -196,7 +199,7 @@ export function CreateGroupScreen({ navigation }: any) {
                       value={member.tag}
                       onChangeText={(v) => updateMember(member.id, 'tag', v.toLowerCase().replace(/[^a-z0-9._]/g, ''))}
                       placeholder="payway-tag"
-                      placeholderTextColor={COLORS.textLight}
+                      placeholderTextColor={C.textLight}
                       autoCapitalize="none"
                       autoCorrect={false}
                     />
@@ -213,7 +216,7 @@ export function CreateGroupScreen({ navigation }: any) {
                       value={member.percentage}
                       onChangeText={(v) => updateMember(member.id, 'percentage', v)}
                       placeholder="0"
-                      placeholderTextColor={COLORS.textLight}
+                      placeholderTextColor={C.textLight}
                       keyboardType="numeric"
                       maxLength={4}
                     />
@@ -225,7 +228,7 @@ export function CreateGroupScreen({ navigation }: any) {
                     style={styles.removeBtn}
                     onPress={() => removeMember(member.id)}
                   >
-                    <Ionicons name="close-circle" size={22} color={COLORS.danger} />
+                    <Ionicons name="close-circle" size={22} color={C.danger} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -233,7 +236,7 @@ export function CreateGroupScreen({ navigation }: any) {
           ))}
 
           <TouchableOpacity style={styles.addMemberBtn} onPress={addMember}>
-            <Ionicons name="add-circle-outline" size={22} color={COLORS.primary} />
+            <Ionicons name="add-circle-outline" size={22} color={C.primary} />
             <Text style={styles.addMemberText}>Tilføj medlem</Text>
           </TouchableOpacity>
         </View>
@@ -244,7 +247,7 @@ export function CreateGroupScreen({ navigation }: any) {
             <Ionicons
               name={totalPercentage <= 100 ? 'checkmark-circle' : 'alert-circle'}
               size={18}
-              color={totalPercentage <= 100 ? COLORS.success : COLORS.danger}
+              color={totalPercentage <= 100 ? C.success : C.danger}
             />
             <Text style={styles.summaryText}>
               Fordelt: {totalPercentage.toFixed(1)}% + din andel:{' '}
@@ -266,10 +269,11 @@ export function CreateGroupScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -281,7 +285,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: SPACING.sm,
   },
   nameRow: {
@@ -297,7 +301,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   emojiText: {
     fontSize: 26,
@@ -311,15 +315,15 @@ const styles = StyleSheet.create({
   nameInput: {
     flex: 1,
     height: 52,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     paddingHorizontal: SPACING.md,
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.text,
+    color: C.text,
     letterSpacing: 0,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   splitToggle: {
     flexDirection: 'row',
@@ -327,37 +331,37 @@ const styles = StyleSheet.create({
   },
   splitOption: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     gap: 4,
   },
   splitOptionActive: {
-    borderColor: COLORS.primary,
+    borderColor: C.primary,
     backgroundColor: '#e8eef5',
   },
   splitText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   splitTextActive: {
-    color: COLORS.primary,
+    color: C.primary,
   },
   splitDesc: {
     fontSize: 11,
-    color: COLORS.textLight,
+    color: C.textLight,
   },
   memberCard: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   memberHeader: {
     flexDirection: 'row',
@@ -376,7 +380,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -393,7 +397,7 @@ const styles = StyleSheet.create({
   youLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.text,
+    color: C.text,
   },
   tagInputRow: {
     flexDirection: 'row',
@@ -402,12 +406,12 @@ const styles = StyleSheet.create({
   tagAt: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.primary,
+    color: C.primary,
   },
   memberTagInput: {
     flex: 1,
     fontSize: 15,
-    color: COLORS.primary,
+    color: C.primary,
     fontWeight: '600',
     letterSpacing: 0,
     padding: 0,
@@ -422,7 +426,7 @@ const styles = StyleSheet.create({
   shareText: {
     fontSize: 13,
     fontWeight: '700',
-    color: COLORS.primary,
+    color: C.primary,
   },
   percentInputWrap: {
     flexDirection: 'row',
@@ -435,7 +439,7 @@ const styles = StyleSheet.create({
   percentInput: {
     fontSize: 14,
     fontWeight: '700',
-    color: COLORS.primary,
+    color: C.primary,
     width: 36,
     textAlign: 'right',
     paddingVertical: SPACING.xs,
@@ -443,7 +447,7 @@ const styles = StyleSheet.create({
   percentSign: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
     marginLeft: 1,
   },
   removeBtn: {
@@ -457,13 +461,13 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderStyle: 'dashed',
   },
   addMemberText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
   },
   summaryBox: {
     flexDirection: 'row',
@@ -471,22 +475,22 @@ const styles = StyleSheet.create({
     gap: SPACING.sm,
     marginHorizontal: SPACING.md,
     marginTop: SPACING.md,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   summaryText: {
     fontSize: 13,
     fontWeight: '500',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     flex: 1,
   },
   createButton: {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.xl,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
@@ -500,3 +504,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+}

@@ -10,7 +10,8 @@ import {
   TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors, useTheme, type ThemeMode } from '../utils/theme';
 import { formatPhone } from '../utils/format';
 import { useAuth } from '../store/auth';
 
@@ -26,6 +27,8 @@ function MenuSection({ title, items, onPress }: {
   items: MenuItem[];
   onPress: (screen: string) => void;
 }) {
+  const C = useColors();
+  const styles = makeStyles(C);
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -37,12 +40,12 @@ function MenuSection({ title, items, onPress }: {
             onPress={() => onPress(item.screen)}
           >
             <View style={[styles.menuIcon, item.destructive && styles.menuIconDanger]}>
-              <Ionicons name={item.icon} size={20} color={item.destructive ? COLORS.danger : COLORS.primary} />
+              <Ionicons name={item.icon} size={20} color={item.destructive ? C.danger : C.primary} />
             </View>
             <Text style={[styles.menuLabel, item.destructive && styles.menuLabelDanger]}>
               {item.label}
             </Text>
-            <Ionicons name="chevron-forward" size={18} color={COLORS.textLight} />
+            <Ionicons name="chevron-forward" size={18} color={C.textLight} />
           </TouchableOpacity>
         ))}
       </View>
@@ -50,7 +53,16 @@ function MenuSection({ title, items, onPress }: {
   );
 }
 
+const THEME_OPTIONS: { value: ThemeMode; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
+  { value: 'light', label: 'Lys', icon: 'sunny' },
+  { value: 'dark', label: 'Mørk', icon: 'moon' },
+  { value: 'system', label: 'System', icon: 'phone-portrait-outline' },
+];
+
 export function ProfileScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
+  const { mode, setMode } = useTheme();
   const { user, logout } = useAuth();
   const [deleteStep, setDeleteStep] = useState(0);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
@@ -136,7 +148,7 @@ export function ProfileScreen({ navigation }: any) {
           )}
         </View>
         <View style={styles.editBadge}>
-          <Ionicons name="create-outline" size={16} color={COLORS.primary} />
+          <Ionicons name="create-outline" size={16} color={C.primary} />
         </View>
       </TouchableOpacity>
 
@@ -146,11 +158,34 @@ export function ProfileScreen({ navigation }: any) {
           <Ionicons
             name={user?.kycStatus === 'VERIFIED' ? 'checkmark-circle' : 'alert-circle'}
             size={14}
-            color={user?.kycStatus === 'VERIFIED' ? COLORS.success : COLORS.warning}
+            color={user?.kycStatus === 'VERIFIED' ? C.success : C.warning}
           />
           <Text style={styles.kycText}>
             {user?.kycStatus === 'VERIFIED' ? 'Verificeret' : 'Ikke verificeret'}
           </Text>
+        </View>
+      </View>
+
+      {/* Theme Picker */}
+      <View style={[styles.themeSection, { backgroundColor: C.surface, borderColor: C.border }]}>
+        <Text style={[styles.themeSectionTitle, { color: C.textSecondary }]}>UDSEENDE</Text>
+        <View style={styles.themeRow}>
+          {THEME_OPTIONS.map((opt) => (
+            <TouchableOpacity
+              key={opt.value}
+              style={[
+                styles.themeOption,
+                { borderColor: mode === opt.value ? C.accent : C.border },
+                mode === opt.value && { backgroundColor: C.accent + '15' },
+              ]}
+              onPress={() => setMode(opt.value)}
+            >
+              <Ionicons name={opt.icon} size={20} color={mode === opt.value ? C.accent : C.textSecondary} />
+              <Text style={[styles.themeLabel, { color: mode === opt.value ? C.accent : C.text }, mode === opt.value && styles.themeLabelActive]}>
+                {opt.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
@@ -177,7 +212,7 @@ export function ProfileScreen({ navigation }: any) {
 
       {/* Logout */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={20} color={COLORS.danger} />
+        <Ionicons name="log-out-outline" size={20} color={C.danger} />
         <Text style={styles.logoutText}>Log ud</Text>
       </TouchableOpacity>
 
@@ -188,7 +223,7 @@ export function ProfileScreen({ navigation }: any) {
           {deleteStep === 0 ? (
             <>
               <View style={styles.deleteInfo}>
-                <Ionicons name="warning" size={20} color={COLORS.danger} />
+                <Ionicons name="warning" size={20} color={C.danger} />
                 <Text style={styles.deleteInfoText}>
                   Sletning af din konto er permanent og kan ikke fortrydes. Al data, transaktionshistorik og saldo fjernes.
                 </Text>
@@ -200,7 +235,7 @@ export function ProfileScreen({ navigation }: any) {
           ) : (
             <>
               <View style={styles.deleteInfo}>
-                <Ionicons name="alert-circle" size={20} color={COLORS.danger} />
+                <Ionicons name="alert-circle" size={20} color={C.danger} />
                 <Text style={styles.deleteInfoText}>
                   Ved sletning af din konto sker følgende:
                 </Text>
@@ -220,7 +255,7 @@ export function ProfileScreen({ navigation }: any) {
                 value={deleteConfirmText}
                 onChangeText={setDeleteConfirmText}
                 placeholder="Skriv SLET"
-                placeholderTextColor={COLORS.textLight}
+                placeholderTextColor={C.textLight}
                 autoCapitalize="characters"
                 autoCorrect={false}
               />
@@ -252,10 +287,11 @@ export function ProfileScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   header: {
     flexDirection: 'row',
@@ -263,11 +299,11 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.md,
     marginTop: SPACING.lg,
     marginBottom: SPACING.sm,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 16,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   avatar: {
     width: 56,
@@ -278,7 +314,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -294,17 +330,17 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
   },
   phone: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: 2,
   },
   tag: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
     marginTop: 2,
   },
   editBadge: {
@@ -323,17 +359,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.xs,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   kycText: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   section: {
     marginTop: SPACING.md,
@@ -341,17 +377,17 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.textLight,
+    color: C.textLight,
     letterSpacing: 0.5,
     marginLeft: SPACING.xl,
     marginBottom: SPACING.xs,
   },
   menu: {
     marginHorizontal: SPACING.md,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     overflow: 'hidden',
   },
   menuItem: {
@@ -360,7 +396,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: SPACING.md,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
+    borderBottomColor: C.borderLight,
   },
   menuItemLast: {
     borderBottomWidth: 0,
@@ -381,10 +417,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: COLORS.text,
+    color: C.text,
   },
   menuLabelDanger: {
-    color: COLORS.danger,
+    color: C.danger,
   },
   logoutButton: {
     flexDirection: 'row',
@@ -394,19 +430,19 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.md,
     marginTop: SPACING.lg,
     paddingVertical: 14,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   logoutText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.danger,
+    color: C.danger,
   },
   deleteCard: {
     marginHorizontal: SPACING.md,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#fecaca',
@@ -420,7 +456,7 @@ const styles = StyleSheet.create({
   deleteInfoText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     lineHeight: 19,
   },
   deleteButton: {
@@ -434,7 +470,7 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.danger,
+    color: C.danger,
   },
   deleteConsequences: {
     marginBottom: SPACING.md,
@@ -442,22 +478,22 @@ const styles = StyleSheet.create({
   },
   deleteConsequence: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     lineHeight: 18,
     marginLeft: 28,
   },
   deletePrompt: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: SPACING.sm,
   },
   deleteBold: {
     fontWeight: '800',
-    color: COLORS.danger,
+    color: C.danger,
   },
   deleteInput: {
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     borderWidth: 1,
     borderColor: '#fecaca',
     borderRadius: 10,
@@ -465,7 +501,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
     textAlign: 'center',
     letterSpacing: 4,
     marginBottom: SPACING.md,
@@ -479,21 +515,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   deleteCancelText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   deleteConfirmBtn: {
     flex: 1,
     alignItems: 'center',
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: COLORS.danger,
+    backgroundColor: C.danger,
   },
   deleteConfirmDisabled: {
     opacity: 0.4,
@@ -506,8 +542,15 @@ const styles = StyleSheet.create({
   version: {
     textAlign: 'center',
     fontSize: 12,
-    color: COLORS.textLight,
+    color: C.textLight,
     marginVertical: SPACING.lg,
     paddingBottom: SPACING.xxl,
   },
+  themeSection: { marginHorizontal: 16, marginBottom: 16, borderRadius: 14, borderWidth: 1, padding: 16 },
+  themeSectionTitle: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8 },
+  themeRow: { flexDirection: 'row', gap: 8 },
+  themeOption: { flex: 1, alignItems: 'center', gap: 4, paddingVertical: 10, borderRadius: 10, borderWidth: 1.5 },
+  themeLabel: { fontSize: 12, fontWeight: '500' },
+  themeLabelActive: { fontWeight: '700' },
 });
+}

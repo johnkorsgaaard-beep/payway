@@ -7,7 +7,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 interface NotifSetting {
   key: string;
@@ -44,6 +45,8 @@ const SETTINGS: NotifSetting[] = [
 ];
 
 export function NotificationsScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [enabled, setEnabled] = useState<Record<string, boolean>>({
     received: true,
     requests: true,
@@ -68,7 +71,7 @@ export function NotificationsScreen() {
             <View key={setting.key}>
               <View style={styles.row}>
                 <View style={styles.iconBox}>
-                  <Ionicons name={setting.icon} size={20} color={COLORS.accent} />
+                  <Ionicons name={setting.icon} size={20} color={C.accent} />
                 </View>
                 <View style={styles.info}>
                   <Text style={styles.title}>{setting.title}</Text>
@@ -77,8 +80,8 @@ export function NotificationsScreen() {
                 <Switch
                   value={enabled[setting.key]}
                   onValueChange={() => toggle(setting.key)}
-                  trackColor={{ false: COLORS.border, true: COLORS.accentLight }}
-                  thumbColor={enabled[setting.key] ? COLORS.accent : '#f4f4f5'}
+                  trackColor={{ false: C.border, true: C.accentLight }}
+                  thumbColor={enabled[setting.key] ? C.accent : '#f4f4f5'}
                 />
               </View>
               {i < SETTINGS.length - 1 && <View style={styles.divider} />}
@@ -87,7 +90,7 @@ export function NotificationsScreen() {
         </View>
 
         <View style={styles.infoBox}>
-          <Ionicons name="information-circle" size={18} color={COLORS.accent} />
+          <Ionicons name="information-circle" size={18} color={C.accent} />
           <Text style={styles.infoText}>
             Du kan altid ændre notifikationsindstillinger i din enheds indstillinger under Payway.
           </Text>
@@ -97,14 +100,15 @@ export function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text },
+  subtitle: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   list: {
-    backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1,
-    borderColor: COLORS.border, overflow: 'hidden',
+    backgroundColor: C.surface, borderRadius: 16, borderWidth: 1,
+    borderColor: C.border, overflow: 'hidden',
   },
   row: {
     flexDirection: 'row', alignItems: 'center',
@@ -115,12 +119,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8faf0', justifyContent: 'center', alignItems: 'center',
   },
   info: { flex: 1 },
-  title: { fontSize: 15, fontWeight: '600', color: COLORS.text },
-  desc: { fontSize: 13, color: COLORS.textSecondary, marginTop: 2 },
-  divider: { height: 1, backgroundColor: COLORS.borderLight, marginHorizontal: SPACING.md },
+  title: { fontSize: 15, fontWeight: '600', color: C.text },
+  desc: { fontSize: 13, color: C.textSecondary, marginTop: 2 },
+  divider: { height: 1, backgroundColor: C.borderLight, marginHorizontal: SPACING.md },
   infoBox: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
     backgroundColor: '#e8faf0', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.lg,
   },
-  infoText: { flex: 1, fontSize: 13, color: COLORS.accent, lineHeight: 18 },
+  infoText: { flex: 1, fontSize: 13, color: C.accent, lineHeight: 18 },
 });
+}

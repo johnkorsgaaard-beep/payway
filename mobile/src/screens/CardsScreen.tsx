@@ -8,8 +8,10 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { useAuth } from '../store/auth';
+import { EmptyState } from '../components/EmptyState';
 
 const BRAND_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   visa: 'card',
@@ -18,6 +20,8 @@ const BRAND_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
 };
 
 export function CardsScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   const { user } = useAuth();
   const [cards, setCards] = useState(user?.cards || []);
 
@@ -49,13 +53,16 @@ export function CardsScreen() {
         </Text>
 
         {cards.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="card-outline" size={56} color={COLORS.textLight} />
-            <Text style={styles.emptyText}>Ingen kort tilføjet</Text>
-            <Text style={styles.emptySubtext}>
-              Tilføj et betalingskort for at kunne fylde op
-            </Text>
-          </View>
+          <EmptyState
+            icon="card-outline"
+            iconColor="#d97706"
+            iconBg="#fef3c7"
+            title="Ingen kort endnu"
+            description="Tilknyt et Visa eller Mastercard, så du hurtigt kan fylde din wallet op."
+            actionLabel="Tilføj kort"
+            onAction={handleAddCard}
+            compact
+          />
         ) : (
           <View style={styles.cardList}>
             {cards.map((card) => (
@@ -64,7 +71,7 @@ export function CardsScreen() {
                   <Ionicons
                     name={BRAND_ICONS[card.brand] || 'card'}
                     size={24}
-                    color={COLORS.accent}
+                    color={C.accent}
                   />
                 </View>
                 <View style={styles.cardInfo}>
@@ -84,7 +91,7 @@ export function CardsScreen() {
                   onPress={() => handleRemoveCard(card.id, card.last4)}
                   style={styles.removeButton}
                 >
-                  <Ionicons name="trash-outline" size={18} color={COLORS.danger} />
+                  <Ionicons name="trash-outline" size={18} color={C.danger} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -100,23 +107,24 @@ export function CardsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text },
+  subtitle: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   emptyState: { alignItems: 'center', paddingVertical: SPACING.xxl, gap: SPACING.sm },
-  emptyText: { fontSize: 16, fontWeight: '600', color: COLORS.textSecondary },
-  emptySubtext: { fontSize: 14, color: COLORS.textLight, textAlign: 'center' },
+  emptyText: { fontSize: 16, fontWeight: '600', color: C.textSecondary },
+  emptySubtext: { fontSize: 14, color: C.textLight, textAlign: 'center' },
   cardList: { gap: SPACING.sm },
   cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
   },
   cardIcon: {
     width: 48,
@@ -129,25 +137,26 @@ const styles = StyleSheet.create({
   },
   cardInfo: { flex: 1 },
   cardNameRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-  cardBrand: { fontSize: 15, fontWeight: '700', color: COLORS.text },
+  cardBrand: { fontSize: 15, fontWeight: '700', color: C.text },
   defaultBadge: {
     backgroundColor: '#dcfce7',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
   },
-  defaultText: { fontSize: 11, fontWeight: '600', color: COLORS.success },
-  cardNumber: { fontSize: 13, color: COLORS.textSecondary, marginTop: 2, fontFamily: 'monospace' },
+  defaultText: { fontSize: 11, fontWeight: '600', color: C.success },
+  cardNumber: { fontSize: 13, color: C.textSecondary, marginTop: 2, fontFamily: 'monospace' },
   removeButton: { padding: SPACING.sm },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     marginTop: SPACING.lg,
   },
   addButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
+}

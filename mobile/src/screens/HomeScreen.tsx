@@ -8,10 +8,13 @@ import {
   RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { useAuth } from '../store/auth';
 import { api } from '../services/api';
+import { EmptyState } from '../components/EmptyState';
+import { useScheduledPayments, getFrequencyLabel } from '../store/scheduledPayments';
 
 interface Transaction {
   id: string;
@@ -39,8 +42,21 @@ const TYPE_LABELS: Record<string, string> = {
   WITHDRAWAL: 'Udbetaling',
 };
 
+function formatScheduledNext(iso: string): string {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff <= 0) return 'I dag';
+  if (diff === 1) return 'I morgen';
+  if (diff <= 7) return `Om ${diff} dage`;
+  return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+}
+
 export function HomeScreen({ navigation }: any) {
+  const C = useColors();
   const { user, refreshUser } = useAuth();
+  const { payments: scheduledPayments } = useScheduledPayments();
+  const upcomingPayments = scheduledPayments.filter((p) => p.active).slice(0, 3);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -52,7 +68,6 @@ export function HomeScreen({ navigation }: any) {
       );
       setTransactions(res.transactions);
     } catch {
-      // Demo data when API is unavailable
       setTransactions([
         { id: '1', amount: 15000, type: 'P2P', status: 'COMPLETED', description: 'Tak for mad!', direction: 'outgoing', createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), toWallet: { user: { name: 'Magnus Hansen' } } },
         { id: '2', amount: 7500, type: 'P2P', status: 'COMPLETED', description: 'Biografbilletter', direction: 'incoming', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), fromWallet: { user: { name: 'Sara Petersen' } } },
@@ -78,11 +93,11 @@ export function HomeScreen({ navigation }: any) {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       {/* Balance Card — wallet for P2P */}
-      <View style={styles.balanceCard}>
+      <View style={[styles.balanceCard, { backgroundColor: C.primary }]}>
         <Text style={styles.balanceLabel}>Wallet-saldo</Text>
         <Text style={styles.balanceAmount}>{formatDKK(balance)}</Text>
         <Text style={styles.balanceSub}>Til overførsler mellem venner</Text>
@@ -109,76 +124,112 @@ export function HomeScreen({ navigation }: any) {
       {/* Quick Actions */}
       <View style={styles.quickActions}>
         <TouchableOpacity
-          style={styles.quickAction}
+          style={[styles.quickAction, { backgroundColor: C.surface, borderColor: C.border }]}
           onPress={() => navigation.navigate('Send')}
         >
           <View style={[styles.quickIcon, { backgroundColor: '#e8faf0' }]}>
-            <Ionicons name="person" size={20} color={COLORS.accent} />
+            <Ionicons name="person" size={20} color={C.accent} />
           </View>
-          <Text style={styles.quickLabel}>Send til ven</Text>
-          <Text style={styles.quickSub}>Fra wallet</Text>
+          <Text style={[styles.quickLabel, { color: C.text }]}>Send til ven</Text>
+          <Text style={[styles.quickSub, { color: C.textLight }]}>Fra wallet</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.quickAction}
+          style={[styles.quickAction, { backgroundColor: C.surface, borderColor: C.border }]}
           onPress={() => navigation.navigate('Scan')}
         >
           <View style={[styles.quickIcon, { backgroundColor: '#f0fdf4' }]}>
-            <Ionicons name="storefront" size={20} color={COLORS.success} />
+            <Ionicons name="storefront" size={20} color={C.success} />
           </View>
-          <Text style={styles.quickLabel}>Scan QR</Text>
-          <Text style={styles.quickSub}>Betal i butik</Text>
+          <Text style={[styles.quickLabel, { color: C.text }]}>Scan QR</Text>
+          <Text style={[styles.quickSub, { color: C.textLight }]}>Betal i butik</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.quickAction}
+          style={[styles.quickAction, { backgroundColor: C.surface, borderColor: C.border }]}
           onPress={() => navigation.navigate('TopUp')}
         >
           <View style={[styles.quickIcon, { backgroundColor: '#fef3c7' }]}>
-            <Ionicons name="wallet" size={20} color={COLORS.warning} />
+            <Ionicons name="wallet" size={20} color={C.warning} />
           </View>
-          <Text style={styles.quickLabel}>Fyld op</Text>
-          <Text style={styles.quickSub}>Wallet</Text>
+          <Text style={[styles.quickLabel, { color: C.text }]}>Fyld op</Text>
+          <Text style={[styles.quickSub, { color: C.textLight }]}>Wallet</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Scheduled Payments */}
+      {upcomingPayments.length > 0 && (
+        <View style={styles.scheduledSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: C.text }]}>Planlagte betalinger</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('ScheduledPayments')}>
+              <Text style={[styles.seeAll, { color: C.text }]}>Se alle</Text>
+            </TouchableOpacity>
+          </View>
+          {upcomingPayments.map((sp) => (
+            <TouchableOpacity
+              key={sp.id}
+              style={[styles.scheduledRow, { backgroundColor: C.surface, borderColor: C.borderLight }]}
+              onPress={() => navigation.navigate('ScheduledPayments')}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.scheduledIcon, { backgroundColor: C.accent + '15' }]}>
+                <Ionicons name="calendar" size={18} color={C.accent} />
+              </View>
+              <View style={styles.scheduledInfo}>
+                <Text style={[styles.scheduledName, { color: C.text }]} numberOfLines={1}>
+                  {sp.recipientName}
+                </Text>
+                <Text style={[styles.scheduledMeta, { color: C.textLight }]}>
+                  {getFrequencyLabel(sp.frequency)} · {formatScheduledNext(sp.nextDate)}
+                </Text>
+              </View>
+              <Text style={[styles.scheduledAmount, { color: C.text }]}>{formatDKK(sp.amount)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       {/* Recent Transactions */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Seneste aktivitet</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>Seneste aktivitet</Text>
           <TouchableOpacity onPress={() => navigation.navigate('History')}>
-            <Text style={styles.seeAll}>Se alle</Text>
+            <Text style={[styles.seeAll, { color: C.text }]}>Se alle</Text>
           </TouchableOpacity>
         </View>
 
         {transactions.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="receipt-outline" size={48} color={COLORS.textLight} />
-            <Text style={styles.emptyText}>Ingen transaktioner endnu</Text>
-            <Text style={styles.emptySubtext}>
-              Send penge eller betal i en butik for at komme i gang
-            </Text>
-          </View>
+          <EmptyState
+            icon="receipt-outline"
+            iconColor={C.accent}
+            iconBg="#dcfce7"
+            title="Ingen aktivitet endnu"
+            description="Send penge til en ven eller betal i en butik — din historik vises her."
+            actionLabel="Send din første betaling"
+            onAction={() => navigation.navigate('Send')}
+            compact
+          />
         ) : (
           transactions.map((tx) => (
             <TouchableOpacity
               key={tx.id}
-              style={styles.txRow}
+              style={[styles.txRow, { backgroundColor: C.surface, borderColor: C.borderLight }]}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('TransactionDetail', { transaction: tx })}
             >
-              <View style={styles.txIcon}>
+              <View style={[styles.txIcon, { backgroundColor: C.borderLight }]}>
                 <Ionicons
                   name={TYPE_ICONS[tx.type] || 'ellipse'}
                   size={22}
-                  color={tx.direction === 'incoming' ? COLORS.success : COLORS.text}
+                  color={tx.direction === 'incoming' ? C.success : C.text}
                 />
               </View>
               <View style={styles.txInfo}>
-                <Text style={styles.txTitle}>
+                <Text style={[styles.txTitle, { color: C.text }]}>
                   {TYPE_LABELS[tx.type] || tx.type}
                 </Text>
-                <Text style={styles.txSubtitle}>
+                <Text style={[styles.txSubtitle, { color: C.textSecondary }]}>
                   {tx.type === 'MERCHANT_PAYMENT'
                     ? 'Fra kort'
                     : tx.direction === 'incoming'
@@ -189,7 +240,7 @@ export function HomeScreen({ navigation }: any) {
               <Text
                 style={[
                   styles.txAmount,
-                  tx.direction === 'incoming' ? styles.txIncoming : styles.txOutgoing,
+                  { color: tx.direction === 'incoming' ? C.success : C.text },
                 ]}
               >
                 {tx.direction === 'incoming' ? '+' : '-'}
@@ -206,10 +257,8 @@ export function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   balanceCard: {
-    backgroundColor: COLORS.primary,
     margin: SPACING.md,
     borderRadius: 24,
     padding: SPACING.xl,
@@ -257,13 +306,11 @@ const styles = StyleSheet.create({
   },
   quickAction: {
     flex: 1,
-    backgroundColor: COLORS.surface,
     borderRadius: 16,
     padding: SPACING.md,
     alignItems: 'center',
     gap: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   quickIcon: {
     width: 44,
@@ -275,14 +322,47 @@ const styles = StyleSheet.create({
   quickLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.text,
     textAlign: 'center',
   },
   quickSub: {
     fontSize: 10,
-    color: COLORS.textLight,
     textAlign: 'center',
     marginTop: -2,
+  },
+  scheduledSection: {
+    marginTop: SPACING.lg,
+    paddingHorizontal: SPACING.md,
+  },
+  scheduledRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    padding: SPACING.md,
+    marginBottom: SPACING.sm,
+    borderWidth: 1,
+  },
+  scheduledIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SPACING.md,
+  },
+  scheduledInfo: {
+    flex: 1,
+  },
+  scheduledName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  scheduledMeta: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  scheduledAmount: {
+    fontSize: 15,
+    fontWeight: '700',
   },
   section: {
     marginTop: SPACING.lg,
@@ -298,12 +378,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.text,
   },
   seeAll: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
   },
   emptyState: {
     alignItems: 'center',
@@ -313,28 +391,23 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
   },
   emptySubtext: {
     fontSize: 14,
-    color: COLORS.textLight,
     textAlign: 'center',
   },
   txRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
   },
   txIcon: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: COLORS.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -345,21 +418,13 @@ const styles = StyleSheet.create({
   txTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
   },
   txSubtitle: {
     fontSize: 12,
-    color: COLORS.textSecondary,
     marginTop: 2,
   },
   txAmount: {
     fontSize: 15,
     fontWeight: '700',
-  },
-  txIncoming: {
-    color: COLORS.success,
-  },
-  txOutgoing: {
-    color: COLORS.text,
   },
 });

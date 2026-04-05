@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { api } from '../services/api';
 import { useAuth } from '../store/auth';
@@ -23,6 +24,8 @@ interface QrData {
 }
 
 export function ScanScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [qrData, setQrData] = useState<QrData | null>(null);
@@ -40,7 +43,7 @@ export function ScanScreen({ navigation }: any) {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <Ionicons name="camera-outline" size={64} color={COLORS.textLight} />
+        <Ionicons name="camera-outline" size={64} color={C.textLight} />
         <Text style={styles.permissionText}>
           Vi har brug for adgang til kameraet for at scanne QR-koder
         </Text>
@@ -112,7 +115,7 @@ export function ScanScreen({ navigation }: any) {
       <View style={styles.payContainer}>
         <View style={styles.merchantCard}>
           <View style={styles.merchantIcon}>
-            <Ionicons name="storefront" size={32} color={COLORS.accent} />
+            <Ionicons name="storefront" size={32} color={C.accent} />
           </View>
           <Text style={styles.merchantName}>{qrData.merchantName}</Text>
           {qrData.label && (
@@ -129,7 +132,7 @@ export function ScanScreen({ navigation }: any) {
               onChangeText={setAmount}
               keyboardType="numeric"
               placeholder="0,00"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={C.textLight}
               textAlign="center"
             />
           </>
@@ -142,7 +145,7 @@ export function ScanScreen({ navigation }: any) {
         {/* Card indicator */}
         {defaultCard && (
           <View style={styles.cardIndicator}>
-            <Ionicons name="card" size={18} color={COLORS.accent} />
+            <Ionicons name="card" size={18} color={C.accent} />
             <Text style={styles.cardIndicatorText}>
               Betales med {defaultCard.brand.toUpperCase()} •••• {defaultCard.last4}
             </Text>
@@ -158,7 +161,7 @@ export function ScanScreen({ navigation }: any) {
           maxLength={4}
           secureTextEntry
           placeholder="----"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -215,7 +218,8 @@ export function ScanScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
@@ -246,7 +250,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderWidth: 3,
-    borderColor: COLORS.accent,
+    borderColor: C.accent,
     borderRadius: 24,
     backgroundColor: 'transparent',
   },
@@ -264,27 +268,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.xl,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     gap: SPACING.md,
   },
   permissionText: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     textAlign: 'center',
   },
   payContainer: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     padding: SPACING.xl,
     justifyContent: 'center',
   },
   merchantCard: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 20,
     padding: SPACING.xl,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     marginBottom: SPACING.lg,
   },
   merchantIcon: {
@@ -299,36 +303,36 @@ const styles = StyleSheet.create({
   merchantName: {
     fontSize: 20,
     fontWeight: '700',
-    color: COLORS.text,
+    color: C.text,
   },
   merchantLabel: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: SPACING.xs,
   },
   fixedAmount: {
     fontSize: 36,
     fontWeight: '800',
-    color: COLORS.accent,
+    color: C.accent,
     textAlign: 'center',
     marginVertical: SPACING.md,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginBottom: SPACING.xs,
     marginTop: SPACING.md,
   },
   input: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: COLORS.text,
+    color: C.text,
   },
   amountInput: {
     fontSize: 28,
@@ -342,7 +346,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   button: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -358,7 +362,7 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
   },
   cancelText: {
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -374,6 +378,7 @@ const styles = StyleSheet.create({
   cardIndicatorText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.accent,
+    color: C.accent,
   },
 });
+}

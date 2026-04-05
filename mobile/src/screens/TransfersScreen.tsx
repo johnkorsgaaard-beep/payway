@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Image,
+  RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
+import { EmptyState } from '../components/EmptyState';
+import { SearchBar } from '../components/SearchBar';
 
 interface PersonSummary {
   id: string;
@@ -50,7 +53,38 @@ const MOCK_GROUPS: GroupSummary[] = [
 type Tab = 'persons' | 'groups';
 
 export function TransfersScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [activeTab, setActiveTab] = useState<Tab>('persons');
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredPersons = useMemo(() => {
+    if (!searchQuery.trim()) return MOCK_PERSONS;
+    const q = searchQuery.toLowerCase().trim();
+    return MOCK_PERSONS.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.tag && p.tag.toLowerCase().includes(q)) ||
+        (p.lastMessage && p.lastMessage.toLowerCase().includes(q)),
+    );
+  }, [searchQuery]);
+
+  const filteredGroups = useMemo(() => {
+    if (!searchQuery.trim()) return MOCK_GROUPS;
+    const q = searchQuery.toLowerCase().trim();
+    return MOCK_GROUPS.filter(
+      (g) =>
+        g.name.toLowerCase().includes(q) ||
+        g.emoji.includes(q),
+    );
+  }, [searchQuery]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await new Promise((r) => setTimeout(r, 800));
+    setRefreshing(false);
+  };
 
   const formatTime = (t: string) => t + ' siden';
 
@@ -123,13 +157,31 @@ export function TransfersScreen({ navigation }: any) {
     </TouchableOpacity>
   );
 
+  const hasSearchResults = activeTab === 'persons' ? filteredPersons.length > 0 : filteredGroups.length > 0;
+  const sourceCount = activeTab === 'persons' ? MOCK_PERSONS.length : MOCK_GROUPS.length;
+  const filteredCount = activeTab === 'persons' ? filteredPersons.length : filteredGroups.length;
+
+  const searchHeader = (
+    <View style={styles.searchContainer}>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder={activeTab === 'persons' ? 'Søg navn eller @tag...' : 'Søg gruppenavn...'}
+      />
+      {searchQuery.trim() !== '' && (
+        <Text style={styles.searchCount}>
+          {filteredCount} af {sourceCount} {activeTab === 'persons' ? 'personer' : 'grupper'}
+        </Text>
+      )}
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      {/* Tab Switcher */}
       <View style={styles.tabBar}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'persons' && styles.tabActive]}
-          onPress={() => setActiveTab('persons')}
+          onPress={() => { setActiveTab('persons'); setSearchQuery(''); }}
         >
           <Text style={[styles.tabText, activeTab === 'persons' && styles.tabTextActive]}>
             Personer
@@ -137,7 +189,7 @@ export function TransfersScreen({ navigation }: any) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'groups' && styles.tabActive]}
-          onPress={() => setActiveTab('groups')}
+          onPress={() => { setActiveTab('groups'); setSearchQuery(''); }}
         >
           <Text style={[styles.tabText, activeTab === 'groups' && styles.tabTextActive]}>
             Grupper
@@ -147,29 +199,71 @@ export function TransfersScreen({ navigation }: any) {
 
       {activeTab === 'persons' ? (
         <FlatList
-          data={MOCK_PERSONS}
+          data={filteredPersons}
           renderItem={renderPerson}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          keyboardDismissMode="on-drag"
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListHeaderComponent={MOCK_PERSONS.length > 0 ? searchHeader : null}
           ListEmptyComponent={
-            <View style={styles.empty}>
-              <Ionicons name="people-outline" size={48} color={COLORS.textLight} />
-              <Text style={styles.emptyText}>Ingen overførsler endnu</Text>
-            </View>
+            searchQuery.trim() ? (
+              <EmptyState
+                icon="search-outline"
+                iconColor={C.primary}
+                iconBg="#e0f2fe"
+                title="Ingen resultater"
+                description={`Ingen personer matcher "${searchQuery}". Prøv et andet navn eller @tag.`}
+                actionLabel="Ryd søgning"
+                onAction={() => setSearchQuery('')}
+                compact
+              />
+            ) : (
+              <EmptyState
+                icon="send-outline"
+                iconColor={C.accent}
+                iconBg="#dcfce7"
+                title="Ingen overførsler endnu"
+                description="Når du sender eller modtager penge, vises dine kontakter her automatisk."
+                actionLabel="Send penge"
+                onAction={() => navigation.navigate('Send')}
+              />
+            )
           }
         />
       ) : (
         <>
           <FlatList
-            data={MOCK_GROUPS}
+            data={filteredGroups}
             renderItem={renderGroup}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.list}
+            keyboardDismissMode="on-drag"
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            ListHeaderComponent={MOCK_GROUPS.length > 0 ? searchHeader : null}
             ListEmptyComponent={
-              <View style={styles.empty}>
-                <Ionicons name="people-circle-outline" size={48} color={COLORS.textLight} />
-                <Text style={styles.emptyText}>Ingen grupper endnu</Text>
-              </View>
+              searchQuery.trim() ? (
+                <EmptyState
+                  icon="search-outline"
+                  iconColor={C.primary}
+                  iconBg="#e0f2fe"
+                  title="Ingen resultater"
+                  description={`Ingen grupper matcher "${searchQuery}".`}
+                  actionLabel="Ryd søgning"
+                  onAction={() => setSearchQuery('')}
+                  compact
+                />
+              ) : (
+                <EmptyState
+                  icon="people-outline"
+                  iconColor={C.primary}
+                  iconBg="#e0f2fe"
+                  title="Ingen grupper endnu"
+                  description="Opret en gruppe for at dele udgifter med venner — ferie, middag eller husleje."
+                  actionLabel="Opret din første gruppe"
+                  onAction={() => navigation.navigate('CreateGroup')}
+                />
+              )
             }
           />
           <TouchableOpacity
@@ -184,17 +278,18 @@ export function TransfersScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   tabBar: {
     flexDirection: 'row',
     marginHorizontal: SPACING.md,
     marginTop: SPACING.sm,
     marginBottom: SPACING.sm,
-    backgroundColor: COLORS.borderLight,
+    backgroundColor: C.borderLight,
     borderRadius: 12,
     padding: 3,
   },
@@ -205,7 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   tabActive: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
@@ -215,10 +310,20 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   tabTextActive: {
-    color: COLORS.text,
+    color: C.text,
+  },
+  searchContainer: {
+    marginBottom: SPACING.md,
+    gap: SPACING.xs,
+  },
+  searchCount: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: C.textLight,
+    marginTop: 2,
   },
   list: {
     paddingHorizontal: SPACING.md,
@@ -227,18 +332,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   personAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -272,18 +377,18 @@ const styles = StyleSheet.create({
   rowName: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.text,
+    color: C.text,
     flex: 1,
     marginRight: SPACING.sm,
   },
   rowTime: {
     fontSize: 12,
-    color: COLORS.textLight,
+    color: C.textLight,
   },
   rowTag: {
     fontSize: 12,
     fontWeight: '500',
-    color: COLORS.primary,
+    color: C.primary,
     marginBottom: 2,
   },
   rowBottom: {
@@ -293,7 +398,7 @@ const styles = StyleSheet.create({
   },
   rowMessage: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     flex: 1,
     marginRight: SPACING.sm,
   },
@@ -302,15 +407,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   balancePositive: {
-    color: COLORS.success,
+    color: C.success,
   },
   balanceNegative: {
-    color: COLORS.danger,
+    color: C.danger,
   },
   balanceSettled: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.success,
+    color: C.success,
   },
   empty: {
     alignItems: 'center',
@@ -320,7 +425,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
   },
   fab: {
     position: 'absolute',
@@ -329,7 +434,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -339,3 +444,4 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 });
+}

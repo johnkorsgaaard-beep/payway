@@ -8,7 +8,8 @@ import {
   Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 interface FaqItem {
   q: string;
@@ -43,6 +44,8 @@ const FAQ: FaqItem[] = [
 ];
 
 export function SupportScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
@@ -67,7 +70,7 @@ export function SupportScreen({ navigation }: any) {
                 <Ionicons
                   name={expanded === i ? 'chevron-up' : 'chevron-down'}
                   size={18}
-                  color={COLORS.textLight}
+                  color={C.textLight}
                 />
               </TouchableOpacity>
               {expanded === i && (
@@ -88,13 +91,13 @@ export function SupportScreen({ navigation }: any) {
             onPress={() => Linking.openURL('mailto:support@payway.fo')}
           >
             <View style={styles.contactIcon}>
-              <Ionicons name="mail" size={20} color={COLORS.accent} />
+              <Ionicons name="mail" size={20} color={C.accent} />
             </View>
             <View style={styles.contactInfo}>
               <Text style={styles.contactTitle}>E-mail</Text>
               <Text style={styles.contactValue}>support@payway.fo</Text>
             </View>
-            <Ionicons name="open-outline" size={16} color={COLORS.textLight} />
+            <Ionicons name="open-outline" size={16} color={C.textLight} />
           </TouchableOpacity>
 
           <View style={styles.divider} />
@@ -104,13 +107,13 @@ export function SupportScreen({ navigation }: any) {
             onPress={() => navigation.navigate('LiveChat')}
           >
             <View style={[styles.contactIcon, { backgroundColor: '#e8eef5' }]}>
-              <Ionicons name="chatbubbles" size={20} color={COLORS.primary} />
+              <Ionicons name="chatbubbles" size={20} color={C.primary} />
             </View>
             <View style={styles.contactInfo}>
               <Text style={styles.contactTitle}>Live Chat</Text>
               <Text style={styles.contactValue}>Chat med vores AI-assistent</Text>
             </View>
-            <Ionicons name="chevron-forward" size={16} color={COLORS.textLight} />
+            <Ionicons name="chevron-forward" size={16} color={C.textLight} />
           </TouchableOpacity>
 
           <View style={styles.divider} />
@@ -120,13 +123,13 @@ export function SupportScreen({ navigation }: any) {
             onPress={() => Linking.openURL('mailto:support@payway.fo?subject=Problem%20med%20Payway')}
           >
             <View style={[styles.contactIcon, { backgroundColor: '#fef2f2' }]}>
-              <Ionicons name="bug" size={20} color={COLORS.danger} />
+              <Ionicons name="bug" size={20} color={C.danger} />
             </View>
             <View style={styles.contactInfo}>
               <Text style={styles.contactTitle}>Rapporter et problem</Text>
               <Text style={styles.contactValue}>Send en fejlrapport til os</Text>
             </View>
-            <Ionicons name="open-outline" size={16} color={COLORS.textLight} />
+            <Ionicons name="open-outline" size={16} color={C.textLight} />
           </TouchableOpacity>
         </View>
       </View>
@@ -134,27 +137,28 @@ export function SupportScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text, marginBottom: SPACING.sm, marginTop: SPACING.md },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text },
+  subtitle: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm, marginTop: SPACING.md },
   faqList: {
-    backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1,
-    borderColor: COLORS.border, overflow: 'hidden',
+    backgroundColor: C.surface, borderRadius: 16, borderWidth: 1,
+    borderColor: C.border, overflow: 'hidden',
   },
   faqRow: {
     flexDirection: 'row', alignItems: 'center',
     padding: SPACING.md, gap: SPACING.sm,
   },
-  faqQuestion: { flex: 1, fontSize: 14, fontWeight: '600', color: COLORS.text, lineHeight: 20 },
+  faqQuestion: { flex: 1, fontSize: 14, fontWeight: '600', color: C.text, lineHeight: 20 },
   faqAnswer: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.md },
-  faqAnswerText: { fontSize: 14, color: COLORS.textSecondary, lineHeight: 20 },
-  divider: { height: 1, backgroundColor: COLORS.borderLight, marginHorizontal: SPACING.md },
+  faqAnswerText: { fontSize: 14, color: C.textSecondary, lineHeight: 20 },
+  divider: { height: 1, backgroundColor: C.borderLight, marginHorizontal: SPACING.md },
   contactList: {
-    backgroundColor: COLORS.surface, borderRadius: 16, borderWidth: 1,
-    borderColor: COLORS.border, overflow: 'hidden',
+    backgroundColor: C.surface, borderRadius: 16, borderWidth: 1,
+    borderColor: C.border, overflow: 'hidden',
   },
   contactRow: {
     flexDirection: 'row', alignItems: 'center',
@@ -165,6 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8faf0', justifyContent: 'center', alignItems: 'center',
   },
   contactInfo: { flex: 1 },
-  contactTitle: { fontSize: 14, fontWeight: '600', color: COLORS.text },
-  contactValue: { fontSize: 13, color: COLORS.textSecondary, marginTop: 1 },
+  contactTitle: { fontSize: 14, fontWeight: '600', color: C.text },
+  contactValue: { fontSize: 13, color: C.textSecondary, marginTop: 1 },
 });
+}

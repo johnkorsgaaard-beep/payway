@@ -10,9 +10,12 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 export function ChangePinScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [currentPin, setCurrentPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -47,7 +50,7 @@ export function ChangePinScreen({ navigation }: any) {
     >
       <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <Ionicons name="lock-closed" size={36} color={COLORS.accent} />
+          <Ionicons name="lock-closed" size={36} color={C.accent} />
         </View>
         <Text style={styles.heading}>Skift PIN-kode</Text>
         <Text style={styles.subtitle}>
@@ -63,7 +66,7 @@ export function ChangePinScreen({ navigation }: any) {
           maxLength={4}
           secureTextEntry
           placeholder="----"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -76,7 +79,7 @@ export function ChangePinScreen({ navigation }: any) {
           maxLength={4}
           secureTextEntry
           placeholder="----"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -89,7 +92,7 @@ export function ChangePinScreen({ navigation }: any) {
           maxLength={4}
           secureTextEntry
           placeholder="----"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -101,25 +104,27 @@ export function ChangePinScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { flex: 1, padding: SPACING.xl, justifyContent: 'center' },
   iconContainer: {
     width: 72, height: 72, borderRadius: 36,
     backgroundColor: '#e8faf0', justifyContent: 'center', alignItems: 'center',
     alignSelf: 'center', marginBottom: SPACING.md,
   },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text, textAlign: 'center' },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, textAlign: 'center', marginTop: SPACING.xs, marginBottom: SPACING.xl },
-  label: { fontSize: 13, fontWeight: '600', color: COLORS.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text, textAlign: 'center' },
+  subtitle: { fontSize: 14, color: C.textSecondary, textAlign: 'center', marginTop: SPACING.xs, marginBottom: SPACING.xl },
+  label: { fontSize: 13, fontWeight: '600', color: C.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
   pinInput: {
-    backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
     borderRadius: 12, paddingVertical: 14, fontSize: 28, fontWeight: '700',
-    letterSpacing: 12, color: COLORS.text,
+    letterSpacing: 12, color: C.text,
   },
   button: {
-    backgroundColor: COLORS.accent, borderRadius: 12,
+    backgroundColor: C.accent, borderRadius: 12,
     paddingVertical: 16, alignItems: 'center', marginTop: SPACING.xl,
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
+}

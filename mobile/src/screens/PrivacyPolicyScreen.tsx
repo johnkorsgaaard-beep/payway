@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 const SECTIONS = [
   {
@@ -35,11 +36,13 @@ const SECTIONS = [
 ];
 
 export function PrivacyPolicyScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.badge}>
-          <Ionicons name="shield-checkmark" size={20} color={COLORS.primary} />
+          <Ionicons name="shield-checkmark" size={20} color={C.primary} />
           <Text style={styles.badgeText}>GDPR-kompatibel</Text>
         </View>
         <Text style={styles.heading}>Privatlivspolitik</Text>
@@ -62,8 +65,9 @@ export function PrivacyPolicyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+function makeStyles(C: any) {
+  return StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.background },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
   badge: {
     flexDirection: 'row',
@@ -76,14 +80,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: SPACING.md,
   },
-  badgeText: { fontSize: 12, fontWeight: '700', color: COLORS.primary },
-  heading: { fontSize: 22, fontWeight: '800', color: COLORS.text },
-  updated: { fontSize: 13, color: COLORS.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  badgeText: { fontSize: 12, fontWeight: '700', color: C.primary },
+  heading: { fontSize: 22, fontWeight: '800', color: C.text },
+  updated: { fontSize: 13, color: C.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   section: { marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text, marginBottom: SPACING.sm },
-  sectionBody: { fontSize: 14, color: COLORS.textSecondary, lineHeight: 22 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm },
+  sectionBody: { fontSize: 14, color: C.textSecondary, lineHeight: 22 },
   footer: {
     backgroundColor: '#e8eef5', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.md,
   },
-  footerText: { fontSize: 13, color: COLORS.primary, textAlign: 'center', fontWeight: '500' },
+  footerText: { fontSize: 13, color: C.primary, textAlign: 'center', fontWeight: '500' },
 });
+}

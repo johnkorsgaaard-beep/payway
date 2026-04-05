@@ -11,10 +11,13 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { useAuth } from '../store/auth';
 
 export function LoginScreen({ navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [phone, setPhone] = useState('+298');
   const [name, setName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
@@ -79,7 +82,7 @@ export function LoginScreen({ navigation }: any) {
               onChangeText={setPhone}
               keyboardType="phone-pad"
               placeholder="+298 XXXXXX"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={C.textLight}
             />
 
             {isRegistering && (
@@ -90,7 +93,7 @@ export function LoginScreen({ navigation }: any) {
                   value={name}
                   onChangeText={setName}
                   placeholder="Dit fulde navn"
-                  placeholderTextColor={COLORS.textLight}
+                  placeholderTextColor={C.textLight}
                   autoCapitalize="words"
                 />
               </>
@@ -124,7 +127,7 @@ export function LoginScreen({ navigation }: any) {
               onChangeText={setSmsCode}
               keyboardType="number-pad"
               placeholder="000000"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={C.textLight}
               maxLength={6}
               textAlign="center"
             />
@@ -154,10 +157,11 @@ export function LoginScreen({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   content: {
     flex: 1,
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginTop: SPACING.xs,
   },
   form: {
@@ -184,18 +188,18 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: -SPACING.sm,
   },
   input: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: COLORS.text,
+    color: C.text,
   },
   codeInput: {
     fontSize: 24,
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   button: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -219,22 +223,23 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.sm,
   },
   switchText: {
-    color: COLORS.accent,
+    color: C.accent,
     fontSize: 14,
     fontWeight: '500',
   },
   demoButton: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderWidth: 2,
-    borderColor: COLORS.accent,
+    borderColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginBottom: SPACING.xl,
   },
   demoButtonText: {
-    color: COLORS.accent,
+    color: C.accent,
     fontSize: 16,
     fontWeight: '700',
   },
 });
+}

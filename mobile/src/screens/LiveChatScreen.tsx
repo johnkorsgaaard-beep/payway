@@ -11,7 +11,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 interface Message {
   id: string;
@@ -73,6 +74,8 @@ function findBotResponse(input: string): string {
 }
 
 export function LiveChatScreen() {
+  const C = useColors();
+  const styles = makeStyles(C);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -157,7 +160,7 @@ export function LiveChatScreen() {
                 <Ionicons name="sparkles" size={16} color="#fff" />
               </View>
               <View style={styles.typingBubble}>
-                <ActivityIndicator size="small" color={COLORS.primary} />
+                <ActivityIndicator size="small" color={C.primary} />
                 <Text style={styles.typingText}>Skriver...</Text>
               </View>
             </View>
@@ -183,7 +186,7 @@ export function LiveChatScreen() {
           value={input}
           onChangeText={setInput}
           placeholder="Skriv en besked..."
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           multiline
           maxLength={500}
           onSubmitEditing={() => sendMessage(input)}
@@ -201,10 +204,11 @@ export function LiveChatScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   chatList: {
     padding: SPACING.md,
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -233,18 +237,18 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
   },
   bubbleBot: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   bubbleUser: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     borderBottomRightRadius: 4,
   },
   bubbleText: {
     fontSize: 15,
-    color: COLORS.text,
+    color: C.text,
     lineHeight: 22,
   },
   bubbleTextUser: {
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 10,
-    color: COLORS.textLight,
+    color: C.textLight,
     marginTop: 4,
     alignSelf: 'flex-end',
   },
@@ -269,17 +273,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.sm,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderRadius: 18,
     borderBottomLeftRadius: 4,
     paddingHorizontal: SPACING.md,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: C.borderLight,
   },
   typingText: {
     fontSize: 13,
-    color: COLORS.textLight,
+    color: C.textLight,
     fontStyle: 'italic',
   },
   quickReplies: {
@@ -290,9 +294,9 @@ const styles = StyleSheet.create({
     gap: SPACING.sm,
   },
   quickReply: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: C.primary,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -300,7 +304,7 @@ const styles = StyleSheet.create({
   quickReplyText: {
     fontSize: 13,
     fontWeight: '500',
-    color: COLORS.primary,
+    color: C.primary,
   },
   inputBar: {
     flexDirection: 'row',
@@ -308,21 +312,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
     paddingBottom: SPACING.lg,
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    borderTopColor: C.border,
     gap: SPACING.sm,
   },
   input: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderRadius: 22,
     paddingHorizontal: SPACING.md,
     paddingVertical: 10,
     fontSize: 15,
-    color: COLORS.text,
+    color: C.text,
     maxHeight: 100,
     letterSpacing: 0,
   },
@@ -330,7 +334,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.primary,
+    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -338,3 +342,4 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
 });
+}

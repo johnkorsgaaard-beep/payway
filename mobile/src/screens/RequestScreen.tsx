@@ -13,9 +13,12 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 
 export function RequestScreen({ route, navigation }: any) {
+  const C = useColors();
+  const styles = makeStyles(C);
   const prefill = route?.params?.recipient ?? '';
   const [recipient, setRecipient] = useState(prefill);
   const [amount, setAmount] = useState('');
@@ -69,7 +72,7 @@ export function RequestScreen({ route, navigation }: any) {
       <View style={styles.container}>
         <View style={styles.successContent}>
           <View style={styles.successIcon}>
-            <Ionicons name="checkmark-circle" size={64} color={COLORS.accent} />
+            <Ionicons name="checkmark-circle" size={64} color={C.accent} />
           </View>
           <Text style={styles.successTitle}>Anmodning sendt!</Text>
           <Text style={styles.successSub}>
@@ -98,7 +101,7 @@ export function RequestScreen({ route, navigation }: any) {
           value={recipient}
           onChangeText={setRecipient}
           placeholder="@paywag-tag eller +298 XXXXXX"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           autoCapitalize="none"
           autoCorrect={false}
         />
@@ -110,7 +113,7 @@ export function RequestScreen({ route, navigation }: any) {
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="0,00"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
@@ -120,12 +123,12 @@ export function RequestScreen({ route, navigation }: any) {
           value={description}
           onChangeText={setDescription}
           placeholder="F.eks. din halvdel af middagen"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           maxLength={200}
         />
 
         <TouchableOpacity style={styles.receiptBtn} onPress={showReceiptOptions}>
-          <Ionicons name="camera-outline" size={20} color={COLORS.primary} />
+          <Ionicons name="camera-outline" size={20} color={C.primary} />
           <Text style={styles.receiptBtnText}>
             {receiptImage ? 'Skift kvittering' : 'Tilføj kvittering'}
           </Text>
@@ -134,7 +137,7 @@ export function RequestScreen({ route, navigation }: any) {
           <View style={styles.receiptPreview}>
             <Image source={{ uri: receiptImage }} style={styles.receiptImage} />
             <TouchableOpacity style={styles.receiptRemove} onPress={() => setReceiptImage(null)}>
-              <Ionicons name="close-circle" size={24} color={COLORS.danger} />
+              <Ionicons name="close-circle" size={24} color={C.danger} />
             </TouchableOpacity>
           </View>
         )}
@@ -147,10 +150,11 @@ export function RequestScreen({ route, navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(C: any) {
+  return StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: C.background,
   },
   scroll: {
     flex: 1,
@@ -164,25 +168,25 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 28,
     fontWeight: '800',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: SPACING.lg,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     marginBottom: SPACING.xs,
     marginTop: SPACING.md,
   },
   input: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: COLORS.text,
+    color: C.text,
     letterSpacing: 0,
   },
   amountInput: {
@@ -191,7 +195,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   button: {
-    backgroundColor: COLORS.accent,
+    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -211,13 +215,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
+    borderColor: C.border,
     borderStyle: 'dashed',
   },
   receiptBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.primary,
+    color: C.primary,
   },
   receiptPreview: {
     position: 'relative',
@@ -249,14 +253,15 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: COLORS.text,
+    color: C.text,
     marginBottom: SPACING.sm,
   },
   successSub: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: C.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: SPACING.lg,
   },
 });
+}
