@@ -12,6 +12,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#0a2f5b"
     },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/icon.png",
+      "name": "PayWay",
+      "shortName": "PayWay",
+      "description": "Mobil betaling for Færøerne",
+      "backgroundColor": "#0a2f5b",
+      "themeColor": "#2ec964"
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "fo.payway.app",

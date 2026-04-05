@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import * as LocalAuthentication from 'expo-local-authentication';
+import * as LocalAuthentication from '../utils/biometrics';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';

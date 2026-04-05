@@ -18,9 +18,11 @@ import { api } from '../services/api';
 import { useAuth } from '../store/auth';
 
 let stripeNative: any = null;
-try {
-  stripeNative = require('@stripe/stripe-react-native');
-} catch {}
+if (Platform.OS !== 'web') {
+  try {
+    stripeNative = require('@stripe/stripe-react-native');
+  } catch {}
+}
 
 function useApplePaySafe() {
   if (stripeNative?.useApplePay) {

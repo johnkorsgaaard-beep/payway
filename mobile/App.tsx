@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
@@ -7,9 +8,11 @@ import { OfflineBanner } from './src/components/OfflineBanner';
 import { useAuth } from './src/store/auth';
 import { api } from './src/services/api';
 let StripeProvider: any = null;
-try {
-  StripeProvider = require('@stripe/stripe-react-native').StripeProvider;
-} catch {}
+if (Platform.OS !== 'web') {
+  try {
+    StripeProvider = require('@stripe/stripe-react-native').StripeProvider;
+  } catch {}
+}
 
 const MERCHANT_ID = 'merchant.fo.payway';
 

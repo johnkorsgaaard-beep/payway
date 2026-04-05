@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import { getItem, setItem, deleteItem } from '../utils/storage';
 import { API_URL } from '../utils/constants';
 import { isNetworkError } from '../hooks/useNetworkStatus';
 
@@ -31,17 +31,17 @@ function getServerMessage(status: number): string {
 }
 
 export async function getToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(TOKEN_KEY);
+  return getItem(TOKEN_KEY);
 }
 
 export async function setTokens(token: string, refreshToken: string): Promise<void> {
-  await SecureStore.setItemAsync(TOKEN_KEY, token);
-  await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken);
+  await setItem(TOKEN_KEY, token);
+  await setItem(REFRESH_TOKEN_KEY, refreshToken);
 }
 
 export async function clearTokens(): Promise<void> {
-  await SecureStore.deleteItemAsync(TOKEN_KEY);
-  await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+  await deleteItem(TOKEN_KEY);
+  await deleteItem(REFRESH_TOKEN_KEY);
 }
 
 async function request<T>(
@@ -68,7 +68,7 @@ async function request<T>(
   }
 
   if (res.status === 401) {
-    const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+    const refreshToken = await getItem(REFRESH_TOKEN_KEY);
     if (refreshToken) {
       try {
         const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
@@ -78,7 +78,7 @@ async function request<T>(
         });
         if (refreshRes.ok) {
           const { token: newToken } = await refreshRes.json();
-          await SecureStore.setItemAsync(TOKEN_KEY, newToken);
+          await setItem(TOKEN_KEY, newToken);
           headers.Authorization = `Bearer ${newToken}`;
           const retryRes = await fetch(`${API_URL}${path}`, {
             ...options,

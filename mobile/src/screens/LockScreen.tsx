@@ -7,7 +7,7 @@ import {
   Animated,
   Image,
 } from 'react-native';
-import * as LocalAuthentication from 'expo-local-authentication';
+import * as LocalAuthentication from '../utils/biometrics';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SPACING } from '../utils/constants';

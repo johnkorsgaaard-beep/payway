@@ -7,14 +7,24 @@ import {
   Alert,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { api } from '../services/api';
 import { useAuth } from '../store/auth';
+
+let CameraView: any = null;
+let useCameraPermissions: any = null;
+if (Platform.OS !== 'web') {
+  try {
+    const mod = require('expo-camera');
+    CameraView = mod.CameraView;
+    useCameraPermissions = mod.useCameraPermissions;
+  } catch {}
+}
 
 interface QrData {
   reference: string;
@@ -23,10 +33,17 @@ interface QrData {
   label: string | null;
 }
 
+function useCameraPermissionsSafe() {
+  if (Platform.OS === 'web' || !useCameraPermissions) {
+    return [{ granted: false }, () => {}] as const;
+  }
+  return useCameraPermissions();
+}
+
 export function ScanScreen({ navigation }: any) {
   const C = useColors();
   const styles = makeStyles(C);
-  const [permission, requestPermission] = useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissionsSafe();
   const [scanned, setScanned] = useState(false);
   const [qrData, setQrData] = useState<QrData | null>(null);
   const [amount, setAmount] = useState('');
@@ -35,6 +52,23 @@ export function ScanScreen({ navigation }: any) {
   const { user, refreshUser } = useAuth();
 
   const defaultCard = user?.cards?.find((c) => c.isDefault) || user?.cards?.[0];
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.permissionContainer}>
+        <Ionicons name="qr-code-outline" size={64} color={C.textLight} />
+        <Text style={[styles.permissionText, { fontWeight: '700', fontSize: 18, color: C.text }]}>
+          QR-scanning
+        </Text>
+        <Text style={styles.permissionText}>
+          QR-scanning kræver kameraadgang og er kun tilgængelig i PayWay-appen på din telefon.
+        </Text>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Tilbage</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   if (!permission) {
     return <View style={styles.container} />;
