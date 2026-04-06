@@ -43,7 +43,7 @@ export function TransactionDetailScreen({ route }: any) {
     CANCELLED: { label: 'Annulleret', color: C.textLight, bg: '#f3f4f6' },
   };
 
-  const typeConfig = TYPE_ICONS[tx.type] || { icon: 'ellipse', color: C.text, bg: C.borderLight };
+  const typeConfig = TYPE_ICONS[tx.type] || { icon: 'ellipse' as keyof typeof Ionicons.glyphMap, color: C.text, bg: C.borderLight };
   const statusConfig = STATUS_LABELS[tx.status] || STATUS_LABELS.COMPLETED;
   const isIncoming = tx.direction === 'incoming';
   const counterparty = isIncoming
@@ -78,7 +78,7 @@ export function TransactionDetailScreen({ route }: any) {
         <View style={[styles.heroIcon, { backgroundColor: typeConfig.bg }]}>
           <Ionicons name={typeConfig.icon} size={32} color={typeConfig.color} />
         </View>
-        <Text style={[styles.amount, { color: isIncoming ? C.success : C.text }]}>
+        <Text style={[styles.amount, isIncoming ? { color: C.success } : { color: C.text }]}>
           {isIncoming ? '+' : '-'}{formatDKK(tx.amount)}
         </Text>
         <Text style={[styles.typeLabel, { color: C.textSecondary }]}>{TYPE_LABELS[tx.type] || tx.type}</Text>
@@ -90,55 +90,44 @@ export function TransactionDetailScreen({ route }: any) {
 
       {/* Details card */}
       <View style={[styles.card, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
-        <View style={styles.row}>
-          <View style={styles.rowLeft}>
-            <Ionicons name="person-outline" size={18} color={C.textSecondary} />
-            <Text style={[styles.rowLabel, { color: C.textSecondary }]}>{isIncoming ? 'Fra' : 'Til'}</Text>
-          </View>
-          <Text style={[styles.rowValue, { color: C.text }]} numberOfLines={2}>{counterparty}</Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
-        <View style={styles.row}>
-          <View style={styles.rowLeft}>
-            <Ionicons name="calendar-outline" size={18} color={C.textSecondary} />
-            <Text style={[styles.rowLabel, { color: C.textSecondary }]}>Dato</Text>
-          </View>
-          <Text style={[styles.rowValue, { color: C.text }]} numberOfLines={2}>{formattedDate}</Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
-        <View style={styles.row}>
-          <View style={styles.rowLeft}>
-            <Ionicons name="time-outline" size={18} color={C.textSecondary} />
-            <Text style={[styles.rowLabel, { color: C.textSecondary }]}>Tidspunkt</Text>
-          </View>
-          <Text style={[styles.rowValue, { color: C.text }]} numberOfLines={2}>{formattedTime}</Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
-        <View style={styles.row}>
-          <View style={styles.rowLeft}>
-            <Ionicons name="pricetag-outline" size={18} color={C.textSecondary} />
-            <Text style={[styles.rowLabel, { color: C.textSecondary }]}>Type</Text>
-          </View>
-          <Text style={[styles.rowValue, { color: C.text }]} numberOfLines={2}>{TYPE_LABELS[tx.type] || tx.type}</Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
-        <View style={styles.row}>
-          <View style={styles.rowLeft}>
-            <Ionicons name="document-text-outline" size={18} color={C.textSecondary} />
-            <Text style={[styles.rowLabel, { color: C.textSecondary }]}>Reference</Text>
-          </View>
-          <Text style={[styles.rowValue, styles.rowValueMono, { color: C.text }]} numberOfLines={2}>{reference}</Text>
-        </View>
+        <DetailRow
+          icon="person-outline"
+          label={isIncoming ? 'Fra' : 'Til'}
+          value={counterparty}
+        />
+        <Divider />
+        <DetailRow
+          icon="calendar-outline"
+          label="Dato"
+          value={formattedDate}
+        />
+        <Divider />
+        <DetailRow
+          icon="time-outline"
+          label="Tidspunkt"
+          value={formattedTime}
+        />
+        <Divider />
+        <DetailRow
+          icon="pricetag-outline"
+          label="Type"
+          value={TYPE_LABELS[tx.type] || tx.type}
+        />
+        <Divider />
+        <DetailRow
+          icon="document-text-outline"
+          label="Reference"
+          value={reference}
+          mono
+        />
         {tx.description ? (
           <>
-            <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
-            <View style={styles.row}>
-              <View style={styles.rowLeft}>
-                <Ionicons name="chatbubble-outline" size={18} color={C.textSecondary} />
-                <Text style={[styles.rowLabel, { color: C.textSecondary }]}>Besked</Text>
-              </View>
-              <Text style={[styles.rowValue, { color: C.text }]} numberOfLines={2}>{tx.description}</Text>
-            </View>
+            <Divider />
+            <DetailRow
+              icon="chatbubble-outline"
+              label="Besked"
+              value={tx.description}
+            />
           </>
         ) : null}
       </View>
@@ -152,6 +141,31 @@ export function TransactionDetailScreen({ route }: any) {
       </View>
     </ScrollView>
   );
+}
+
+function DetailRow({ icon, label, value, mono }: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  const C = useColors();
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <Ionicons name={icon} size={18} color={C.textSecondary} />
+        <Text style={[styles.rowLabel, { color: C.textSecondary }]}>{label}</Text>
+      </View>
+      <Text style={[styles.rowValue, { color: C.text }, mono && styles.rowValueMono]} numberOfLines={2}>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function Divider() {
+  const C = useColors();
+  return <View style={[styles.divider, { backgroundColor: C.borderLight }]} />;
 }
 
 const styles = StyleSheet.create({

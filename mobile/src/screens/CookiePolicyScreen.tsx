@@ -33,26 +33,26 @@ const SECTIONS = [
 
 export function CookiePolicyScreen() {
   const C = useColors();
-  const styles = makeStyles(C);
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       <View style={styles.content}>
         <View style={styles.badge}>
-          <Ionicons name="ellipse" size={18} color={C.primary} />
-          <Text style={styles.badgeText}>Cookie-information</Text>
+          <Ionicons name="cookie" size={18} color={C.primary} />
+          <Text style={[styles.badgeText, { color: C.primary }]}>Cookie-information</Text>
         </View>
-        <Text style={styles.heading}>Cookiepolitik</Text>
-        <Text style={styles.updated}>Sidst opdateret: 1. april 2026</Text>
+        <Text style={[styles.heading, { color: C.text }]}>Cookiepolitik</Text>
+        <Text style={[styles.updated, { color: C.textLight }]}>Sidst opdateret: 1. april 2026</Text>
 
         {SECTIONS.map((section, i) => (
           <View key={i} style={styles.section}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            <Text style={styles.sectionBody}>{section.body}</Text>
+            <Text style={[styles.sectionTitle, { color: C.text }]}>{section.title}</Text>
+            <Text style={[styles.sectionBody, { color: C.textSecondary }]}>{section.body}</Text>
           </View>
         ))}
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Text style={[styles.footerText, { color: C.primary }]}>
             Spørgsmål om cookies? Kontakt privacy@payway.fo
           </Text>
         </View>
@@ -61,9 +61,8 @@ export function CookiePolicyScreen() {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
   badge: {
     flexDirection: 'row',
@@ -76,15 +75,14 @@ function makeStyles(C: any) {
     borderRadius: 20,
     marginBottom: SPACING.md,
   },
-  badgeText: { fontSize: 12, fontWeight: '700', color: C.primary },
-  heading: { fontSize: 22, fontWeight: '800', color: C.text },
-  updated: { fontSize: 13, color: C.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  badgeText: { fontSize: 12, fontWeight: '700' },
+  heading: { fontSize: 22, fontWeight: '800' },
+  updated: { fontSize: 13, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   section: { marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm },
-  sectionBody: { fontSize: 14, color: C.textSecondary, lineHeight: 22 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: SPACING.sm },
+  sectionBody: { fontSize: 14, lineHeight: 22 },
   footer: {
     backgroundColor: '#e8eef5', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.md,
   },
-  footerText: { fontSize: 13, color: C.primary, textAlign: 'center', fontWeight: '500' },
+  footerText: { fontSize: 13, textAlign: 'center', fontWeight: '500' },
 });
-}

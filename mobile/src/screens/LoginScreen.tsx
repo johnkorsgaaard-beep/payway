@@ -17,7 +17,6 @@ import { useAuth } from '../store/auth';
 
 export function LoginScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const [phone, setPhone] = useState('+298');
   const [name, setName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
@@ -30,14 +29,11 @@ export function LoginScreen({ navigation }: any) {
       Alert.alert('Fejl', 'Indtast et gyldigt telefonnummer');
       return;
     }
-    // In production: firebase.auth().signInWithPhoneNumber(phone)
-    // For now, simulate OTP flow
     setStep('code');
   };
 
   const handleVerifyCode = async () => {
     try {
-      // In production: confirm OTP with Firebase, get idToken
       const mockFirebaseToken = `mock_token_${phone}_${Date.now()}`;
 
       if (isRegistering) {
@@ -56,7 +52,7 @@ export function LoginScreen({ navigation }: any) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
@@ -66,18 +62,18 @@ export function LoginScreen({ navigation }: any) {
             style={styles.logoImage}
             resizeMode="contain"
           />
-          <Text style={styles.subtitle}>Betaling til Føroyar</Text>
+          <Text style={[styles.subtitle, { color: C.textSecondary }]}>Betaling til Føroyar</Text>
         </View>
 
-        <TouchableOpacity style={styles.demoButton} onPress={skipLogin}>
-          <Text style={styles.demoButtonText}>Kom ind uden login</Text>
+        <TouchableOpacity style={[styles.demoButton, { backgroundColor: C.surface, borderColor: C.accent }]} onPress={skipLogin}>
+          <Text style={[styles.demoButtonText, { color: C.accent }]}>Kom ind uden login</Text>
         </TouchableOpacity>
 
         {step === 'phone' ? (
           <View style={styles.form}>
-            <Text style={styles.label}>Telefonnummer</Text>
+            <Text style={[styles.label, { color: C.text }]}>Telefonnummer</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
@@ -87,9 +83,9 @@ export function LoginScreen({ navigation }: any) {
 
             {isRegistering && (
               <>
-                <Text style={styles.label}>Navn</Text>
+                <Text style={[styles.label, { color: C.text }]}>Navn</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
                   value={name}
                   onChangeText={setName}
                   placeholder="Dit fulde navn"
@@ -100,7 +96,7 @@ export function LoginScreen({ navigation }: any) {
             )}
 
             <TouchableOpacity
-              style={styles.button}
+              style={[styles.button, { backgroundColor: C.accent }]}
               onPress={handleSendCode}
               disabled={isLoading}
             >
@@ -111,7 +107,7 @@ export function LoginScreen({ navigation }: any) {
               style={styles.switchButton}
               onPress={() => setIsRegistering(!isRegistering)}
             >
-              <Text style={styles.switchText}>
+              <Text style={[styles.switchText, { color: C.accent }]}>
                 {isRegistering
                   ? 'Har du allerede en konto? Log ind'
                   : 'Ny bruger? Opret konto'}
@@ -120,9 +116,9 @@ export function LoginScreen({ navigation }: any) {
           </View>
         ) : (
           <View style={styles.form}>
-            <Text style={styles.label}>SMS-kode</Text>
+            <Text style={[styles.label, { color: C.text }]}>SMS-kode</Text>
             <TextInput
-              style={[styles.input, styles.codeInput]}
+              style={[styles.input, styles.codeInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
               value={smsCode}
               onChangeText={setSmsCode}
               keyboardType="number-pad"
@@ -133,7 +129,7 @@ export function LoginScreen({ navigation }: any) {
             />
 
             <TouchableOpacity
-              style={styles.button}
+              style={[styles.button, { backgroundColor: C.accent }]}
               onPress={handleVerifyCode}
               disabled={isLoading}
             >
@@ -148,7 +144,7 @@ export function LoginScreen({ navigation }: any) {
               style={styles.switchButton}
               onPress={() => setStep('phone')}
             >
-              <Text style={styles.switchText}>Tilbage</Text>
+              <Text style={[styles.switchText, { color: C.accent }]}>Tilbage</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -157,11 +153,9 @@ export function LoginScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   content: {
     flex: 1,
@@ -179,7 +173,6 @@ function makeStyles(C: any) {
   },
   subtitle: {
     fontSize: 16,
-    color: C.textSecondary,
     marginTop: SPACING.xs,
   },
   form: {
@@ -188,18 +181,14 @@ function makeStyles(C: any) {
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.text,
     marginBottom: -SPACING.sm,
   },
   input: {
-    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: C.text,
   },
   codeInput: {
     fontSize: 24,
@@ -207,7 +196,6 @@ function makeStyles(C: any) {
     fontWeight: '700',
   },
   button: {
-    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -223,23 +211,18 @@ function makeStyles(C: any) {
     paddingVertical: SPACING.sm,
   },
   switchText: {
-    color: C.accent,
     fontSize: 14,
     fontWeight: '500',
   },
   demoButton: {
-    backgroundColor: C.surface,
     borderWidth: 2,
-    borderColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginBottom: SPACING.xl,
   },
   demoButtonText: {
-    color: C.accent,
     fontSize: 16,
     fontWeight: '700',
   },
 });
-}

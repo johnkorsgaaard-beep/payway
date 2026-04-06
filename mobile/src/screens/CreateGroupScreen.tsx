@@ -26,7 +26,6 @@ type SplitMode = 'equal' | 'percentage';
 
 export function CreateGroupScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState('🍻');
   const emojiInputRef = useRef<TextInput>(null);
@@ -88,13 +87,13 @@ export function CreateGroupScreen({ navigation }: any) {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: C.background }]} contentContainerStyle={styles.content}>
         {/* Group Name + Emoji */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Gruppenavn</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>Gruppenavn</Text>
           <View style={styles.nameRow}>
             <TouchableOpacity
-              style={styles.emojiPicker}
+              style={[styles.emojiPicker, { borderColor: C.border }]}
               onPress={() => emojiInputRef.current?.focus()}
             >
               <Text style={styles.emojiText}>{emoji}</Text>
@@ -111,7 +110,7 @@ export function CreateGroupScreen({ navigation }: any) {
               />
             </TouchableOpacity>
             <TextInput
-              style={styles.nameInput}
+              style={[styles.nameInput, { backgroundColor: C.surface, color: C.text, borderColor: C.border }]}
               value={name}
               onChangeText={setName}
               placeholder="Fx Fredagsbar, Roomies..."
@@ -122,10 +121,10 @@ export function CreateGroupScreen({ navigation }: any) {
 
         {/* Split Mode */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Fordelingsmodel</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>Fordelingsmodel</Text>
           <View style={styles.splitToggle}>
             <TouchableOpacity
-              style={[styles.splitOption, splitMode === 'equal' && styles.splitOptionActive]}
+              style={[styles.splitOption, { backgroundColor: C.surface, borderColor: C.border }, splitMode === 'equal' && [styles.splitOptionActive, { borderColor: C.primary }]]}
               onPress={() => setSplitMode('equal')}
             >
               <Ionicons
@@ -133,13 +132,13 @@ export function CreateGroupScreen({ navigation }: any) {
                 size={20}
                 color={splitMode === 'equal' ? C.primary : C.textSecondary}
               />
-              <Text style={[styles.splitText, splitMode === 'equal' && styles.splitTextActive]}>
+              <Text style={[styles.splitText, { color: C.textSecondary }, splitMode === 'equal' && { color: C.primary }]}>
                 Lige deling
               </Text>
-              <Text style={styles.splitDesc}>Alt deles ligeligt</Text>
+              <Text style={[styles.splitDesc, { color: C.textLight }]}>Alt deles ligeligt</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.splitOption, splitMode === 'percentage' && styles.splitOptionActive]}
+              style={[styles.splitOption, { backgroundColor: C.surface, borderColor: C.border }, splitMode === 'percentage' && [styles.splitOptionActive, { borderColor: C.primary }]]}
               onPress={() => setSplitMode('percentage')}
             >
               <Ionicons
@@ -147,34 +146,34 @@ export function CreateGroupScreen({ navigation }: any) {
                 size={20}
                 color={splitMode === 'percentage' ? C.primary : C.textSecondary}
               />
-              <Text style={[styles.splitText, splitMode === 'percentage' && styles.splitTextActive]}>
+              <Text style={[styles.splitText, { color: C.textSecondary }, splitMode === 'percentage' && { color: C.primary }]}>
                 Procent
               </Text>
-              <Text style={styles.splitDesc}>Sæt andele manuelt</Text>
+              <Text style={[styles.splitDesc, { color: C.textLight }]}>Sæt andele manuelt</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Members */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Medlemmer</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>Medlemmer</Text>
 
           {/* You */}
-          <View style={styles.memberCard}>
+          <View style={[styles.memberCard, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
             <View style={styles.memberHeader}>
               <View style={styles.youAvatar}>
                 <Text style={{ fontSize: 18 }}>🙋</Text>
               </View>
               <View style={styles.memberFields}>
-                <Text style={styles.youLabel}>Dig</Text>
+                <Text style={[styles.youLabel, { color: C.text }]}>Dig</Text>
               </View>
               {splitMode === 'equal' ? (
                 <View style={styles.shareBadge}>
-                  <Text style={styles.shareText}>{equalShare}%</Text>
+                  <Text style={[styles.shareText, { color: C.primary }]}>{equalShare}%</Text>
                 </View>
               ) : (
                 <View style={styles.shareBadge}>
-                  <Text style={styles.shareText}>
+                  <Text style={[styles.shareText, { color: C.primary }]}>
                     {Math.max(0, 100 - totalPercentage).toFixed(1)}%
                   </Text>
                 </View>
@@ -184,18 +183,18 @@ export function CreateGroupScreen({ navigation }: any) {
 
           {/* Other Members */}
           {members.map((member, index) => (
-            <View key={member.id} style={styles.memberCard}>
+            <View key={member.id} style={[styles.memberCard, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
               <View style={styles.memberHeader}>
-                <View style={styles.memberAvatar}>
+                <View style={[styles.memberAvatar, { backgroundColor: C.primary }]}>
                   <Text style={styles.memberAvatarText}>
                     {member.tag ? member.tag.charAt(0).toUpperCase() : '?'}
                   </Text>
                 </View>
                 <View style={styles.memberFields}>
                   <View style={styles.tagInputRow}>
-                    <Text style={styles.tagAt}>@</Text>
+                    <Text style={[styles.tagAt, { color: C.primary }]}>@</Text>
                     <TextInput
-                      style={styles.memberTagInput}
+                      style={[styles.memberTagInput, { color: C.primary }]}
                       value={member.tag}
                       onChangeText={(v) => updateMember(member.id, 'tag', v.toLowerCase().replace(/[^a-z0-9._]/g, ''))}
                       placeholder="payway-tag"
@@ -207,12 +206,12 @@ export function CreateGroupScreen({ navigation }: any) {
                 </View>
                 {splitMode === 'equal' ? (
                   <View style={styles.shareBadge}>
-                    <Text style={styles.shareText}>{equalShare}%</Text>
+                    <Text style={[styles.shareText, { color: C.primary }]}>{equalShare}%</Text>
                   </View>
                 ) : (
                   <View style={styles.percentInputWrap}>
                     <TextInput
-                      style={styles.percentInput}
+                      style={[styles.percentInput, { color: C.primary }]}
                       value={member.percentage}
                       onChangeText={(v) => updateMember(member.id, 'percentage', v)}
                       placeholder="0"
@@ -220,7 +219,7 @@ export function CreateGroupScreen({ navigation }: any) {
                       keyboardType="numeric"
                       maxLength={4}
                     />
-                    <Text style={styles.percentSign}>%</Text>
+                    <Text style={[styles.percentSign, { color: C.primary }]}>%</Text>
                   </View>
                 )}
                 {members.length > 1 && (
@@ -235,21 +234,21 @@ export function CreateGroupScreen({ navigation }: any) {
             </View>
           ))}
 
-          <TouchableOpacity style={styles.addMemberBtn} onPress={addMember}>
+          <TouchableOpacity style={[styles.addMemberBtn, { borderColor: C.border }]} onPress={addMember}>
             <Ionicons name="add-circle-outline" size={22} color={C.primary} />
-            <Text style={styles.addMemberText}>Tilføj medlem</Text>
+            <Text style={[styles.addMemberText, { color: C.primary }]}>Tilføj medlem</Text>
           </TouchableOpacity>
         </View>
 
         {/* Summary */}
         {splitMode === 'percentage' && (
-          <View style={styles.summaryBox}>
+          <View style={[styles.summaryBox, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
             <Ionicons
               name={totalPercentage <= 100 ? 'checkmark-circle' : 'alert-circle'}
               size={18}
               color={totalPercentage <= 100 ? C.success : C.danger}
             />
-            <Text style={styles.summaryText}>
+            <Text style={[styles.summaryText, { color: C.textSecondary }]}>
               Fordelt: {totalPercentage.toFixed(1)}% + din andel:{' '}
               {Math.max(0, 100 - totalPercentage).toFixed(1)}% = 100%
             </Text>
@@ -258,7 +257,7 @@ export function CreateGroupScreen({ navigation }: any) {
 
         {/* Create Button */}
         <TouchableOpacity
-          style={[styles.createButton, !name.trim() && styles.createButtonDisabled]}
+          style={[styles.createButton, { backgroundColor: C.primary }, !name.trim() && styles.createButtonDisabled]}
           onPress={handleCreate}
           disabled={!name.trim()}
         >
@@ -269,11 +268,9 @@ export function CreateGroupScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -285,7 +282,6 @@ function makeStyles(C: any) {
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: C.text,
     marginBottom: SPACING.sm,
   },
   nameRow: {
@@ -301,7 +297,6 @@ function makeStyles(C: any) {
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: C.border,
   },
   emojiText: {
     fontSize: 26,
@@ -315,15 +310,12 @@ function makeStyles(C: any) {
   nameInput: {
     flex: 1,
     height: 52,
-    backgroundColor: C.surface,
     borderRadius: 14,
     paddingHorizontal: SPACING.md,
     fontSize: 16,
     fontWeight: '500',
-    color: C.text,
     letterSpacing: 0,
     borderWidth: 1,
-    borderColor: C.border,
   },
   splitToggle: {
     flexDirection: 'row',
@@ -331,37 +323,27 @@ function makeStyles(C: any) {
   },
   splitOption: {
     flex: 1,
-    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: C.border,
     gap: 4,
   },
   splitOptionActive: {
-    borderColor: C.primary,
     backgroundColor: '#e8eef5',
   },
   splitText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textSecondary,
-  },
-  splitTextActive: {
-    color: C.primary,
   },
   splitDesc: {
     fontSize: 11,
-    color: C.textLight,
   },
   memberCard: {
-    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   memberHeader: {
     flexDirection: 'row',
@@ -380,7 +362,6 @@ function makeStyles(C: any) {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -397,7 +378,6 @@ function makeStyles(C: any) {
   youLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.text,
   },
   tagInputRow: {
     flexDirection: 'row',
@@ -406,12 +386,10 @@ function makeStyles(C: any) {
   tagAt: {
     fontSize: 16,
     fontWeight: '700',
-    color: C.primary,
   },
   memberTagInput: {
     flex: 1,
     fontSize: 15,
-    color: C.primary,
     fontWeight: '600',
     letterSpacing: 0,
     padding: 0,
@@ -426,7 +404,6 @@ function makeStyles(C: any) {
   shareText: {
     fontSize: 13,
     fontWeight: '700',
-    color: C.primary,
   },
   percentInputWrap: {
     flexDirection: 'row',
@@ -439,7 +416,6 @@ function makeStyles(C: any) {
   percentInput: {
     fontSize: 14,
     fontWeight: '700',
-    color: C.primary,
     width: 36,
     textAlign: 'right',
     paddingVertical: SPACING.xs,
@@ -447,7 +423,6 @@ function makeStyles(C: any) {
   percentSign: {
     fontSize: 13,
     fontWeight: '600',
-    color: C.primary,
     marginLeft: 1,
   },
   removeBtn: {
@@ -461,13 +436,11 @@ function makeStyles(C: any) {
     paddingVertical: 14,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: C.border,
     borderStyle: 'dashed',
   },
   addMemberText: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.primary,
   },
   summaryBox: {
     flexDirection: 'row',
@@ -475,22 +448,18 @@ function makeStyles(C: any) {
     gap: SPACING.sm,
     marginHorizontal: SPACING.md,
     marginTop: SPACING.md,
-    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   summaryText: {
     fontSize: 13,
     fontWeight: '500',
-    color: C.textSecondary,
     flex: 1,
   },
   createButton: {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.xl,
-    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
@@ -504,4 +473,3 @@ function makeStyles(C: any) {
     fontWeight: '700',
   },
 });
-}

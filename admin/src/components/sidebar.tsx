@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 const nav = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/overview", label: "Dashboard", icon: LayoutDashboard },
   { href: "/users", label: "Brugere", icon: Users },
   { href: "/transactions", label: "Transaktioner", icon: ArrowLeftRight },
   { href: "/merchants", label: "Butikker", icon: Store },
@@ -40,10 +40,7 @@ export function Sidebar() {
 
       <nav className="flex-1 space-y-1 px-3 py-4">
         {nav.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href);
+          const isActive = pathname === item.href || (item.href !== "/overview" && pathname.startsWith(item.href));
 
           return (
             <Link
@@ -67,7 +64,7 @@ export function Sidebar() {
         <button
           onClick={() => {
             localStorage.removeItem("admin_token");
-            window.location.href = "/login";
+            window.location.href = "/";
           }}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
         >

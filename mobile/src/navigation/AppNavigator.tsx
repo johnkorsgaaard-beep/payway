@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../store/auth';
+import { useColors } from '../utils/theme';
+import { COLORS_LIGHT, COLORS_DARK } from '../utils/constants';
 import { LoginScreen } from '../screens/LoginScreen';
-import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SendScreen } from '../screens/SendScreen';
 import { ScanScreen } from '../screens/ScanScreen';
@@ -32,34 +33,12 @@ import { CookiePolicyScreen } from '../screens/CookiePolicyScreen';
 import { DataProcessingScreen } from '../screens/DataProcessingScreen';
 import { LiveChatScreen } from '../screens/LiveChatScreen';
 import { TransactionDetailScreen } from '../screens/TransactionDetailScreen';
-import { ScheduledPaymentsScreen } from '../screens/ScheduledPaymentsScreen';
-import { CreateScheduledPaymentScreen } from '../screens/CreateScheduledPaymentScreen';
-import { COLORS_LIGHT, COLORS_DARK } from '../utils/constants';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const FALLBACK = {
-  primary: '#0a2f5b',
-  primaryDark: '#081f3d',
-  primaryLight: '#1a4a7a',
-  accent: '#2ec964',
-  accentDark: '#25a854',
-  accentLight: '#5dd888',
-  success: '#2ec964',
-  warning: '#f59e0b',
-  danger: '#ef4444',
-  background: '#f9fafb',
-  surface: '#ffffff',
-  text: '#111827',
-  textSecondary: '#6b7280',
-  textLight: '#9ca3af',
-  border: '#e5e7eb',
-  borderLight: '#f3f4f6',
-};
-
 function MainTabs() {
-  const C = COLORS_LIGHT || FALLBACK;
+  const C = useColors();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -159,30 +138,20 @@ function MainTabs() {
   );
 }
 
-function OnboardingWrapper() {
-  const { completeOnboarding } = useAuth();
-  return <OnboardingScreen onComplete={completeOnboarding} />;
-}
-
 export function AppNavigator() {
-  const { isAuthenticated, hasSeenOnboarding, loadOnboardingState } = useAuth();
-  const C = COLORS_LIGHT || FALLBACK;
-
-  useEffect(() => {
-    loadOnboardingState();
-  }, [loadOnboardingState]);
+  const { isAuthenticated } = useAuth();
+  const C = useColors();
+  const isDark = C === COLORS_DARK;
 
   const navTheme = {
-    dark: false,
-    fonts: DefaultTheme.fonts,
+    ...(isDark ? DarkTheme : DefaultTheme),
     colors: {
-      ...DefaultTheme.colors,
-      background: '#f9fafb',
-      card: '#ffffff',
-      text: '#111827',
-      border: '#e5e7eb',
-      primary: '#2ec964',
-      notification: DefaultTheme.colors.notification,
+      ...(isDark ? DarkTheme : DefaultTheme).colors,
+      background: C.background,
+      card: C.surface,
+      text: C.text,
+      border: C.border,
+      primary: C.accent,
     },
   };
 
@@ -190,8 +159,8 @@ export function AppNavigator() {
     <NavigationContainer theme={navTheme}>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: '#ffffff' },
-          headerTintColor: '#111827',
+          headerStyle: { backgroundColor: C.surface },
+          headerTintColor: C.text,
           headerTitleStyle: { fontWeight: '700' },
         }}
       >
@@ -200,12 +169,6 @@ export function AppNavigator() {
             name="Login"
             component={LoginScreen}
             options={{ headerShown: false }}
-          />
-        ) : !hasSeenOnboarding ? (
-          <Stack.Screen
-            name="Onboarding"
-            component={OnboardingWrapper}
-            options={{ headerShown: false, animationTypeForReplace: 'push' }}
           />
         ) : (
           <>
@@ -248,8 +211,6 @@ export function AppNavigator() {
             <Stack.Screen name="CreateGroup" component={CreateGroupScreen} options={{ title: 'Ny gruppe', presentation: 'modal' }} />
             <Stack.Screen name="History" component={HistoryScreen} options={{ title: 'Historik' }} />
             <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} options={{ title: 'Detaljer' }} />
-            <Stack.Screen name="ScheduledPayments" component={ScheduledPaymentsScreen} options={{ title: 'Planlagte betalinger' }} />
-            <Stack.Screen name="CreateScheduledPayment" component={CreateScheduledPaymentScreen} options={{ title: 'Ny betaling', presentation: 'modal' }} />
             <Stack.Screen
               name="Request"
               component={RequestScreen}

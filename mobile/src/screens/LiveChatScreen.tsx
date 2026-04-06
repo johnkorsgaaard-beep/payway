@@ -75,7 +75,6 @@ function findBotResponse(input: string): string {
 
 export function LiveChatScreen() {
   const C = useColors();
-  const styles = makeStyles(C);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -125,15 +124,20 @@ export function LiveChatScreen() {
     return (
       <View style={[styles.msgRow, isUser && styles.msgRowUser]}>
         {!isUser && (
-          <View style={styles.botAvatar}>
+          <View style={[styles.botAvatar, { backgroundColor: C.primary }]}>
             <Ionicons name="sparkles" size={16} color="#fff" />
           </View>
         )}
-        <View style={[styles.bubble, isUser ? styles.bubbleUser : styles.bubbleBot]}>
-          <Text style={[styles.bubbleText, isUser && styles.bubbleTextUser]}>
+        <View style={[
+          styles.bubble,
+          isUser
+            ? [styles.bubbleUser, { backgroundColor: C.primary }]
+            : [styles.bubbleBot, { backgroundColor: C.surface, borderColor: C.borderLight }],
+        ]}>
+          <Text style={[styles.bubbleText, { color: C.text }, isUser && styles.bubbleTextUser]}>
             {item.text}
           </Text>
-          <Text style={[styles.timestamp, isUser && styles.timestampUser]}>
+          <Text style={[styles.timestamp, { color: C.textLight }, isUser && styles.timestampUser]}>
             {item.timestamp.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })}
           </Text>
         </View>
@@ -143,7 +147,7 @@ export function LiveChatScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={90}
     >
@@ -156,12 +160,12 @@ export function LiveChatScreen() {
         ListFooterComponent={
           isTyping ? (
             <View style={styles.typingRow}>
-              <View style={styles.botAvatar}>
+              <View style={[styles.botAvatar, { backgroundColor: C.primary }]}>
                 <Ionicons name="sparkles" size={16} color="#fff" />
               </View>
-              <View style={styles.typingBubble}>
+              <View style={[styles.typingBubble, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
                 <ActivityIndicator size="small" color={C.primary} />
-                <Text style={styles.typingText}>Skriver...</Text>
+                <Text style={[styles.typingText, { color: C.textLight }]}>Skriver...</Text>
               </View>
             </View>
           ) : null
@@ -172,17 +176,17 @@ export function LiveChatScreen() {
       {messages.length <= 1 && (
         <View style={styles.quickReplies}>
           {QUICK_REPLIES.map((q, i) => (
-            <TouchableOpacity key={i} style={styles.quickReply} onPress={() => sendMessage(q)}>
-              <Text style={styles.quickReplyText}>{q}</Text>
+            <TouchableOpacity key={i} style={[styles.quickReply, { backgroundColor: C.surface, borderColor: C.primary }]} onPress={() => sendMessage(q)}>
+              <Text style={[styles.quickReplyText, { color: C.primary }]}>{q}</Text>
             </TouchableOpacity>
           ))}
         </View>
       )}
 
       {/* Input */}
-      <View style={styles.inputBar}>
+      <View style={[styles.inputBar, { backgroundColor: C.surface, borderTopColor: C.border }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: C.background, borderColor: C.border, color: C.text }]}
           value={input}
           onChangeText={setInput}
           placeholder="Skriv en besked..."
@@ -193,7 +197,7 @@ export function LiveChatScreen() {
           blurOnSubmit={false}
         />
         <TouchableOpacity
-          style={[styles.sendBtn, !input.trim() && styles.sendBtnDisabled]}
+          style={[styles.sendBtn, { backgroundColor: C.primary }, !input.trim() && styles.sendBtnDisabled]}
           onPress={() => sendMessage(input)}
           disabled={!input.trim()}
         >
@@ -204,11 +208,9 @@ export function LiveChatScreen() {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   chatList: {
     padding: SPACING.md,
@@ -227,7 +229,6 @@ function makeStyles(C: any) {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -237,18 +238,14 @@ function makeStyles(C: any) {
     padding: SPACING.md,
   },
   bubbleBot: {
-    backgroundColor: C.surface,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   bubbleUser: {
-    backgroundColor: C.primary,
     borderBottomRightRadius: 4,
   },
   bubbleText: {
     fontSize: 15,
-    color: C.text,
     lineHeight: 22,
   },
   bubbleTextUser: {
@@ -256,7 +253,6 @@ function makeStyles(C: any) {
   },
   timestamp: {
     fontSize: 10,
-    color: C.textLight,
     marginTop: 4,
     alignSelf: 'flex-end',
   },
@@ -273,17 +269,14 @@ function makeStyles(C: any) {
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.sm,
-    backgroundColor: C.surface,
     borderRadius: 18,
     borderBottomLeftRadius: 4,
     paddingHorizontal: SPACING.md,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   typingText: {
     fontSize: 13,
-    color: C.textLight,
     fontStyle: 'italic',
   },
   quickReplies: {
@@ -294,9 +287,7 @@ function makeStyles(C: any) {
     gap: SPACING.sm,
   },
   quickReply: {
-    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: C.primary,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -304,7 +295,6 @@ function makeStyles(C: any) {
   quickReplyText: {
     fontSize: 13,
     fontWeight: '500',
-    color: C.primary,
   },
   inputBar: {
     flexDirection: 'row',
@@ -312,21 +302,16 @@ function makeStyles(C: any) {
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
     paddingBottom: SPACING.lg,
-    backgroundColor: C.surface,
     borderTopWidth: 1,
-    borderTopColor: C.border,
     gap: SPACING.sm,
   },
   input: {
     flex: 1,
-    backgroundColor: C.background,
     borderWidth: 1,
-    borderColor: C.border,
     borderRadius: 22,
     paddingHorizontal: SPACING.md,
     paddingVertical: 10,
     fontSize: 15,
-    color: C.text,
     maxHeight: 100,
     letterSpacing: 0,
   },
@@ -334,7 +319,6 @@ function makeStyles(C: any) {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -342,4 +326,3 @@ function makeStyles(C: any) {
     opacity: 0.4,
   },
 });
-}

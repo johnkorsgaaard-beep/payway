@@ -18,7 +18,6 @@ import { useColors } from '../utils/theme';
 
 export function RequestScreen({ route, navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const prefill = route?.params?.recipient ?? '';
   const [recipient, setRecipient] = useState(prefill);
   const [amount, setAmount] = useState('');
@@ -69,17 +68,17 @@ export function RequestScreen({ route, navigation }: any) {
 
   if (sent) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: C.background }]}>
         <View style={styles.successContent}>
           <View style={styles.successIcon}>
             <Ionicons name="checkmark-circle" size={64} color={C.accent} />
           </View>
-          <Text style={styles.successTitle}>Anmodning sendt!</Text>
-          <Text style={styles.successSub}>
+          <Text style={[styles.successTitle, { color: C.text }]}>Anmodning sendt!</Text>
+          <Text style={[styles.successSub, { color: C.textSecondary }]}>
             {recipient} har modtaget din anmodning på{' '}
             {parseFloat(amount.replace(',', '.')).toLocaleString('da-DK', { minimumFractionDigits: 2 })} kr.
           </Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: C.accent }]} onPress={() => navigation.goBack()}>
             <Text style={styles.buttonText}>Luk</Text>
           </TouchableOpacity>
         </View>
@@ -89,15 +88,15 @@ export function RequestScreen({ route, navigation }: any) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text style={styles.heading}>Anmod om penge</Text>
+        <Text style={[styles.heading, { color: C.text }]}>Anmod om penge</Text>
 
-        <Text style={styles.label}>Fra</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Fra</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={recipient}
           onChangeText={setRecipient}
           placeholder="@paywag-tag eller +298 XXXXXX"
@@ -106,9 +105,9 @@ export function RequestScreen({ route, navigation }: any) {
           autoCorrect={false}
         />
 
-        <Text style={styles.label}>Beløb (DKK)</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Beløb (DKK)</Text>
         <TextInput
-          style={[styles.input, styles.amountInput]}
+          style={[styles.input, styles.amountInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={amount}
           onChangeText={setAmount}
           keyboardType="numeric"
@@ -117,9 +116,9 @@ export function RequestScreen({ route, navigation }: any) {
           textAlign="center"
         />
 
-        <Text style={styles.label}>Besked (valgfrit)</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Besked (valgfrit)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={description}
           onChangeText={setDescription}
           placeholder="F.eks. din halvdel af middagen"
@@ -127,9 +126,9 @@ export function RequestScreen({ route, navigation }: any) {
           maxLength={200}
         />
 
-        <TouchableOpacity style={styles.receiptBtn} onPress={showReceiptOptions}>
+        <TouchableOpacity style={[styles.receiptBtn, { borderColor: C.border }]} onPress={showReceiptOptions}>
           <Ionicons name="camera-outline" size={20} color={C.primary} />
-          <Text style={styles.receiptBtnText}>
+          <Text style={[styles.receiptBtnText, { color: C.primary }]}>
             {receiptImage ? 'Skift kvittering' : 'Tilføj kvittering'}
           </Text>
         </TouchableOpacity>
@@ -142,7 +141,7 @@ export function RequestScreen({ route, navigation }: any) {
           </View>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={handleSend}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: C.accent }]} onPress={handleSend}>
           <Text style={styles.buttonText}>Send anmodning</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -150,11 +149,9 @@ export function RequestScreen({ route, navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   scroll: {
     flex: 1,
@@ -168,25 +165,20 @@ function makeStyles(C: any) {
   heading: {
     fontSize: 28,
     fontWeight: '800',
-    color: C.text,
     marginBottom: SPACING.lg,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textSecondary,
     marginBottom: SPACING.xs,
     marginTop: SPACING.md,
   },
   input: {
-    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: C.text,
     letterSpacing: 0,
   },
   amountInput: {
@@ -195,7 +187,6 @@ function makeStyles(C: any) {
     paddingVertical: 20,
   },
   button: {
-    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -215,13 +206,11 @@ function makeStyles(C: any) {
     paddingVertical: 12,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: C.border,
     borderStyle: 'dashed',
   },
   receiptBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.primary,
   },
   receiptPreview: {
     position: 'relative',
@@ -253,15 +242,12 @@ function makeStyles(C: any) {
   successTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: C.text,
     marginBottom: SPACING.sm,
   },
   successSub: {
     fontSize: 16,
-    color: C.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: SPACING.lg,
   },
 });
-}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,20 +11,31 @@ import {
   Platform,
   Image,
   ScrollView,
+  Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { COLORS, SPACING } from '../utils/constants';
+import { SPACING } from '../utils/constants';
+import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { api } from '../services/api';
 import { useAuth } from '../store/auth';
 
+const RECENT_RECIPIENTS = [
+  { name: 'Magnus Hansen', tag: 'magnus.h' },
+  { name: 'Sara Petersen', tag: 'sarap' },
+  { name: 'Jónas Djurhuus', tag: 'jonas.d' },
+  { name: 'Anna Olsen', tag: 'anna.o' },
+  { name: 'Katrin Danielsen', tag: 'katrin.d' },
+];
+
 export function SendScreen({ navigation }: any) {
+  const C = useColors();
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [pin, setPin] = useState('');
-  const [step, setStep] = useState<'details' | 'confirm'>('details');
+  const [step, setStep] = useState<'details' | 'confirm' | 'success'>('details');
   const [recipientName, setRecipientName] = useState('');
   const [loading, setLoading] = useState(false);
   const [receiptImage, setReceiptImage] = useState<string | null>(null);
@@ -103,14 +114,8 @@ export function SendScreen({ navigation }: any) {
         sendData.recipientPhone = recipient;
       }
       await api.post('/wallet/send', sendData);
-
       await refreshUser();
-
-      Alert.alert(
-        'Sendt!',
-        `${formatDKK(parseInt(amount) * 100)} er sendt til ${recipientName || recipient}`,
-        [{ text: 'OK', onPress: () => navigation.goBack() }]
-      );
+      setStep('success');
     } catch (err: any) {
       Alert.alert('Fejl', err.message || 'Kunne ikke sende penge');
     } finally {
@@ -118,44 +123,54 @@ export function SendScreen({ navigation }: any) {
     }
   };
 
+  if (step === 'success') {
+    return (
+      <SuccessScreen
+        amount={formatDKK(parseInt(amount) * 100)}
+        recipient={recipientName || recipient}
+        onDone={() => navigation.goBack()}
+      />
+    );
+  }
+
   if (step === 'confirm') {
     return (
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: C.background }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.content}>
-          <View style={styles.confirmCard}>
+          <View style={[styles.confirmCard, { backgroundColor: C.surface, borderColor: C.border }]}>
             <View style={styles.confirmIcon}>
-              <Ionicons name="send" size={32} color={COLORS.accent} />
+              <Ionicons name="send" size={32} color={C.accent} />
             </View>
-            <Text style={styles.confirmTitle}>Bekræft overførsel</Text>
-            <Text style={styles.confirmAmount}>
+            <Text style={[styles.confirmTitle, { color: C.text }]}>Bekræft overførsel</Text>
+            <Text style={[styles.confirmAmount, { color: C.accent }]}>
               {formatDKK(parseInt(amount) * 100)}
             </Text>
-            <Text style={styles.confirmRecipient}>
+            <Text style={[styles.confirmRecipient, { color: C.textSecondary }]}>
               Til: {recipientName || phone}
             </Text>
             {description ? (
-              <Text style={styles.confirmDesc}>"{description}"</Text>
+              <Text style={[styles.confirmDesc, { color: C.textLight }]}>"{description}"</Text>
             ) : null}
           </View>
 
-          <Text style={styles.label}>Indtast PIN</Text>
+          <Text style={[styles.label, { color: C.textSecondary }]}>Indtast PIN</Text>
           <TextInput
-            style={[styles.input, styles.pinInput]}
+            style={[styles.input, styles.pinInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
             value={pin}
             onChangeText={setPin}
             keyboardType="number-pad"
             maxLength={4}
             secureTextEntry
             placeholder="----"
-            placeholderTextColor={COLORS.textLight}
+            placeholderTextColor={C.textLight}
             textAlign="center"
           />
 
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, { backgroundColor: C.accent }]}
             onPress={handleSend}
             disabled={loading}
           >
@@ -173,7 +188,7 @@ export function SendScreen({ navigation }: any) {
               setStep('details');
             }}
           >
-            <Text style={styles.cancelText}>Annuller</Text>
+            <Text style={[styles.cancelText, { color: C.textSecondary }]}>Annuller</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -182,48 +197,64 @@ export function SendScreen({ navigation }: any) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView style={styles.content} contentContainerStyle={styles.contentInner} keyboardShouldPersistTaps="handled">
-        <Text style={styles.heading}>Send penge</Text>
+        <Text style={[styles.heading, { color: C.text }]}>Send penge</Text>
 
-        <Text style={styles.label}>Modtager</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Seneste</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recentRow} contentContainerStyle={styles.recentRowInner}>
+          {RECENT_RECIPIENTS.map((r) => (
+            <TouchableOpacity
+              key={r.tag}
+              style={styles.recentChip}
+              onPress={() => setRecipient(`@${r.tag}`)}
+            >
+              <View style={[styles.recentAvatar, { backgroundColor: C.primary }, recipient === `@${r.tag}` && styles.recentAvatarActive, recipient === `@${r.tag}` && { borderColor: C.accent }]}>
+                <Text style={styles.recentAvatarText}>{r.name.charAt(0)}</Text>
+              </View>
+              <Text style={[styles.recentName, { color: C.textSecondary }]} numberOfLines={1}>{r.name.split(' ')[0]}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <Text style={[styles.label, { color: C.textSecondary }]}>Modtager</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={recipient}
           onChangeText={setRecipient}
           placeholder="@paywag-tag eller +298 XXXXXX"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           autoCapitalize="none"
           autoCorrect={false}
         />
 
-        <Text style={styles.label}>Beløb (DKK)</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Beløb (DKK)</Text>
         <TextInput
-          style={[styles.input, styles.amountInput]}
+          style={[styles.input, styles.amountInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={amount}
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="0,00"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           textAlign="center"
         />
 
-        <Text style={styles.label}>Besked (valgfrit)</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Besked (valgfrit)</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={description}
           onChangeText={setDescription}
           placeholder="F.eks. aftensmad"
-          placeholderTextColor={COLORS.textLight}
+          placeholderTextColor={C.textLight}
           maxLength={200}
         />
 
         {/* Receipt */}
-        <TouchableOpacity style={styles.receiptBtn} onPress={showReceiptOptions}>
-          <Ionicons name="camera-outline" size={20} color={COLORS.primary} />
-          <Text style={styles.receiptBtnText}>
+        <TouchableOpacity style={[styles.receiptBtn, { borderColor: C.border }]} onPress={showReceiptOptions}>
+          <Ionicons name="camera-outline" size={20} color={C.primary} />
+          <Text style={[styles.receiptBtnText, { color: C.primary }]}>
             {receiptImage ? 'Skift kvittering' : 'Tilføj kvittering'}
           </Text>
         </TouchableOpacity>
@@ -231,12 +262,12 @@ export function SendScreen({ navigation }: any) {
           <View style={styles.receiptPreview}>
             <Image source={{ uri: receiptImage }} style={styles.receiptImage} />
             <TouchableOpacity style={styles.receiptRemove} onPress={() => setReceiptImage(null)}>
-              <Ionicons name="close-circle" size={24} color={COLORS.danger} />
+              <Ionicons name="close-circle" size={24} color={C.danger} />
             </TouchableOpacity>
           </View>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={lookupRecipient}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: C.accent }]} onPress={lookupRecipient}>
           <Text style={styles.buttonText}>Fortsæt</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -244,10 +275,96 @@ export function SendScreen({ navigation }: any) {
   );
 }
 
+function SuccessScreen({ amount, recipient, onDone }: { amount: string; recipient: string; onDone: () => void }) {
+  const C = useColors();
+  const scale = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const checkScale = useRef(new Animated.Value(0)).current;
+  const textOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.spring(scale, { toValue: 1, friction: 4, tension: 60, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 1, duration: 300, useNativeDriver: true }),
+      ]),
+      Animated.spring(checkScale, { toValue: 1, friction: 3, tension: 80, useNativeDriver: true }),
+      Animated.timing(textOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  return (
+    <View style={[successStyles.container, { backgroundColor: C.background }]}>
+      <Animated.View style={[successStyles.circle, { backgroundColor: C.accent, shadowColor: C.accent }, { transform: [{ scale }], opacity }]}>
+        <Animated.View style={{ transform: [{ scale: checkScale }] }}>
+          <Ionicons name="checkmark-sharp" size={52} color="#fff" />
+        </Animated.View>
+      </Animated.View>
+      <Animated.View style={[successStyles.textWrap, { opacity: textOpacity }]}>
+        <Text style={[successStyles.title, { color: C.text }]}>Betaling sendt!</Text>
+        <Text style={[successStyles.amount, { color: C.accent }]}>{amount}</Text>
+        <Text style={[successStyles.recipient, { color: C.textSecondary }]}>til {recipient}</Text>
+      </Animated.View>
+      <Animated.View style={{ opacity: textOpacity, width: '100%', paddingHorizontal: SPACING.xl }}>
+        <TouchableOpacity style={[successStyles.btn, { backgroundColor: C.primary }]} onPress={onDone}>
+          <Text style={successStyles.btnText}>Færdig</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </View>
+  );
+}
+
+const successStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.xl,
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  textWrap: {
+    alignItems: 'center',
+    marginTop: SPACING.xl,
+    marginBottom: SPACING.xxl,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '800',
+  },
+  amount: {
+    fontSize: 36,
+    fontWeight: '800',
+    marginTop: SPACING.sm,
+  },
+  recipient: {
+    fontSize: 16,
+    marginTop: SPACING.xs,
+  },
+  btn: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  btnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
@@ -261,25 +378,20 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 28,
     fontWeight: '800',
-    color: COLORS.text,
     marginBottom: SPACING.lg,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.textSecondary,
     marginBottom: SPACING.xs,
     marginTop: SPACING.md,
   },
   input: {
-    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: COLORS.text,
   },
   amountInput: {
     fontSize: 28,
@@ -293,7 +405,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   button: {
-    backgroundColor: COLORS.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -309,17 +420,14 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
   },
   cancelText: {
-    color: COLORS.textSecondary,
     fontSize: 14,
     fontWeight: '500',
   },
   confirmCard: {
-    backgroundColor: COLORS.surface,
     borderRadius: 20,
     padding: SPACING.xl,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
     marginBottom: SPACING.lg,
   },
   confirmIcon: {
@@ -334,23 +442,52 @@ const styles = StyleSheet.create({
   confirmTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: COLORS.text,
   },
   confirmAmount: {
     fontSize: 36,
     fontWeight: '800',
-    color: COLORS.accent,
     marginVertical: SPACING.sm,
   },
   confirmRecipient: {
     fontSize: 16,
-    color: COLORS.textSecondary,
   },
   confirmDesc: {
     fontSize: 14,
-    color: COLORS.textLight,
     fontStyle: 'italic',
     marginTop: SPACING.xs,
+  },
+  recentRow: {
+    marginBottom: SPACING.sm,
+    marginHorizontal: -SPACING.xl,
+  },
+  recentRowInner: {
+    paddingHorizontal: SPACING.xl,
+    gap: SPACING.md,
+  },
+  recentChip: {
+    alignItems: 'center',
+    width: 56,
+  },
+  recentAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  recentAvatarActive: {
+    borderWidth: 2.5,
+  },
+  recentAvatarText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  recentName: {
+    fontSize: 11,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   receiptBtn: {
     flexDirection: 'row',
@@ -361,13 +498,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
     borderStyle: 'dashed',
   },
   receiptBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.primary,
   },
   receiptPreview: {
     position: 'relative',
