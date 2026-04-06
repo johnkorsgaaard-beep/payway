@@ -19,7 +19,6 @@ import { useAuth } from '../store/auth';
 
 export function EditProfileScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const { user, updateUser } = useAuth();
 
   const [name, setName] = useState(user?.name || '');
@@ -135,31 +134,31 @@ export function EditProfileScreen({ navigation }: any) {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: C.background }]} contentContainerStyle={styles.content}>
         {/* Profile Picture */}
         <TouchableOpacity style={styles.avatarSection} onPress={showImageOptions}>
           {profileImage ? (
             <Image source={{ uri: profileImage }} style={styles.avatar} />
           ) : (
-            <View style={styles.avatarPlaceholder}>
+            <View style={[styles.avatarPlaceholder, { backgroundColor: C.primary }]}>
               <Text style={styles.avatarText}>{initials}</Text>
             </View>
           )}
-          <View style={styles.cameraButton}>
+          <View style={[styles.cameraButton, { backgroundColor: C.accent, borderColor: C.background }]}>
             <Ionicons name="camera" size={16} color="#fff" />
           </View>
         </TouchableOpacity>
-        <Text style={styles.avatarHint}>Tryk for at ændre billede</Text>
+        <Text style={[styles.avatarHint, { color: C.textSecondary }]}>Tryk for at ændre billede</Text>
 
         {/* Form Fields */}
         <View style={styles.form}>
           {/* PayWay-Tag */}
           <View style={styles.fieldGroup}>
-            <Text style={styles.label}>PayWay-Tag</Text>
-            <View style={styles.inputRow}>
-              <Text style={styles.tagPrefix}>@</Text>
+            <Text style={[styles.label, { color: C.textSecondary }]}>PayWay-Tag</Text>
+            <View style={[styles.inputRow, { backgroundColor: C.surface, borderColor: C.border }]}>
+              <Text style={[styles.tagPrefix, { color: C.primary }]}>@</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 value={paywayTag}
                 onChangeText={(v) => setPaywayTag(sanitizeTag(v))}
                 placeholder="ditbrugernavn"
@@ -168,17 +167,17 @@ export function EditProfileScreen({ navigation }: any) {
                 autoCorrect={false}
               />
             </View>
-            <Text style={styles.hint}>
+            <Text style={[styles.hint, { color: C.textLight }]}>
               Dit unikke tag — del det så andre kan finde dig
             </Text>
           </View>
 
           <View style={styles.fieldGroup}>
-            <Text style={styles.label}>Navn</Text>
-            <View style={styles.inputRow}>
+            <Text style={[styles.label, { color: C.textSecondary }]}>Navn</Text>
+            <View style={[styles.inputRow, { backgroundColor: C.surface, borderColor: C.border }]}>
               <Ionicons name="person-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 value={name}
                 onChangeText={setName}
                 placeholder="Dit fulde navn"
@@ -189,11 +188,11 @@ export function EditProfileScreen({ navigation }: any) {
           </View>
 
           <View style={styles.fieldGroup}>
-            <Text style={styles.label}>Email</Text>
-            <View style={styles.inputRow}>
+            <Text style={[styles.label, { color: C.textSecondary }]}>Email</Text>
+            <View style={[styles.inputRow, { backgroundColor: C.surface, borderColor: C.border }]}>
               <Ionicons name="mail-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 value={email}
                 onChangeText={setEmail}
                 placeholder="din@email.com"
@@ -205,11 +204,11 @@ export function EditProfileScreen({ navigation }: any) {
           </View>
 
           <View style={styles.fieldGroup}>
-            <Text style={styles.label}>Telefonnummer</Text>
-            <View style={styles.inputRow}>
+            <Text style={[styles.label, { color: C.textSecondary }]}>Telefonnummer</Text>
+            <View style={[styles.inputRow, { backgroundColor: C.surface, borderColor: C.border }]}>
               <Ionicons name="call-outline" size={20} color={C.primary} style={styles.inputIcon} />
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: C.text }]}
                 value={phone}
                 onChangeText={setPhone}
                 placeholder="+298 123 456"
@@ -217,7 +216,7 @@ export function EditProfileScreen({ navigation }: any) {
                 keyboardType="phone-pad"
               />
             </View>
-            <Text style={styles.hint}>
+            <Text style={[styles.hint, { color: C.textLight }]}>
               Ændring af telefonnummer kræver verifikation
             </Text>
           </View>
@@ -225,7 +224,7 @@ export function EditProfileScreen({ navigation }: any) {
 
         {/* Save Button */}
         <TouchableOpacity
-          style={[styles.saveButton, !hasChanges && styles.saveButtonDisabled]}
+          style={[styles.saveButton, { backgroundColor: C.primary }, !hasChanges && styles.saveButtonDisabled]}
           onPress={handleSave}
           disabled={!hasChanges || saving}
         >
@@ -238,11 +237,9 @@ export function EditProfileScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -261,7 +258,6 @@ function makeStyles(C: any) {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -277,16 +273,13 @@ function makeStyles(C: any) {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: C.accent,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: C.background,
   },
   avatarHint: {
     textAlign: 'center',
     fontSize: 13,
-    color: C.textSecondary,
     marginTop: SPACING.sm,
     marginBottom: SPACING.lg,
   },
@@ -300,16 +293,13 @@ function makeStyles(C: any) {
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: C.textSecondary,
     marginLeft: SPACING.xs,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: C.border,
     paddingHorizontal: SPACING.md,
   },
   inputIcon: {
@@ -318,26 +308,22 @@ function makeStyles(C: any) {
   tagPrefix: {
     fontSize: 18,
     fontWeight: '700',
-    color: C.primary,
     marginRight: SPACING.xs,
   },
   input: {
     flex: 1,
     fontSize: 16,
     fontWeight: '500',
-    color: C.text,
     paddingVertical: 14,
   },
   hint: {
     fontSize: 12,
-    color: C.textLight,
     marginLeft: SPACING.xs,
     marginTop: 2,
   },
   saveButton: {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.xl,
-    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
@@ -351,4 +337,3 @@ function makeStyles(C: any) {
     fontWeight: '700',
   },
 });
-}

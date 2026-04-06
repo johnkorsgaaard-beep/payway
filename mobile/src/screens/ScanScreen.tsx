@@ -7,24 +7,14 @@ import {
   Alert,
   TextInput,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { api } from '../services/api';
 import { useAuth } from '../store/auth';
-
-let CameraView: any = null;
-let useCameraPermissions: any = null;
-if (Platform.OS !== 'web') {
-  try {
-    const mod = require('expo-camera');
-    CameraView = mod.CameraView;
-    useCameraPermissions = mod.useCameraPermissions;
-  } catch {}
-}
 
 interface QrData {
   reference: string;
@@ -33,17 +23,9 @@ interface QrData {
   label: string | null;
 }
 
-function useCameraPermissionsSafe() {
-  if (Platform.OS === 'web' || !useCameraPermissions) {
-    return [{ granted: false }, () => {}] as const;
-  }
-  return useCameraPermissions();
-}
-
 export function ScanScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
-  const [permission, requestPermission] = useCameraPermissionsSafe();
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [qrData, setQrData] = useState<QrData | null>(null);
   const [amount, setAmount] = useState('');
@@ -53,35 +35,18 @@ export function ScanScreen({ navigation }: any) {
 
   const defaultCard = user?.cards?.find((c) => c.isDefault) || user?.cards?.[0];
 
-  if (Platform.OS === 'web') {
-    return (
-      <View style={styles.permissionContainer}>
-        <Ionicons name="qr-code-outline" size={64} color={C.textLight} />
-        <Text style={[styles.permissionText, { fontWeight: '700', fontSize: 18, color: C.text }]}>
-          QR-scanning
-        </Text>
-        <Text style={styles.permissionText}>
-          QR-scanning kræver kameraadgang og er kun tilgængelig i PayWay-appen på din telefon.
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Tilbage</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   if (!permission) {
     return <View style={styles.container} />;
   }
 
   if (!permission.granted) {
     return (
-      <View style={styles.permissionContainer}>
+      <View style={[styles.permissionContainer, { backgroundColor: C.background }]}>
         <Ionicons name="camera-outline" size={64} color={C.textLight} />
-        <Text style={styles.permissionText}>
+        <Text style={[styles.permissionText, { color: C.textSecondary }]}>
           Vi har brug for adgang til kameraet for at scanne QR-koder
         </Text>
-        <TouchableOpacity style={styles.button} onPress={requestPermission}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: C.accent }]} onPress={requestPermission}>
           <Text style={styles.buttonText}>Giv adgang</Text>
         </TouchableOpacity>
       </View>
@@ -146,22 +111,22 @@ export function ScanScreen({ navigation }: any) {
 
   if (qrData) {
     return (
-      <View style={styles.payContainer}>
-        <View style={styles.merchantCard}>
+      <View style={[styles.payContainer, { backgroundColor: C.background }]}>
+        <View style={[styles.merchantCard, { backgroundColor: C.surface, borderColor: C.border }]}>
           <View style={styles.merchantIcon}>
             <Ionicons name="storefront" size={32} color={C.accent} />
           </View>
-          <Text style={styles.merchantName}>{qrData.merchantName}</Text>
+          <Text style={[styles.merchantName, { color: C.text }]}>{qrData.merchantName}</Text>
           {qrData.label && (
-            <Text style={styles.merchantLabel}>{qrData.label}</Text>
+            <Text style={[styles.merchantLabel, { color: C.textSecondary }]}>{qrData.label}</Text>
           )}
         </View>
 
         {!qrData.amount && (
           <>
-            <Text style={styles.label}>Beløb (DKK)</Text>
+            <Text style={[styles.label, { color: C.textSecondary }]}>Beløb (DKK)</Text>
             <TextInput
-              style={[styles.input, styles.amountInput]}
+              style={[styles.input, styles.amountInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
@@ -173,22 +138,21 @@ export function ScanScreen({ navigation }: any) {
         )}
 
         {qrData.amount && (
-          <Text style={styles.fixedAmount}>{formatDKK(qrData.amount)}</Text>
+          <Text style={[styles.fixedAmount, { color: C.accent }]}>{formatDKK(qrData.amount)}</Text>
         )}
 
-        {/* Card indicator */}
         {defaultCard && (
           <View style={styles.cardIndicator}>
             <Ionicons name="card" size={18} color={C.accent} />
-            <Text style={styles.cardIndicatorText}>
+            <Text style={[styles.cardIndicatorText, { color: C.accent }]}>
               Betales med {defaultCard.brand.toUpperCase()} •••• {defaultCard.last4}
             </Text>
           </View>
         )}
 
-        <Text style={styles.label}>PIN-kode</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>PIN-kode</Text>
         <TextInput
-          style={[styles.input, styles.pinInput]}
+          style={[styles.input, styles.pinInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={pin}
           onChangeText={setPin}
           keyboardType="number-pad"
@@ -200,7 +164,7 @@ export function ScanScreen({ navigation }: any) {
         />
 
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { backgroundColor: C.accent }]}
           onPress={handlePay}
           disabled={loading}
         >
@@ -222,7 +186,7 @@ export function ScanScreen({ navigation }: any) {
             setAmount('');
           }}
         >
-          <Text style={styles.cancelText}>Annuller</Text>
+          <Text style={[styles.cancelText, { color: C.textSecondary }]}>Annuller</Text>
         </TouchableOpacity>
       </View>
     );
@@ -243,7 +207,7 @@ export function ScanScreen({ navigation }: any) {
           <Ionicons name="arrow-back" size={24} color="#fff" />
           <Text style={styles.backText}>Tilbage</Text>
         </TouchableOpacity>
-        <View style={styles.scanFrame} />
+        <View style={[styles.scanFrame, { borderColor: C.accent }]} />
         <Text style={styles.scanText}>
           Scan butikkens QR-kode
         </Text>
@@ -252,8 +216,7 @@ export function ScanScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
@@ -284,7 +247,6 @@ function makeStyles(C: any) {
     width: 250,
     height: 250,
     borderWidth: 3,
-    borderColor: C.accent,
     borderRadius: 24,
     backgroundColor: 'transparent',
   },
@@ -302,27 +264,22 @@ function makeStyles(C: any) {
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.xl,
-    backgroundColor: C.background,
     gap: SPACING.md,
   },
   permissionText: {
     fontSize: 16,
-    color: C.textSecondary,
     textAlign: 'center',
   },
   payContainer: {
     flex: 1,
-    backgroundColor: C.background,
     padding: SPACING.xl,
     justifyContent: 'center',
   },
   merchantCard: {
-    backgroundColor: C.surface,
     borderRadius: 20,
     padding: SPACING.xl,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: C.border,
     marginBottom: SPACING.lg,
   },
   merchantIcon: {
@@ -337,36 +294,29 @@ function makeStyles(C: any) {
   merchantName: {
     fontSize: 20,
     fontWeight: '700',
-    color: C.text,
   },
   merchantLabel: {
     fontSize: 14,
-    color: C.textSecondary,
     marginTop: SPACING.xs,
   },
   fixedAmount: {
     fontSize: 36,
     fontWeight: '800',
-    color: C.accent,
     textAlign: 'center',
     marginVertical: SPACING.md,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textSecondary,
     marginBottom: SPACING.xs,
     marginTop: SPACING.md,
   },
   input: {
-    backgroundColor: C.surface,
     borderWidth: 1,
-    borderColor: C.border,
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-    color: C.text,
   },
   amountInput: {
     fontSize: 28,
@@ -380,7 +330,6 @@ function makeStyles(C: any) {
     paddingVertical: 16,
   },
   button: {
-    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -396,7 +345,6 @@ function makeStyles(C: any) {
     paddingVertical: SPACING.md,
   },
   cancelText: {
-    color: C.textSecondary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -412,7 +360,5 @@ function makeStyles(C: any) {
   cardIndicatorText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.accent,
   },
 });
-}

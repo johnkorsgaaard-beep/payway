@@ -11,7 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';
 import { useAuth } from '../store/auth';
-import { EmptyState } from '../components/EmptyState';
 
 const BRAND_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   visa: 'card',
@@ -21,7 +20,6 @@ const BRAND_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
 
 export function CardsScreen() {
   const C = useColors();
-  const styles = makeStyles(C);
   const { user } = useAuth();
   const [cards, setCards] = useState(user?.cards || []);
 
@@ -45,28 +43,25 @@ export function CardsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       <View style={styles.content}>
-        <Text style={styles.heading}>Dine betalingskort</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.heading, { color: C.text }]}>Dine betalingskort</Text>
+        <Text style={[styles.subtitle, { color: C.textSecondary }]}>
           Administrer de kort der bruges til optankning af din wallet
         </Text>
 
         {cards.length === 0 ? (
-          <EmptyState
-            icon="card-outline"
-            iconColor="#d97706"
-            iconBg="#fef3c7"
-            title="Ingen kort endnu"
-            description="Tilknyt et Visa eller Mastercard, så du hurtigt kan fylde din wallet op."
-            actionLabel="Tilføj kort"
-            onAction={handleAddCard}
-            compact
-          />
+          <View style={styles.emptyState}>
+            <Ionicons name="card-outline" size={56} color={C.textLight} />
+            <Text style={[styles.emptyText, { color: C.textSecondary }]}>Ingen kort tilføjet</Text>
+            <Text style={[styles.emptySubtext, { color: C.textLight }]}>
+              Tilføj et betalingskort for at kunne fylde op
+            </Text>
+          </View>
         ) : (
           <View style={styles.cardList}>
             {cards.map((card) => (
-              <View key={card.id} style={styles.cardRow}>
+              <View key={card.id} style={[styles.cardRow, { backgroundColor: C.surface, borderColor: C.border }]}>
                 <View style={styles.cardIcon}>
                   <Ionicons
                     name={BRAND_ICONS[card.brand] || 'card'}
@@ -76,16 +71,16 @@ export function CardsScreen() {
                 </View>
                 <View style={styles.cardInfo}>
                   <View style={styles.cardNameRow}>
-                    <Text style={styles.cardBrand}>
+                    <Text style={[styles.cardBrand, { color: C.text }]}>
                       {card.brand.toUpperCase()}
                     </Text>
                     {card.isDefault && (
                       <View style={styles.defaultBadge}>
-                        <Text style={styles.defaultText}>Standard</Text>
+                        <Text style={[styles.defaultText, { color: C.success }]}>Standard</Text>
                       </View>
                     )}
                   </View>
-                  <Text style={styles.cardNumber}>**** **** **** {card.last4}</Text>
+                  <Text style={[styles.cardNumber, { color: C.textSecondary }]}>**** **** **** {card.last4}</Text>
                 </View>
                 <TouchableOpacity
                   onPress={() => handleRemoveCard(card.id, card.last4)}
@@ -98,7 +93,7 @@ export function CardsScreen() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.addButton} onPress={handleAddCard}>
+        <TouchableOpacity style={[styles.addButton, { backgroundColor: C.accent }]} onPress={handleAddCard}>
           <Ionicons name="add-circle" size={22} color="#fff" />
           <Text style={styles.addButtonText}>Tilføj nyt kort</Text>
         </TouchableOpacity>
@@ -107,24 +102,21 @@ export function CardsScreen() {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl },
-  heading: { fontSize: 22, fontWeight: '800', color: C.text },
-  subtitle: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  heading: { fontSize: 22, fontWeight: '800' },
+  subtitle: { fontSize: 14, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   emptyState: { alignItems: 'center', paddingVertical: SPACING.xxl, gap: SPACING.sm },
-  emptyText: { fontSize: 16, fontWeight: '600', color: C.textSecondary },
-  emptySubtext: { fontSize: 14, color: C.textLight, textAlign: 'center' },
+  emptyText: { fontSize: 16, fontWeight: '600' },
+  emptySubtext: { fontSize: 14, textAlign: 'center' },
   cardList: { gap: SPACING.sm },
   cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: C.border,
   },
   cardIcon: {
     width: 48,
@@ -137,26 +129,24 @@ function makeStyles(C: any) {
   },
   cardInfo: { flex: 1 },
   cardNameRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-  cardBrand: { fontSize: 15, fontWeight: '700', color: C.text },
+  cardBrand: { fontSize: 15, fontWeight: '700' },
   defaultBadge: {
     backgroundColor: '#dcfce7',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
   },
-  defaultText: { fontSize: 11, fontWeight: '600', color: C.success },
-  cardNumber: { fontSize: 13, color: C.textSecondary, marginTop: 2, fontFamily: 'monospace' },
+  defaultText: { fontSize: 11, fontWeight: '600' },
+  cardNumber: { fontSize: 13, marginTop: 2, fontFamily: 'monospace' },
   removeButton: { padding: SPACING.sm },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: C.accent,
     borderRadius: 12,
     paddingVertical: 16,
     marginTop: SPACING.lg,
   },
   addButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
-}

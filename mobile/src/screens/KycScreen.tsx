@@ -23,7 +23,6 @@ interface Tier {
 
 export function KycScreen() {
   const C = useColors();
-  const styles = makeStyles(C);
   const { user } = useAuth();
   const status = user?.kycStatus || 'NONE';
 
@@ -63,12 +62,12 @@ export function KycScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       <View style={styles.content}>
         <View style={[styles.statusCard, { backgroundColor: config.bg }]}>
           <Ionicons name={config.icon} size={32} color={config.color} />
           <Text style={[styles.statusLabel, { color: config.color }]}>{config.label}</Text>
-          <Text style={styles.statusSub}>
+          <Text style={[styles.statusSub, { color: C.textSecondary }]}>
             {status === 'VERIFIED'
               ? 'Du har fuld adgang til alle funktioner'
               : 'Opgrader din verifikation for højere grænser'}
@@ -76,22 +75,22 @@ export function KycScreen() {
         </View>
 
         {tiers.map((tier) => (
-          <View key={tier.level} style={styles.tierCard}>
+          <View key={tier.level} style={[styles.tierCard, { backgroundColor: C.surface, borderColor: C.border }]}>
             <View style={styles.tierHeader}>
-              <Text style={styles.tierTitle}>{tier.title}</Text>
+              <Text style={[styles.tierTitle, { color: C.text }]}>{tier.title}</Text>
               {tier.completed ? (
                 <View style={styles.completedBadge}>
                   <Ionicons name="checkmark" size={14} color={C.success} />
-                  <Text style={styles.completedText}>Opfyldt</Text>
+                  <Text style={[styles.completedText, { color: C.success }]}>Opfyldt</Text>
                 </View>
               ) : (
                 <View style={styles.pendingBadge}>
-                  <Text style={styles.pendingText}>Afventer</Text>
+                  <Text style={[styles.pendingText, { color: C.warning }]}>Afventer</Text>
                 </View>
               )}
             </View>
-            <Text style={styles.tierDesc}>{tier.description}</Text>
-            <Text style={styles.tierLimits}>{tier.limits}</Text>
+            <Text style={[styles.tierDesc, { color: C.textSecondary }]}>{tier.description}</Text>
+            <Text style={[styles.tierLimits, { color: C.primary }]}>{tier.limits}</Text>
 
             <View style={styles.reqList}>
               {tier.requirements.map((req, i) => (
@@ -101,7 +100,7 @@ export function KycScreen() {
                     size={18}
                     color={tier.completed ? C.success : C.textLight}
                   />
-                  <Text style={[styles.reqText, tier.completed && styles.reqDone]}>
+                  <Text style={[styles.reqText, { color: C.text }, tier.completed && { color: C.textSecondary, textDecorationLine: 'line-through' }]}>
                     {req}
                   </Text>
                 </View>
@@ -109,7 +108,7 @@ export function KycScreen() {
             </View>
 
             {tier.level === 'VERIFIED' && !tier.completed && (
-              <TouchableOpacity style={styles.uploadButton} onPress={handleUploadId}>
+              <TouchableOpacity style={[styles.uploadButton, { backgroundColor: C.accent }]} onPress={handleUploadId}>
                 <Ionicons name="camera" size={20} color="#fff" />
                 <Text style={styles.uploadText}>Upload ID-dokument</Text>
               </TouchableOpacity>
@@ -119,7 +118,7 @@ export function KycScreen() {
 
         <View style={styles.infoBox}>
           <Ionicons name="lock-closed" size={16} color={C.primary} />
-          <Text style={styles.infoText}>
+          <Text style={[styles.infoText, { color: C.primary }]}>
             Dine dokumenter krypteres og bruges kun til verifikationsformål i henhold til gældende lovgivning.
           </Text>
         </View>
@@ -128,46 +127,43 @@ export function KycScreen() {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl },
   statusCard: {
     borderRadius: 16, padding: SPACING.xl, alignItems: 'center',
     marginBottom: SPACING.lg, gap: SPACING.xs,
   },
   statusLabel: { fontSize: 18, fontWeight: '800' },
-  statusSub: { fontSize: 13, color: C.textSecondary, textAlign: 'center' },
+  statusSub: { fontSize: 13, textAlign: 'center' },
   tierCard: {
-    backgroundColor: C.surface, borderRadius: 16, padding: SPACING.lg,
-    borderWidth: 1, borderColor: C.border, marginBottom: SPACING.md,
+    borderRadius: 16, padding: SPACING.lg,
+    borderWidth: 1, marginBottom: SPACING.md,
   },
   tierHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  tierTitle: { fontSize: 16, fontWeight: '700', color: C.text },
+  tierTitle: { fontSize: 16, fontWeight: '700' },
   completedBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: '#dcfce7', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10,
   },
-  completedText: { fontSize: 12, fontWeight: '600', color: C.success },
+  completedText: { fontSize: 12, fontWeight: '600' },
   pendingBadge: {
     backgroundColor: '#fef3c7', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10,
   },
-  pendingText: { fontSize: 12, fontWeight: '600', color: C.warning },
-  tierDesc: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.sm },
-  tierLimits: { fontSize: 13, fontWeight: '600', color: C.primary, marginTop: SPACING.xs },
+  pendingText: { fontSize: 12, fontWeight: '600' },
+  tierDesc: { fontSize: 14, marginTop: SPACING.sm },
+  tierLimits: { fontSize: 13, fontWeight: '600', marginTop: SPACING.xs },
   reqList: { marginTop: SPACING.md, gap: SPACING.sm },
   reqRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-  reqText: { fontSize: 14, color: C.text },
-  reqDone: { color: C.textSecondary, textDecorationLine: 'line-through' },
+  reqText: { fontSize: 14 },
   uploadButton: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.sm,
-    backgroundColor: C.accent, borderRadius: 12, paddingVertical: 14, marginTop: SPACING.md,
+    borderRadius: 12, paddingVertical: 14, marginTop: SPACING.md,
   },
   uploadText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   infoBox: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
     backgroundColor: '#e8faf0', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.sm,
   },
-  infoText: { flex: 1, fontSize: 12, color: C.primary, lineHeight: 18 },
+  infoText: { flex: 1, fontSize: 12, lineHeight: 18 },
 });
-}

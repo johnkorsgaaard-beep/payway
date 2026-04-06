@@ -15,7 +15,6 @@ import { useColors } from '../utils/theme';
 
 export function ChangePinScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const [currentPin, setCurrentPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -45,21 +44,21 @@ export function ChangePinScreen({ navigation }: any) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: C.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           <Ionicons name="lock-closed" size={36} color={C.accent} />
         </View>
-        <Text style={styles.heading}>Skift PIN-kode</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.heading, { color: C.text }]}>Skift PIN-kode</Text>
+        <Text style={[styles.subtitle, { color: C.textSecondary }]}>
           Din PIN bruges til at bekræfte betalinger og overførsler
         </Text>
 
-        <Text style={styles.label}>Nuværende PIN</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Nuværende PIN</Text>
         <TextInput
-          style={styles.pinInput}
+          style={[styles.pinInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={currentPin}
           onChangeText={setCurrentPin}
           keyboardType="number-pad"
@@ -70,9 +69,9 @@ export function ChangePinScreen({ navigation }: any) {
           textAlign="center"
         />
 
-        <Text style={styles.label}>Ny PIN</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Ny PIN</Text>
         <TextInput
-          style={styles.pinInput}
+          style={[styles.pinInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={newPin}
           onChangeText={setNewPin}
           keyboardType="number-pad"
@@ -83,9 +82,9 @@ export function ChangePinScreen({ navigation }: any) {
           textAlign="center"
         />
 
-        <Text style={styles.label}>Bekræft ny PIN</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Bekræft ny PIN</Text>
         <TextInput
-          style={styles.pinInput}
+          style={[styles.pinInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={confirmPin}
           onChangeText={setConfirmPin}
           keyboardType="number-pad"
@@ -96,7 +95,7 @@ export function ChangePinScreen({ navigation }: any) {
           textAlign="center"
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleSave}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: C.accent }]} onPress={handleSave}>
           <Text style={styles.buttonText}>Gem ny PIN</Text>
         </TouchableOpacity>
       </View>
@@ -104,27 +103,25 @@ export function ChangePinScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { flex: 1, padding: SPACING.xl, justifyContent: 'center' },
   iconContainer: {
     width: 72, height: 72, borderRadius: 36,
     backgroundColor: '#e8faf0', justifyContent: 'center', alignItems: 'center',
     alignSelf: 'center', marginBottom: SPACING.md,
   },
-  heading: { fontSize: 22, fontWeight: '800', color: C.text, textAlign: 'center' },
-  subtitle: { fontSize: 14, color: C.textSecondary, textAlign: 'center', marginTop: SPACING.xs, marginBottom: SPACING.xl },
-  label: { fontSize: 13, fontWeight: '600', color: C.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
+  heading: { fontSize: 22, fontWeight: '800', textAlign: 'center' },
+  subtitle: { fontSize: 14, textAlign: 'center', marginTop: SPACING.xs, marginBottom: SPACING.xl },
+  label: { fontSize: 13, fontWeight: '600', marginBottom: SPACING.xs, marginTop: SPACING.md },
   pinInput: {
-    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
+    borderWidth: 1,
     borderRadius: 12, paddingVertical: 14, fontSize: 28, fontWeight: '700',
-    letterSpacing: 12, color: C.text,
+    letterSpacing: 12,
   },
   button: {
-    backgroundColor: C.accent, borderRadius: 12,
+    borderRadius: 12,
     paddingVertical: 16, alignItems: 'center', marginTop: SPACING.xl,
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
-}

@@ -45,20 +45,19 @@ const FAQ: FaqItem[] = [
 
 export function SupportScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       <View style={styles.content}>
-        <Text style={styles.heading}>Hjælp & Support</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.heading, { color: C.text }]}>Hjælp & Support</Text>
+        <Text style={[styles.subtitle, { color: C.textSecondary }]}>
           Find svar på ofte stillede spørgsmål eller kontakt os direkte
         </Text>
 
         {/* FAQ */}
-        <Text style={styles.sectionTitle}>Ofte stillede spørgsmål</Text>
-        <View style={styles.faqList}>
+        <Text style={[styles.sectionTitle, { color: C.text }]}>Ofte stillede spørgsmål</Text>
+        <View style={[styles.faqList, { backgroundColor: C.surface, borderColor: C.border }]}>
           {FAQ.map((item, i) => (
             <View key={i}>
               <TouchableOpacity
@@ -66,7 +65,7 @@ export function SupportScreen({ navigation }: any) {
                 onPress={() => setExpanded(expanded === i ? null : i)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.faqQuestion}>{item.q}</Text>
+                <Text style={[styles.faqQuestion, { color: C.text }]}>{item.q}</Text>
                 <Ionicons
                   name={expanded === i ? 'chevron-up' : 'chevron-down'}
                   size={18}
@@ -75,17 +74,17 @@ export function SupportScreen({ navigation }: any) {
               </TouchableOpacity>
               {expanded === i && (
                 <View style={styles.faqAnswer}>
-                  <Text style={styles.faqAnswerText}>{item.a}</Text>
+                  <Text style={[styles.faqAnswerText, { color: C.textSecondary }]}>{item.a}</Text>
                 </View>
               )}
-              {i < FAQ.length - 1 && <View style={styles.divider} />}
+              {i < FAQ.length - 1 && <View style={[styles.divider, { backgroundColor: C.borderLight }]} />}
             </View>
           ))}
         </View>
 
         {/* Contact */}
-        <Text style={styles.sectionTitle}>Kontakt os</Text>
-        <View style={styles.contactList}>
+        <Text style={[styles.sectionTitle, { color: C.text }]}>Kontakt os</Text>
+        <View style={[styles.contactList, { backgroundColor: C.surface, borderColor: C.border }]}>
           <TouchableOpacity
             style={styles.contactRow}
             onPress={() => Linking.openURL('mailto:support@payway.fo')}
@@ -94,13 +93,13 @@ export function SupportScreen({ navigation }: any) {
               <Ionicons name="mail" size={20} color={C.accent} />
             </View>
             <View style={styles.contactInfo}>
-              <Text style={styles.contactTitle}>E-mail</Text>
-              <Text style={styles.contactValue}>support@payway.fo</Text>
+              <Text style={[styles.contactTitle, { color: C.text }]}>E-mail</Text>
+              <Text style={[styles.contactValue, { color: C.textSecondary }]}>support@payway.fo</Text>
             </View>
             <Ionicons name="open-outline" size={16} color={C.textLight} />
           </TouchableOpacity>
 
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
 
           <TouchableOpacity
             style={styles.contactRow}
@@ -110,13 +109,13 @@ export function SupportScreen({ navigation }: any) {
               <Ionicons name="chatbubbles" size={20} color={C.primary} />
             </View>
             <View style={styles.contactInfo}>
-              <Text style={styles.contactTitle}>Live Chat</Text>
-              <Text style={styles.contactValue}>Chat med vores AI-assistent</Text>
+              <Text style={[styles.contactTitle, { color: C.text }]}>Live Chat</Text>
+              <Text style={[styles.contactValue, { color: C.textSecondary }]}>Chat med vores AI-assistent</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color={C.textLight} />
           </TouchableOpacity>
 
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: C.borderLight }]} />
 
           <TouchableOpacity
             style={styles.contactRow}
@@ -126,8 +125,8 @@ export function SupportScreen({ navigation }: any) {
               <Ionicons name="bug" size={20} color={C.danger} />
             </View>
             <View style={styles.contactInfo}>
-              <Text style={styles.contactTitle}>Rapporter et problem</Text>
-              <Text style={styles.contactValue}>Send en fejlrapport til os</Text>
+              <Text style={[styles.contactTitle, { color: C.text }]}>Rapporter et problem</Text>
+              <Text style={[styles.contactValue, { color: C.textSecondary }]}>Send en fejlrapport til os</Text>
             </View>
             <Ionicons name="open-outline" size={16} color={C.textLight} />
           </TouchableOpacity>
@@ -137,28 +136,27 @@ export function SupportScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl },
-  heading: { fontSize: 22, fontWeight: '800', color: C.text },
-  subtitle: { fontSize: 14, color: C.textSecondary, marginTop: SPACING.xs, marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm, marginTop: SPACING.md },
+  heading: { fontSize: 22, fontWeight: '800' },
+  subtitle: { fontSize: 14, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: SPACING.sm, marginTop: SPACING.md },
   faqList: {
-    backgroundColor: C.surface, borderRadius: 16, borderWidth: 1,
-    borderColor: C.border, overflow: 'hidden',
+    borderRadius: 16, borderWidth: 1,
+    overflow: 'hidden',
   },
   faqRow: {
     flexDirection: 'row', alignItems: 'center',
     padding: SPACING.md, gap: SPACING.sm,
   },
-  faqQuestion: { flex: 1, fontSize: 14, fontWeight: '600', color: C.text, lineHeight: 20 },
+  faqQuestion: { flex: 1, fontSize: 14, fontWeight: '600', lineHeight: 20 },
   faqAnswer: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.md },
-  faqAnswerText: { fontSize: 14, color: C.textSecondary, lineHeight: 20 },
-  divider: { height: 1, backgroundColor: C.borderLight, marginHorizontal: SPACING.md },
+  faqAnswerText: { fontSize: 14, lineHeight: 20 },
+  divider: { height: 1, marginHorizontal: SPACING.md },
   contactList: {
-    backgroundColor: C.surface, borderRadius: 16, borderWidth: 1,
-    borderColor: C.border, overflow: 'hidden',
+    borderRadius: 16, borderWidth: 1,
+    overflow: 'hidden',
   },
   contactRow: {
     flexDirection: 'row', alignItems: 'center',
@@ -169,7 +167,6 @@ function makeStyles(C: any) {
     backgroundColor: '#e8faf0', justifyContent: 'center', alignItems: 'center',
   },
   contactInfo: { flex: 1 },
-  contactTitle: { fontSize: 14, fontWeight: '600', color: C.text },
-  contactValue: { fontSize: 13, color: C.textSecondary, marginTop: 1 },
+  contactTitle: { fontSize: 14, fontWeight: '600' },
+  contactValue: { fontSize: 13, marginTop: 1 },
 });
-}

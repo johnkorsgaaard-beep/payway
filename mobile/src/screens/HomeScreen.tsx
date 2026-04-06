@@ -13,8 +13,6 @@ import { useColors } from '../utils/theme';
 import { formatDKK } from '../utils/format';
 import { useAuth } from '../store/auth';
 import { api } from '../services/api';
-import { EmptyState } from '../components/EmptyState';
-import { useScheduledPayments, getFrequencyLabel } from '../store/scheduledPayments';
 
 interface Transaction {
   id: string;
@@ -42,21 +40,9 @@ const TYPE_LABELS: Record<string, string> = {
   WITHDRAWAL: 'Udbetaling',
 };
 
-function formatScheduledNext(iso: string): string {
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-  if (diff <= 0) return 'I dag';
-  if (diff === 1) return 'I morgen';
-  if (diff <= 7) return `Om ${diff} dage`;
-  return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
-}
-
 export function HomeScreen({ navigation }: any) {
   const C = useColors();
   const { user, refreshUser } = useAuth();
-  const { payments: scheduledPayments } = useScheduledPayments();
-  const upcomingPayments = scheduledPayments.filter((p) => p.active).slice(0, 3);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -157,39 +143,6 @@ export function HomeScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      {/* Scheduled Payments */}
-      {upcomingPayments.length > 0 && (
-        <View style={styles.scheduledSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: C.text }]}>Planlagte betalinger</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('ScheduledPayments')}>
-              <Text style={[styles.seeAll, { color: C.text }]}>Se alle</Text>
-            </TouchableOpacity>
-          </View>
-          {upcomingPayments.map((sp) => (
-            <TouchableOpacity
-              key={sp.id}
-              style={[styles.scheduledRow, { backgroundColor: C.surface, borderColor: C.borderLight }]}
-              onPress={() => navigation.navigate('ScheduledPayments')}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.scheduledIcon, { backgroundColor: C.accent + '15' }]}>
-                <Ionicons name="calendar" size={18} color={C.accent} />
-              </View>
-              <View style={styles.scheduledInfo}>
-                <Text style={[styles.scheduledName, { color: C.text }]} numberOfLines={1}>
-                  {sp.recipientName}
-                </Text>
-                <Text style={[styles.scheduledMeta, { color: C.textLight }]}>
-                  {getFrequencyLabel(sp.frequency)} · {formatScheduledNext(sp.nextDate)}
-                </Text>
-              </View>
-              <Text style={[styles.scheduledAmount, { color: C.text }]}>{formatDKK(sp.amount)}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
       {/* Recent Transactions */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
@@ -200,16 +153,13 @@ export function HomeScreen({ navigation }: any) {
         </View>
 
         {transactions.length === 0 ? (
-          <EmptyState
-            icon="receipt-outline"
-            iconColor={C.accent}
-            iconBg="#dcfce7"
-            title="Ingen aktivitet endnu"
-            description="Send penge til en ven eller betal i en butik — din historik vises her."
-            actionLabel="Send din første betaling"
-            onAction={() => navigation.navigate('Send')}
-            compact
-          />
+          <View style={styles.emptyState}>
+            <Ionicons name="receipt-outline" size={48} color={C.textLight} />
+            <Text style={[styles.emptyText, { color: C.textSecondary }]}>Ingen transaktioner endnu</Text>
+            <Text style={[styles.emptySubtext, { color: C.textLight }]}>
+              Send penge eller betal i en butik for at komme i gang
+            </Text>
+          </View>
         ) : (
           transactions.map((tx) => (
             <TouchableOpacity
@@ -328,41 +278,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'center',
     marginTop: -2,
-  },
-  scheduledSection: {
-    marginTop: SPACING.lg,
-    paddingHorizontal: SPACING.md,
-  },
-  scheduledRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    padding: SPACING.md,
-    marginBottom: SPACING.sm,
-    borderWidth: 1,
-  },
-  scheduledIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: SPACING.md,
-  },
-  scheduledInfo: {
-    flex: 1,
-  },
-  scheduledName: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  scheduledMeta: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  scheduledAmount: {
-    fontSize: 15,
-    fontWeight: '700',
   },
   section: {
     marginTop: SPACING.lg,

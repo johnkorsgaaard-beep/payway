@@ -51,7 +51,6 @@ const MOCK_CHAT: Record<string, Transfer[]> = {
 
 export function PersonChatScreen({ route, navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const { person } = route.params;
   const transfers = MOCK_CHAT[person.id] || [];
   const listRef = useRef<FlatList>(null);
@@ -77,12 +76,17 @@ export function PersonChatScreen({ route, navigation }: any) {
       <>
         {showDate && (
           <View style={styles.dateRow}>
-            <View style={styles.dateLine} />
-            <Text style={styles.dateText}>{item.dateLabel}</Text>
-            <View style={styles.dateLine} />
+            <View style={[styles.dateLine, { backgroundColor: C.border }]} />
+            <Text style={[styles.dateText, { color: C.textLight }]}>{item.dateLabel}</Text>
+            <View style={[styles.dateLine, { backgroundColor: C.border }]} />
           </View>
         )}
-        <View style={[styles.bubble, isSent ? styles.bubbleSent : styles.bubbleReceived]}>
+        <View style={[
+          styles.bubble,
+          isSent
+            ? [styles.bubbleSent, { backgroundColor: C.primary }]
+            : [styles.bubbleReceived, { backgroundColor: C.surface, borderColor: C.borderLight }],
+        ]}>
           <View style={styles.bubbleHeader}>
             <Ionicons
               name={isSent ? 'arrow-up' : 'arrow-down'}
@@ -93,11 +97,11 @@ export function PersonChatScreen({ route, navigation }: any) {
               {isSent ? 'Sendt' : 'Modtaget'}
             </Text>
           </View>
-          <Text style={[styles.bubbleAmount, isSent ? styles.amountSent : styles.amountReceived]}>
+          <Text style={[styles.bubbleAmount, isSent ? styles.amountSent : { color: C.success }]}>
             {isSent ? '-' : '+'}{formatDKK(item.amount)}
           </Text>
           {item.description ? (
-            <Text style={[styles.bubbleDesc, isSent && styles.bubbleDescSent]}>{item.description}</Text>
+            <Text style={[styles.bubbleDesc, { color: C.textSecondary }, isSent && styles.bubbleDescSent]}>{item.description}</Text>
           ) : null}
         </View>
       </>
@@ -105,25 +109,25 @@ export function PersonChatScreen({ route, navigation }: any) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: C.background }]}>
       {/* Balance Summary */}
-      <View style={styles.summary}>
+      <View style={[styles.summary, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Sendt</Text>
+          <Text style={[styles.summaryLabel, { color: C.textSecondary }]}>Sendt</Text>
           <Text style={[styles.summaryValue, { color: C.text }]}>
             {formatDKK(totalSent)}
           </Text>
         </View>
-        <View style={styles.summaryDivider} />
+        <View style={[styles.summaryDivider, { backgroundColor: C.border }]} />
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Modtaget</Text>
+          <Text style={[styles.summaryLabel, { color: C.textSecondary }]}>Modtaget</Text>
           <Text style={[styles.summaryValue, { color: C.success }]}>
             {formatDKK(totalReceived)}
           </Text>
         </View>
-        <View style={styles.summaryDivider} />
+        <View style={[styles.summaryDivider, { backgroundColor: C.border }]} />
         <View style={styles.summaryItem}>
-          <Text style={styles.summaryLabel}>Balance</Text>
+          <Text style={[styles.summaryLabel, { color: C.textSecondary }]}>Balance</Text>
           <Text style={[
             styles.summaryValue,
             netBalance > 0 ? { color: C.success } : netBalance < 0 ? { color: C.danger } : { color: C.textSecondary },
@@ -144,16 +148,16 @@ export function PersonChatScreen({ route, navigation }: any) {
       />
 
       {/* Send Button */}
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, { backgroundColor: C.surface, borderTopColor: C.border }]}>
         <TouchableOpacity
-          style={styles.sendButton}
+          style={[styles.sendButton, { backgroundColor: C.primary }]}
           onPress={() => navigation.navigate('Send')}
         >
           <Ionicons name="send" size={18} color="#fff" />
           <Text style={styles.sendButtonText}>Send penge</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.requestButton}
+          style={[styles.requestButton, { backgroundColor: C.accent }]}
           onPress={() => navigation.navigate('Request', { recipient: person.tag ? `@${person.tag}` : person.name })}
         >
           <Ionicons name="download-outline" size={18} color="#fff" />
@@ -164,21 +168,17 @@ export function PersonChatScreen({ route, navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   summary: {
     flexDirection: 'row',
-    backgroundColor: C.surface,
     marginHorizontal: SPACING.md,
     marginTop: SPACING.sm,
     borderRadius: 14,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   summaryItem: {
     flex: 1,
@@ -188,7 +188,6 @@ function makeStyles(C: any) {
   summaryLabel: {
     fontSize: 11,
     fontWeight: '500',
-    color: C.textSecondary,
   },
   summaryValue: {
     fontSize: 14,
@@ -196,7 +195,6 @@ function makeStyles(C: any) {
   },
   summaryDivider: {
     width: 1,
-    backgroundColor: C.border,
     marginVertical: 2,
   },
   chatList: {
@@ -212,12 +210,10 @@ function makeStyles(C: any) {
   dateLine: {
     flex: 1,
     height: 1,
-    backgroundColor: C.border,
   },
   dateText: {
     fontSize: 12,
     fontWeight: '600',
-    color: C.textLight,
   },
   bubble: {
     maxWidth: '75%',
@@ -227,15 +223,12 @@ function makeStyles(C: any) {
   },
   bubbleSent: {
     alignSelf: 'flex-end',
-    backgroundColor: C.primary,
     borderBottomRightRadius: 4,
   },
   bubbleReceived: {
     alignSelf: 'flex-start',
-    backgroundColor: C.surface,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   bubbleHeader: {
     flexDirection: 'row',
@@ -255,12 +248,8 @@ function makeStyles(C: any) {
   amountSent: {
     color: '#fff',
   },
-  amountReceived: {
-    color: C.success,
-  },
   bubbleDesc: {
     fontSize: 13,
-    color: C.textSecondary,
     marginTop: 2,
   },
   bubbleDescSent: {
@@ -271,9 +260,7 @@ function makeStyles(C: any) {
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.md,
     paddingBottom: SPACING.xl,
-    backgroundColor: C.surface,
     borderTopWidth: 1,
-    borderTopColor: C.border,
     gap: SPACING.sm,
   },
   sendButton: {
@@ -282,7 +269,6 @@ function makeStyles(C: any) {
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 14,
   },
@@ -297,7 +283,6 @@ function makeStyles(C: any) {
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.sm,
-    backgroundColor: C.accent,
     borderRadius: 14,
     paddingVertical: 14,
   },
@@ -307,4 +292,3 @@ function makeStyles(C: any) {
     fontWeight: '700',
   },
 });
-}

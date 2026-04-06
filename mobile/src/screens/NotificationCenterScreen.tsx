@@ -9,7 +9,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';
-import { EmptyState } from '../components/EmptyState';
 
 interface Notification {
   id: string;
@@ -108,7 +107,6 @@ function formatTimeAgo(date: Date): string {
 
 export function NotificationCenterScreen() {
   const C = useColors();
-  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
   const TYPE_CONFIG: Record<Notification['type'], { icon: keyof typeof Ionicons.glyphMap; color: string; bg: string }> = {
     payment_received: { icon: 'arrow-down-circle', color: C.success, bg: '#e8faf0' },
@@ -119,6 +117,8 @@ export function NotificationCenterScreen() {
     system: { icon: 'information-circle', color: C.textSecondary, bg: '#f3f4f6' },
     request: { icon: 'download-outline', color: C.accent, bg: '#e8faf0' },
   };
+
+  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -136,7 +136,7 @@ export function NotificationCenterScreen() {
     const config = TYPE_CONFIG[item.type];
     return (
       <TouchableOpacity
-        style={[styles.notifRow, { backgroundColor: C.surface }, !item.read && { backgroundColor: C.primary + '10' }]}
+        style={[styles.notifRow, { backgroundColor: C.surface }, !item.read && styles.notifUnread]}
         onPress={() => markRead(item.id)}
         activeOpacity={0.7}
       >
@@ -175,13 +175,10 @@ export function NotificationCenterScreen() {
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: C.borderLight }]} />}
         ListEmptyComponent={
-          <EmptyState
-            icon="notifications-outline"
-            iconColor="#8b5cf6"
-            iconBg="#f3e8ff"
-            title="Alt stille og roligt"
-            description="Du har ingen notifikationer lige nu. Vi giver dig besked, når der sker noget nyt."
-          />
+          <View style={styles.empty}>
+            <Ionicons name="notifications-off-outline" size={48} color={C.textLight} />
+            <Text style={[styles.emptyText, { color: C.textLight }]}>Ingen notifikationer</Text>
+          </View>
         }
       />
     </View>
@@ -217,6 +214,9 @@ const styles = StyleSheet.create({
     gap: SPACING.md,
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
+  },
+  notifUnread: {
+    backgroundColor: '#f0f7ff',
   },
   notifIcon: {
     width: 40,

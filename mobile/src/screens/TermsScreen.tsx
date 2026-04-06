@@ -117,22 +117,22 @@ Payway forbeholder sig retten til at lukke eller fryse konti ved mistanke om mis
 
 export function TermsScreen() {
   const C = useColors();
-  const styles = makeStyles(C);
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       <View style={styles.content}>
-        <Text style={styles.heading}>Vilkår & Betingelser</Text>
-        <Text style={styles.updated}>Sidst opdateret: 1. april 2026</Text>
+        <Text style={[styles.heading, { color: C.text }]}>Vilkår & Betingelser</Text>
+        <Text style={[styles.updated, { color: C.textLight }]}>Sidst opdateret: 1. april 2026</Text>
 
         {SECTIONS.map((section, i) => (
           <View key={i} style={styles.section}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            <Text style={styles.sectionBody}>{section.body}</Text>
+            <Text style={[styles.sectionTitle, { color: C.text }]}>{section.title}</Text>
+            <Text style={[styles.sectionBody, { color: C.textSecondary }]}>{section.body}</Text>
           </View>
         ))}
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Text style={[styles.footerText, { color: C.accent }]}>
             Spørgsmål til vilkårene? Kontakt os på support@payway.fo
           </Text>
         </View>
@@ -141,18 +141,16 @@ export function TermsScreen() {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
-  heading: { fontSize: 22, fontWeight: '800', color: C.text },
-  updated: { fontSize: 13, color: C.textLight, marginTop: SPACING.xs, marginBottom: SPACING.lg },
+  heading: { fontSize: 22, fontWeight: '800' },
+  updated: { fontSize: 13, marginTop: SPACING.xs, marginBottom: SPACING.lg },
   section: { marginBottom: SPACING.lg },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: C.text, marginBottom: SPACING.sm },
-  sectionBody: { fontSize: 14, color: C.textSecondary, lineHeight: 22 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: SPACING.sm },
+  sectionBody: { fontSize: 14, lineHeight: 22 },
   footer: {
     backgroundColor: '#e8faf0', padding: SPACING.md, borderRadius: 12, marginTop: SPACING.md,
   },
-  footerText: { fontSize: 13, color: C.accent, textAlign: 'center' },
+  footerText: { fontSize: 13, textAlign: 'center' },
 });
-}

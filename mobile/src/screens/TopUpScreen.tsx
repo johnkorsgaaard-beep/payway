@@ -18,11 +18,9 @@ import { api } from '../services/api';
 import { useAuth } from '../store/auth';
 
 let stripeNative: any = null;
-if (Platform.OS !== 'web') {
-  try {
-    stripeNative = require('@stripe/stripe-react-native');
-  } catch {}
-}
+try {
+  stripeNative = require('@stripe/stripe-react-native');
+} catch {}
 
 function useApplePaySafe() {
   if (stripeNative?.useApplePay) {
@@ -48,7 +46,6 @@ type PayMethod = 'apple_pay' | 'card';
 
 export function TopUpScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const [amount, setAmount] = useState('');
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<string>('');
@@ -176,8 +173,8 @@ export function TopUpScreen({ navigation }: any) {
     (payMethod === 'apple_pay' || selectedCard);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <View style={styles.banner}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]} contentContainerStyle={styles.content}>
+        <View style={[styles.banner, { backgroundColor: C.primary }]}>
           <View style={styles.bannerIcon}>
             <Ionicons name="wallet" size={32} color="#fff" />
           </View>
@@ -185,9 +182,9 @@ export function TopUpScreen({ navigation }: any) {
           <Text style={styles.bannerSub}>Tilføj penge til din Payway wallet</Text>
         </View>
 
-        <Text style={styles.label}>Beløb (DKK)</Text>
+        <Text style={[styles.label, { color: C.textSecondary }]}>Beløb (DKK)</Text>
         <TextInput
-          style={[styles.input, styles.amountInput]}
+          style={[styles.input, styles.amountInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
           value={amount}
           onChangeText={setAmount}
           keyboardType="numeric"
@@ -202,14 +199,16 @@ export function TopUpScreen({ navigation }: any) {
               key={qa}
               style={[
                 styles.quickButton,
-                amount === (qa / 100).toString() && styles.quickButtonActive,
+                { backgroundColor: C.surface, borderColor: C.border },
+                amount === (qa / 100).toString() && { backgroundColor: '#e8faf0', borderColor: C.accent },
               ]}
               onPress={() => setAmount((qa / 100).toString())}
             >
               <Text
                 style={[
                   styles.quickText,
-                  amount === (qa / 100).toString() && styles.quickTextActive,
+                  { color: C.textSecondary },
+                  amount === (qa / 100).toString() && { color: C.accent },
                 ]}
               >
                 {qa / 100} kr
@@ -218,11 +217,14 @@ export function TopUpScreen({ navigation }: any) {
           ))}
         </View>
 
-        {/* Payment method selector */}
-        <Text style={[styles.label, { marginTop: SPACING.lg }]}>Betalingsmetode</Text>
+        <Text style={[styles.label, { color: C.textSecondary, marginTop: SPACING.lg }]}>Betalingsmetode</Text>
         <View style={styles.methodRow}>
           <TouchableOpacity
-            style={[styles.methodOption, payMethod === 'apple_pay' && styles.methodActive]}
+            style={[
+              styles.methodOption,
+              { backgroundColor: C.surface, borderColor: C.border },
+              payMethod === 'apple_pay' && { borderColor: C.accent, backgroundColor: '#e8faf0' },
+            ]}
             onPress={() => setPayMethod('apple_pay')}
           >
             <Ionicons
@@ -230,7 +232,7 @@ export function TopUpScreen({ navigation }: any) {
               size={22}
               color={payMethod === 'apple_pay' ? '#000' : C.textSecondary}
             />
-            <Text style={[styles.methodText, payMethod === 'apple_pay' && styles.methodTextActive]}>
+            <Text style={[styles.methodText, { color: C.textSecondary }, payMethod === 'apple_pay' && { color: C.accent }]}>
               Apple Pay
             </Text>
             {payMethod === 'apple_pay' && (
@@ -238,7 +240,11 @@ export function TopUpScreen({ navigation }: any) {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.methodOption, payMethod === 'card' && styles.methodActive]}
+            style={[
+              styles.methodOption,
+              { backgroundColor: C.surface, borderColor: C.border },
+              payMethod === 'card' && { borderColor: C.accent, backgroundColor: '#e8faf0' },
+            ]}
             onPress={() => setPayMethod('card')}
           >
             <Ionicons
@@ -246,7 +252,7 @@ export function TopUpScreen({ navigation }: any) {
               size={22}
               color={payMethod === 'card' ? C.accent : C.textSecondary}
             />
-            <Text style={[styles.methodText, payMethod === 'card' && styles.methodTextActive]}>
+            <Text style={[styles.methodText, { color: C.textSecondary }, payMethod === 'card' && { color: C.accent }]}>
               Betalingskort
             </Text>
             {payMethod === 'card' && (
@@ -255,13 +261,16 @@ export function TopUpScreen({ navigation }: any) {
           </TouchableOpacity>
         </View>
 
-        {/* Card selector (only for card method) */}
         {payMethod === 'card' && cards.length > 0 && (
           <View style={styles.cardSection}>
             {cards.map((card) => (
               <TouchableOpacity
                 key={card.id}
-                style={[styles.cardRow, selectedCard === card.id && styles.cardRowActive]}
+                style={[
+                  styles.cardRow,
+                  { backgroundColor: C.surface, borderColor: C.border },
+                  selectedCard === card.id && { borderColor: C.accent, backgroundColor: '#e8faf0' },
+                ]}
                 onPress={() => setSelectedCard(card.id)}
               >
                 <Ionicons
@@ -269,7 +278,7 @@ export function TopUpScreen({ navigation }: any) {
                   size={20}
                   color={selectedCard === card.id ? C.accent : C.textSecondary}
                 />
-                <Text style={[styles.cardText, selectedCard === card.id && styles.cardTextActive]}>
+                <Text style={[styles.cardText, { color: C.textSecondary }, selectedCard === card.id && { color: C.accent }]}>
                   {card.brand.toUpperCase()} •••• {card.last4}
                 </Text>
                 {selectedCard === card.id && (
@@ -283,17 +292,16 @@ export function TopUpScreen({ navigation }: any) {
         {payMethod === 'card' && cards.length === 0 && (
           <View style={styles.noCards}>
             <Ionicons name="card-outline" size={32} color={C.textLight} />
-            <Text style={styles.noCardsText}>Ingen kort tilføjet</Text>
+            <Text style={[styles.noCardsText, { color: C.textSecondary }]}>Ingen kort tilføjet</Text>
             <TouchableOpacity
               style={styles.addCardButton}
               onPress={() => navigation.navigate('Cards')}
             >
-              <Text style={styles.addCardText}>Tilføj kort</Text>
+              <Text style={[styles.addCardText, { color: C.accent }]}>Tilføj kort</Text>
             </TouchableOpacity>
           </View>
         )}
 
-        {/* Pay button */}
         {payMethod === 'apple_pay' ? (
           <TouchableOpacity
             style={[styles.applePayButton, !canSubmit && styles.buttonDisabled]}
@@ -313,7 +321,7 @@ export function TopUpScreen({ navigation }: any) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={[styles.button, !canSubmit && styles.buttonDisabled]}
+            style={[styles.button, { backgroundColor: C.accent }, !canSubmit && styles.buttonDisabled]}
             onPress={handleTopUp}
             disabled={loading || !canSubmit}
           >
@@ -330,12 +338,10 @@ export function TopUpScreen({ navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.background },
+const styles = StyleSheet.create({
+  container: { flex: 1 },
   content: { padding: SPACING.xl, paddingBottom: SPACING.xxl * 2 },
   banner: {
-    backgroundColor: C.primary,
     borderRadius: 20,
     padding: SPACING.xl,
     alignItems: 'center',
@@ -360,45 +366,40 @@ function makeStyles(C: any) {
     color: 'rgba(255,255,255,0.7)',
     marginTop: 4,
   },
-  label: { fontSize: 14, fontWeight: '600', color: C.textSecondary, marginBottom: SPACING.xs, marginTop: SPACING.md },
+  label: { fontSize: 14, fontWeight: '600', marginBottom: SPACING.xs, marginTop: SPACING.md },
   input: {
-    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
+    borderWidth: 1,
     borderRadius: 12, paddingHorizontal: SPACING.md, paddingVertical: 14,
-    fontSize: 16, color: C.text,
+    fontSize: 16,
   },
   amountInput: { fontSize: 36, fontWeight: '800', paddingVertical: 24 },
   quickAmounts: { flexDirection: 'row', gap: SPACING.xs, marginTop: SPACING.md, flexWrap: 'wrap' },
   quickButton: {
-    flex: 1, minWidth: 60, backgroundColor: C.surface, borderWidth: 1,
-    borderColor: C.border, borderRadius: 10, paddingVertical: 10, alignItems: 'center',
+    flex: 1, minWidth: 60,
+    borderWidth: 1,
+    borderRadius: 10, paddingVertical: 10, alignItems: 'center',
   },
-  quickButtonActive: { backgroundColor: '#e8faf0', borderColor: C.accent },
-  quickText: { fontSize: 13, fontWeight: '600', color: C.textSecondary },
-  quickTextActive: { color: C.accent },
+  quickText: { fontSize: 13, fontWeight: '600' },
   methodRow: { gap: SPACING.sm },
   methodOption: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border,
+    borderWidth: 1,
     borderRadius: 12, padding: SPACING.md, marginBottom: SPACING.xs,
   },
-  methodActive: { borderColor: C.accent, backgroundColor: '#e8faf0' },
-  methodText: { flex: 1, fontSize: 15, fontWeight: '600', color: C.textSecondary },
-  methodTextActive: { color: C.accent },
+  methodText: { flex: 1, fontSize: 15, fontWeight: '600' },
   cardSection: { marginTop: SPACING.sm },
   cardRow: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
-    borderWidth: 1, borderColor: C.border, borderRadius: 12,
+    flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderRadius: 12,
     padding: SPACING.md, marginBottom: SPACING.sm, gap: SPACING.sm,
   },
-  cardRowActive: { borderColor: C.accent, backgroundColor: '#e8faf0' },
-  cardText: { flex: 1, fontSize: 14, fontWeight: '600', color: C.textSecondary },
-  cardTextActive: { color: C.accent },
+  cardText: { flex: 1, fontSize: 14, fontWeight: '600' },
   noCards: { alignItems: 'center', paddingVertical: SPACING.xl, gap: SPACING.sm },
-  noCardsText: { fontSize: 14, color: C.textSecondary },
+  noCardsText: { fontSize: 14 },
   addCardButton: { marginTop: SPACING.sm },
-  addCardText: { fontSize: 14, fontWeight: '600', color: C.accent },
+  addCardText: { fontSize: 14, fontWeight: '600' },
   button: {
-    backgroundColor: C.accent, borderRadius: 12,
+    borderRadius: 12,
     paddingVertical: 16, alignItems: 'center', marginTop: SPACING.lg,
   },
   buttonDisabled: { opacity: 0.5 },
@@ -410,4 +411,3 @@ function makeStyles(C: any) {
   applePayContent: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
   applePayText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
-}

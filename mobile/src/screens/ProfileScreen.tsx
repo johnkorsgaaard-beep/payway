@@ -28,21 +28,20 @@ function MenuSection({ title, items, onPress }: {
   onPress: (screen: string) => void;
 }) {
   const C = useColors();
-  const styles = makeStyles(C);
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.menu}>
+      <Text style={[styles.sectionTitle, { color: C.textLight }]}>{title}</Text>
+      <View style={[styles.menu, { backgroundColor: C.surface, borderColor: C.border }]}>
         {items.map((item, i) => (
           <TouchableOpacity
             key={i}
-            style={[styles.menuItem, i === items.length - 1 && styles.menuItemLast]}
+            style={[styles.menuItem, { borderBottomColor: C.borderLight }, i === items.length - 1 && styles.menuItemLast]}
             onPress={() => onPress(item.screen)}
           >
             <View style={[styles.menuIcon, item.destructive && styles.menuIconDanger]}>
               <Ionicons name={item.icon} size={20} color={item.destructive ? C.danger : C.primary} />
             </View>
-            <Text style={[styles.menuLabel, item.destructive && styles.menuLabelDanger]}>
+            <Text style={[styles.menuLabel, { color: item.destructive ? C.danger : C.text }]}>
               {item.label}
             </Text>
             <Ionicons name="chevron-forward" size={18} color={C.textLight} />
@@ -61,7 +60,6 @@ const THEME_OPTIONS: { value: ThemeMode; label: string; icon: keyof typeof Ionic
 
 export function ProfileScreen({ navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const { mode, setMode } = useTheme();
   const { user, logout } = useAuth();
   const [deleteStep, setDeleteStep] = useState(0);
@@ -121,28 +119,28 @@ export function ProfileScreen({ navigation }: any) {
   ];
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]}>
       {/* Profile Header */}
       <TouchableOpacity
-        style={styles.header}
+        style={[styles.header, { backgroundColor: C.surface, borderColor: C.border }]}
         onPress={() => navigation.navigate('EditProfile')}
         activeOpacity={0.7}
       >
         {user?.profileImage ? (
           <Image source={{ uri: user.profileImage }} style={styles.avatar} />
         ) : (
-          <View style={styles.avatarFallback}>
+          <View style={[styles.avatarFallback, { backgroundColor: C.primary }]}>
             <Text style={styles.avatarText}>
               {user?.name?.charAt(0)?.toUpperCase() || '?'}
             </Text>
           </View>
         )}
         <View style={styles.headerInfo}>
-          <Text style={styles.name}>{user?.name || 'Ukendt'}</Text>
+          <Text style={[styles.name, { color: C.text }]}>{user?.name || 'Ukendt'}</Text>
           {user?.paywayTag ? (
-            <Text style={styles.tag}>@{user.paywayTag}</Text>
+            <Text style={[styles.tag, { color: C.primary }]}>@{user.paywayTag}</Text>
           ) : (
-            <Text style={styles.phone}>
+            <Text style={[styles.phone, { color: C.textSecondary }]}>
               {user?.phone ? formatPhone(user.phone) : ''}
             </Text>
           )}
@@ -154,13 +152,13 @@ export function ProfileScreen({ navigation }: any) {
 
       {/* KYC Badge */}
       <View style={styles.kycRow}>
-        <View style={styles.kycBadge}>
+        <View style={[styles.kycBadge, { backgroundColor: C.surface, borderColor: C.border }]}>
           <Ionicons
             name={user?.kycStatus === 'VERIFIED' ? 'checkmark-circle' : 'alert-circle'}
             size={14}
             color={user?.kycStatus === 'VERIFIED' ? C.success : C.warning}
           />
-          <Text style={styles.kycText}>
+          <Text style={[styles.kycText, { color: C.textSecondary }]}>
             {user?.kycStatus === 'VERIFIED' ? 'Verificeret' : 'Ikke verificeret'}
           </Text>
         </View>
@@ -180,8 +178,16 @@ export function ProfileScreen({ navigation }: any) {
               ]}
               onPress={() => setMode(opt.value)}
             >
-              <Ionicons name={opt.icon} size={20} color={mode === opt.value ? C.accent : C.textSecondary} />
-              <Text style={[styles.themeLabel, { color: mode === opt.value ? C.accent : C.text }, mode === opt.value && styles.themeLabelActive]}>
+              <Ionicons
+                name={opt.icon}
+                size={20}
+                color={mode === opt.value ? C.accent : C.textSecondary}
+              />
+              <Text style={[
+                styles.themeLabel,
+                { color: mode === opt.value ? C.accent : C.text },
+                mode === opt.value && styles.themeLabelActive,
+              ]}>
                 {opt.label}
               </Text>
             </TouchableOpacity>
@@ -211,47 +217,47 @@ export function ProfileScreen({ navigation }: any) {
       />
 
       {/* Logout */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <TouchableOpacity style={[styles.logoutButton, { backgroundColor: C.surface, borderColor: C.border }]} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={20} color={C.danger} />
-        <Text style={styles.logoutText}>Log ud</Text>
+        <Text style={[styles.logoutText, { color: C.danger }]}>Log ud</Text>
       </TouchableOpacity>
 
       {/* Delete Account – Apple App Store Guidelines §5.1.1(v) */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>KONTOSLETNING</Text>
-        <View style={styles.deleteCard}>
+        <Text style={[styles.sectionTitle, { color: C.textLight }]}>KONTOSLETNING</Text>
+        <View style={[styles.deleteCard, { backgroundColor: C.surface }]}>
           {deleteStep === 0 ? (
             <>
               <View style={styles.deleteInfo}>
                 <Ionicons name="warning" size={20} color={C.danger} />
-                <Text style={styles.deleteInfoText}>
+                <Text style={[styles.deleteInfoText, { color: C.textSecondary }]}>
                   Sletning af din konto er permanent og kan ikke fortrydes. Al data, transaktionshistorik og saldo fjernes.
                 </Text>
               </View>
               <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-                <Text style={styles.deleteButtonText}>Slet min konto</Text>
+                <Text style={[styles.deleteButtonText, { color: C.danger }]}>Slet min konto</Text>
               </TouchableOpacity>
             </>
           ) : (
             <>
               <View style={styles.deleteInfo}>
                 <Ionicons name="alert-circle" size={20} color={C.danger} />
-                <Text style={styles.deleteInfoText}>
+                <Text style={[styles.deleteInfoText, { color: C.textSecondary }]}>
                   Ved sletning af din konto sker følgende:
                 </Text>
               </View>
               <View style={styles.deleteConsequences}>
-                <Text style={styles.deleteConsequence}>• Din wallet-saldo udbetales til din bankkonto</Text>
-                <Text style={styles.deleteConsequence}>• Al transaktionshistorik slettes</Text>
-                <Text style={styles.deleteConsequence}>• Dit PayWay-Tag frigives</Text>
-                <Text style={styles.deleteConsequence}>• Gruppemedlemskaber ophører</Text>
-                <Text style={styles.deleteConsequence}>• Data opbevares op til 5 år jf. bogføringsloven</Text>
+                <Text style={[styles.deleteConsequence, { color: C.textSecondary }]}>• Din wallet-saldo udbetales til din bankkonto</Text>
+                <Text style={[styles.deleteConsequence, { color: C.textSecondary }]}>• Al transaktionshistorik slettes</Text>
+                <Text style={[styles.deleteConsequence, { color: C.textSecondary }]}>• Dit PayWay-Tag frigives</Text>
+                <Text style={[styles.deleteConsequence, { color: C.textSecondary }]}>• Gruppemedlemskaber ophører</Text>
+                <Text style={[styles.deleteConsequence, { color: C.textSecondary }]}>• Data opbevares op til 5 år jf. bogføringsloven</Text>
               </View>
-              <Text style={styles.deletePrompt}>
-                Skriv <Text style={styles.deleteBold}>SLET</Text> for at bekræfte:
+              <Text style={[styles.deletePrompt, { color: C.text }]}>
+                Skriv <Text style={[styles.deleteBold, { color: C.danger }]}>SLET</Text> for at bekræfte:
               </Text>
               <TextInput
-                style={styles.deleteInput}
+                style={[styles.deleteInput, { backgroundColor: C.background, color: C.text }]}
                 value={deleteConfirmText}
                 onChangeText={setDeleteConfirmText}
                 placeholder="Skriv SLET"
@@ -261,14 +267,15 @@ export function ProfileScreen({ navigation }: any) {
               />
               <View style={styles.deleteActions}>
                 <TouchableOpacity
-                  style={styles.deleteCancelBtn}
+                  style={[styles.deleteCancelBtn, { backgroundColor: C.background, borderColor: C.border }]}
                   onPress={() => { setDeleteStep(0); setDeleteConfirmText(''); }}
                 >
-                  <Text style={styles.deleteCancelText}>Annuller</Text>
+                  <Text style={[styles.deleteCancelText, { color: C.textSecondary }]}>Annuller</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[
                     styles.deleteConfirmBtn,
+                    { backgroundColor: C.danger },
                     deleteConfirmText !== 'SLET' && styles.deleteConfirmDisabled,
                   ]}
                   onPress={handleDeleteConfirm}
@@ -282,16 +289,14 @@ export function ProfileScreen({ navigation }: any) {
         </View>
       </View>
 
-      <Text style={styles.version}>Payway v1.0.0</Text>
+      <Text style={[styles.version, { color: C.textLight }]}>Payway v1.0.0</Text>
     </ScrollView>
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   header: {
     flexDirection: 'row',
@@ -299,11 +304,9 @@ function makeStyles(C: any) {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.lg,
     marginBottom: SPACING.sm,
-    backgroundColor: C.surface,
     borderRadius: 16,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: C.border,
   },
   avatar: {
     width: 56,
@@ -314,7 +317,6 @@ function makeStyles(C: any) {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -330,17 +332,14 @@ function makeStyles(C: any) {
   name: {
     fontSize: 18,
     fontWeight: '700',
-    color: C.text,
   },
   phone: {
     fontSize: 14,
-    color: C.textSecondary,
     marginTop: 2,
   },
   tag: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.primary,
     marginTop: 2,
   },
   editBadge: {
@@ -359,17 +358,14 @@ function makeStyles(C: any) {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: C.surface,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.xs,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: C.border,
   },
   kycText: {
     fontSize: 12,
     fontWeight: '600',
-    color: C.textSecondary,
   },
   section: {
     marginTop: SPACING.md,
@@ -377,17 +373,14 @@ function makeStyles(C: any) {
   sectionTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: C.textLight,
     letterSpacing: 0.5,
     marginLeft: SPACING.xl,
     marginBottom: SPACING.xs,
   },
   menu: {
     marginHorizontal: SPACING.md,
-    backgroundColor: C.surface,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: C.border,
     overflow: 'hidden',
   },
   menuItem: {
@@ -396,7 +389,6 @@ function makeStyles(C: any) {
     paddingVertical: 13,
     paddingHorizontal: SPACING.md,
     borderBottomWidth: 1,
-    borderBottomColor: C.borderLight,
   },
   menuItemLast: {
     borderBottomWidth: 0,
@@ -417,10 +409,6 @@ function makeStyles(C: any) {
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: C.text,
-  },
-  menuLabelDanger: {
-    color: C.danger,
   },
   logoutButton: {
     flexDirection: 'row',
@@ -430,19 +418,15 @@ function makeStyles(C: any) {
     marginHorizontal: SPACING.md,
     marginTop: SPACING.lg,
     paddingVertical: 14,
-    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: C.border,
   },
   logoutText: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.danger,
   },
   deleteCard: {
     marginHorizontal: SPACING.md,
-    backgroundColor: C.surface,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#fecaca',
@@ -456,7 +440,6 @@ function makeStyles(C: any) {
   deleteInfoText: {
     flex: 1,
     fontSize: 13,
-    color: C.textSecondary,
     lineHeight: 19,
   },
   deleteButton: {
@@ -470,7 +453,6 @@ function makeStyles(C: any) {
   deleteButtonText: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.danger,
   },
   deleteConsequences: {
     marginBottom: SPACING.md,
@@ -478,22 +460,18 @@ function makeStyles(C: any) {
   },
   deleteConsequence: {
     fontSize: 13,
-    color: C.textSecondary,
     lineHeight: 18,
     marginLeft: 28,
   },
   deletePrompt: {
     fontSize: 14,
     fontWeight: '500',
-    color: C.text,
     marginBottom: SPACING.sm,
   },
   deleteBold: {
     fontWeight: '800',
-    color: C.danger,
   },
   deleteInput: {
-    backgroundColor: C.background,
     borderWidth: 1,
     borderColor: '#fecaca',
     borderRadius: 10,
@@ -501,7 +479,6 @@ function makeStyles(C: any) {
     paddingVertical: 12,
     fontSize: 16,
     fontWeight: '700',
-    color: C.text,
     textAlign: 'center',
     letterSpacing: 4,
     marginBottom: SPACING.md,
@@ -515,21 +492,17 @@ function makeStyles(C: any) {
     alignItems: 'center',
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: C.background,
     borderWidth: 1,
-    borderColor: C.border,
   },
   deleteCancelText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textSecondary,
   },
   deleteConfirmBtn: {
     flex: 1,
     alignItems: 'center',
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: C.danger,
   },
   deleteConfirmDisabled: {
     opacity: 0.4,
@@ -542,15 +515,39 @@ function makeStyles(C: any) {
   version: {
     textAlign: 'center',
     fontSize: 12,
-    color: C.textLight,
     marginVertical: SPACING.lg,
     paddingBottom: SPACING.xxl,
   },
-  themeSection: { marginHorizontal: 16, marginBottom: 16, borderRadius: 14, borderWidth: 1, padding: 16 },
-  themeSectionTitle: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginBottom: 8 },
-  themeRow: { flexDirection: 'row', gap: 8 },
-  themeOption: { flex: 1, alignItems: 'center', gap: 4, paddingVertical: 10, borderRadius: 10, borderWidth: 1.5 },
-  themeLabel: { fontSize: 12, fontWeight: '500' },
-  themeLabelActive: { fontWeight: '700' },
+  themeSection: {
+    marginHorizontal: SPACING.md,
+    marginBottom: SPACING.md,
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: SPACING.md,
+  },
+  themeSectionTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBottom: SPACING.sm,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+  },
+  themeOption: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1.5,
+  },
+  themeLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  themeLabelActive: {
+    fontWeight: '700',
+  },
 });
-}

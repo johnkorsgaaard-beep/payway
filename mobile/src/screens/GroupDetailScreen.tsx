@@ -74,7 +74,6 @@ const MOCK_EXPENSES: Record<string, Expense[]> = {
 
 export function GroupDetailScreen({ route, navigation }: any) {
   const C = useColors();
-  const styles = makeStyles(C);
   const { group } = route.params;
   const members = MOCK_MEMBERS[group.id] || [];
   const [expenses, setExpenses] = useState(MOCK_EXPENSES[group.id] || []);
@@ -146,17 +145,17 @@ export function GroupDetailScreen({ route, navigation }: any) {
   const splitType = 'Lige deling';
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={[styles.container, { backgroundColor: C.background }]} contentContainerStyle={styles.content}>
       {/* Group Header */}
       <View style={styles.header}>
         <View style={styles.headerEmoji}>
           <Text style={styles.emoji}>{group.emoji}</Text>
         </View>
-        <Text style={styles.headerTitle}>{group.name}</Text>
-        <Text style={styles.headerSub}>
+        <Text style={[styles.headerTitle, { color: C.text }]}>{group.name}</Text>
+        <Text style={[styles.headerSub, { color: C.textSecondary }]}>
           {members.length} medlemmer · {splitType}
         </Text>
-        <View style={styles.totalCard}>
+        <View style={[styles.totalCard, { backgroundColor: C.primary }]}>
           <Text style={styles.totalLabel}>Samlede udgifter</Text>
           <Text style={styles.totalAmount}>{formatDKK(totalExpenses)}</Text>
         </View>
@@ -164,19 +163,19 @@ export function GroupDetailScreen({ route, navigation }: any) {
 
       {/* Members */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Medlemmer</Text>
+        <Text style={[styles.sectionTitle, { color: C.text }]}>Medlemmer</Text>
         {members.map((member) => (
-          <View key={member.id} style={styles.memberRow}>
-            <View style={[styles.memberAvatar, member.isYou && styles.memberAvatarYou]}>
+          <View key={member.id} style={[styles.memberRow, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
+            <View style={[styles.memberAvatar, { backgroundColor: C.primary }, member.isYou && styles.memberAvatarYou]}>
               <Text style={styles.memberAvatarText}>
                 {member.isYou ? '🙋' : member.name.charAt(0)}
               </Text>
             </View>
             <View style={styles.memberInfo}>
-              <Text style={styles.memberName}>
+              <Text style={[styles.memberName, { color: C.text }]}>
                 {member.name}{member.isYou ? ' (dig)' : ''}
               </Text>
-              <Text style={styles.memberPaid}>
+              <Text style={[styles.memberPaid, { color: C.textSecondary }]}>
                 Betalt: {formatDKK(member.paid)}
               </Text>
             </View>
@@ -184,19 +183,19 @@ export function GroupDetailScreen({ route, navigation }: any) {
               {member.balance === 0 ? (
                 <View style={styles.settledBadge}>
                   <Ionicons name="checkmark-circle" size={14} color={C.success} />
-                  <Text style={styles.settledText}>Settled</Text>
+                  <Text style={[styles.settledText, { color: C.success }]}>Settled</Text>
                 </View>
               ) : (
                 <Text style={[
                   styles.memberBalance,
-                  member.balance > 0 ? styles.positive : styles.negative,
+                  member.balance > 0 ? { color: C.success } : { color: C.danger },
                 ]}>
                   {member.balance > 0
                     ? `+${formatDKK(member.balance)}`
                     : `-${formatDKK(Math.abs(member.balance))}`}
                 </Text>
               )}
-              <Text style={styles.memberOwes}>
+              <Text style={[styles.memberOwes, { color: C.textLight }]}>
                 Andel: {formatDKK(member.owes)}
               </Text>
             </View>
@@ -207,17 +206,17 @@ export function GroupDetailScreen({ route, navigation }: any) {
       {/* Expenses */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Udgifter</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>Udgifter</Text>
           <TouchableOpacity style={styles.addExpenseBtn} onPress={() => setShowForm(!showForm)}>
             <Ionicons name={showForm ? 'close-circle' : 'add-circle'} size={20} color={C.primary} />
-            <Text style={styles.addExpenseText}>{showForm ? 'Luk' : 'Tilføj'}</Text>
+            <Text style={[styles.addExpenseText, { color: C.primary }]}>{showForm ? 'Luk' : 'Tilføj'}</Text>
           </TouchableOpacity>
         </View>
 
         {showForm && (
-          <View style={styles.addForm}>
+          <View style={[styles.addForm, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
             <TextInput
-              style={styles.addFormInput}
+              style={[styles.addFormInput, { backgroundColor: C.background, color: C.text, borderColor: C.border }]}
               value={newTitle}
               onChangeText={setNewTitle}
               placeholder="Hvad er udgiften?"
@@ -225,23 +224,23 @@ export function GroupDetailScreen({ route, navigation }: any) {
             />
             <View style={styles.addFormRow}>
               <TextInput
-                style={[styles.addFormInput, { flex: 1 }]}
+                style={[styles.addFormInput, { flex: 1, backgroundColor: C.background, color: C.text, borderColor: C.border }]}
                 value={newAmount}
                 onChangeText={setNewAmount}
                 placeholder="Beløb (kr)"
                 placeholderTextColor={C.textLight}
                 keyboardType="numeric"
               />
-              <TouchableOpacity style={styles.addFormButton} onPress={handleAddExpense}>
+              <TouchableOpacity style={[styles.addFormButton, { backgroundColor: C.primary }]} onPress={handleAddExpense}>
                 <Ionicons name="checkmark" size={20} color="#fff" />
                 <Text style={styles.addFormButtonText}>Tilføj</Text>
               </TouchableOpacity>
             </View>
 
             {/* Receipt */}
-            <TouchableOpacity style={styles.receiptBtn} onPress={showReceiptOptions}>
+            <TouchableOpacity style={[styles.receiptBtn, { borderColor: C.border }]} onPress={showReceiptOptions}>
               <Ionicons name="camera-outline" size={20} color={C.primary} />
-              <Text style={styles.receiptBtnText}>
+              <Text style={[styles.receiptBtnText, { color: C.primary }]}>
                 {receiptImage ? 'Skift kvittering' : 'Tilføj kvittering'}
               </Text>
             </TouchableOpacity>
@@ -260,17 +259,17 @@ export function GroupDetailScreen({ route, navigation }: any) {
         )}
 
         {expenses.map((expense) => (
-          <View key={expense.id} style={styles.expenseRow}>
+          <View key={expense.id} style={[styles.expenseRow, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
             <View style={styles.expenseIcon}>
               <Ionicons name="receipt-outline" size={18} color={C.primary} />
             </View>
             <View style={styles.expenseInfo}>
-              <Text style={styles.expenseTitle}>{expense.title}</Text>
-              <Text style={styles.expensePaidBy}>
+              <Text style={[styles.expenseTitle, { color: C.text }]}>{expense.title}</Text>
+              <Text style={[styles.expensePaidBy, { color: C.textSecondary }]}>
                 Betalt af {expense.paidBy} · {expense.date}
               </Text>
             </View>
-            <Text style={styles.expenseAmount}>{formatDKK(expense.amount)}</Text>
+            <Text style={[styles.expenseAmount, { color: C.text }]}>{formatDKK(expense.amount)}</Text>
           </View>
         ))}
       </View>
@@ -278,7 +277,7 @@ export function GroupDetailScreen({ route, navigation }: any) {
       {/* Settle Up */}
       {members.some((m) => m.isYou && m.balance !== 0) && (
         <TouchableOpacity
-          style={styles.settleButton}
+          style={[styles.settleButton, { backgroundColor: C.primary }]}
           onPress={() => navigation.navigate('Send')}
         >
           <Ionicons name="swap-horizontal" size={20} color="#fff" />
@@ -289,11 +288,9 @@ export function GroupDetailScreen({ route, navigation }: any) {
   );
 }
 
-function makeStyles(C: any) {
-  return StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.background,
   },
   content: {
     paddingBottom: SPACING.xxl * 2,
@@ -318,16 +315,13 @@ function makeStyles(C: any) {
   headerTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: C.text,
   },
   headerSub: {
     fontSize: 14,
-    color: C.textSecondary,
     marginTop: 2,
   },
   totalCard: {
     marginTop: SPACING.md,
-    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xl,
@@ -357,7 +351,6 @@ function makeStyles(C: any) {
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: C.text,
     marginBottom: SPACING.sm,
   },
   addExpenseBtn: {
@@ -369,23 +362,19 @@ function makeStyles(C: any) {
   addExpenseText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.primary,
   },
   memberRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   memberAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: C.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
@@ -404,11 +393,9 @@ function makeStyles(C: any) {
   memberName: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.text,
   },
   memberPaid: {
     fontSize: 12,
-    color: C.textSecondary,
     marginTop: 1,
   },
   memberBalanceCol: {
@@ -420,14 +407,7 @@ function makeStyles(C: any) {
   },
   memberOwes: {
     fontSize: 11,
-    color: C.textLight,
     marginTop: 1,
-  },
-  positive: {
-    color: C.success,
-  },
-  negative: {
-    color: C.danger,
   },
   settledBadge: {
     flexDirection: 'row',
@@ -437,17 +417,14 @@ function makeStyles(C: any) {
   settledText: {
     fontSize: 13,
     fontWeight: '600',
-    color: C.success,
   },
   expenseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.surface,
     borderRadius: 12,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
     borderWidth: 1,
-    borderColor: C.borderLight,
   },
   expenseIcon: {
     width: 36,
@@ -464,37 +441,29 @@ function makeStyles(C: any) {
   expenseTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.text,
   },
   expensePaidBy: {
     fontSize: 12,
-    color: C.textSecondary,
     marginTop: 1,
   },
   expenseAmount: {
     fontSize: 15,
     fontWeight: '700',
-    color: C.text,
   },
   addForm: {
-    backgroundColor: C.surface,
     borderRadius: 14,
     padding: SPACING.md,
     marginBottom: SPACING.md,
     borderWidth: 1,
-    borderColor: C.borderLight,
     gap: SPACING.sm,
   },
   addFormInput: {
-    backgroundColor: C.background,
     borderRadius: 10,
     paddingHorizontal: SPACING.md,
     paddingVertical: 12,
     fontSize: 15,
     fontWeight: '500',
-    color: C.text,
     borderWidth: 1,
-    borderColor: C.border,
   },
   addFormRow: {
     flexDirection: 'row',
@@ -504,7 +473,6 @@ function makeStyles(C: any) {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: C.primary,
     borderRadius: 10,
     paddingHorizontal: SPACING.md,
     paddingVertical: 12,
@@ -522,13 +490,11 @@ function makeStyles(C: any) {
     paddingVertical: 12,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: C.border,
     borderStyle: 'dashed',
   },
   receiptBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.primary,
   },
   receiptPreview: {
     position: 'relative',
@@ -553,7 +519,6 @@ function makeStyles(C: any) {
     justifyContent: 'center',
     gap: SPACING.sm,
     marginHorizontal: SPACING.md,
-    backgroundColor: C.primary,
     borderRadius: 14,
     paddingVertical: 16,
   },
@@ -563,4 +528,3 @@ function makeStyles(C: any) {
     fontWeight: '700',
   },
 });
-}
