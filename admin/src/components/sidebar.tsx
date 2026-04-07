@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut,
   KanbanSquare,
+  Handshake,
 } from "lucide-react";
 
 const nav = [
@@ -20,6 +21,7 @@ const nav = [
   { href: "/transactions", label: "Transaktioner", icon: ArrowLeftRight },
   { href: "/merchants", label: "Butikker", icon: Store },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/crm", label: "CRM", icon: Handshake },
   { href: "/flow", label: "pwFLOW", icon: KanbanSquare },
   { href: "/fees", label: "Gebyrer", icon: Settings },
 ];
