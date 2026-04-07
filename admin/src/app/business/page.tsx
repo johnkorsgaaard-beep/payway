@@ -151,7 +151,7 @@ export default function BusinessPage() {
       {/* ─── Hero ─── */}
       <section
         className="relative overflow-hidden pt-16 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/hero-bg.png')" }}
+        style={{ backgroundImage: "url('/business-hero-bg.png')" }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/60 to-white/30" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-transparent to-white" />
