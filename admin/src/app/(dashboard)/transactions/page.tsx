@@ -94,10 +94,10 @@ export default function TransactionsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Transaktioner
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-[#0a2f5b]/40">
           Monitor og gennemse alle transaktioner
         </p>
       </div>
@@ -110,14 +110,14 @@ export default function TransactionsPage() {
             </CardTitle>
             <div className="flex gap-2">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-400" />
+                <Filter className="h-4 w-4 text-[#0a2f5b]/25" />
                 <select
                   value={typeFilter}
                   onChange={(e) => {
                     setTypeFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  className="rounded-xl border border-[#0a2f5b]/[0.08] bg-white px-3 py-2 text-sm text-[#0a2f5b]/70"
                 >
                   <option value="">Alle typer</option>
                   {TYPES.filter(Boolean).map((t) => (
@@ -132,7 +132,7 @@ export default function TransactionsPage() {
                     setStatusFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  className="rounded-xl border border-[#0a2f5b]/[0.08] bg-white px-3 py-2 text-sm text-[#0a2f5b]/70"
                 >
                   <option value="">Alle statusser</option>
                   {STATUSES.filter(Boolean).map((s) => (
@@ -148,7 +148,7 @@ export default function TransactionsPage() {
         <CardContent>
           {loading ? (
             <div className="flex h-48 items-center justify-center">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+              <div className="h-6 w-6 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
             </div>
           ) : (
             <>
@@ -169,7 +169,7 @@ export default function TransactionsPage() {
                 <TableBody>
                   {data?.transactions.map((tx) => (
                     <TableRow key={tx.id}>
-                      <TableCell className="font-mono text-xs text-gray-400">
+                      <TableCell className="font-mono text-xs text-[#0a2f5b]/30">
                         {tx.id.slice(0, 8)}...
                       </TableCell>
                       <TableCell>
@@ -183,10 +183,10 @@ export default function TransactionsPage() {
                       <TableCell>
                         {tx.toWallet?.user?.name || "—"}
                       </TableCell>
-                      <TableCell className="text-right font-medium text-gray-900 dark:text-white">
+                      <TableCell className="text-right font-medium text-[#0a2f5b]">
                         {formatDKK(tx.amount)}
                       </TableCell>
-                      <TableCell className="text-right text-gray-500">
+                      <TableCell className="text-right text-[#0a2f5b]/35">
                         {tx.fee > 0 ? formatDKK(tx.fee) : "—"}
                       </TableCell>
                       <TableCell>
@@ -194,10 +194,10 @@ export default function TransactionsPage() {
                           {tx.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="max-w-48 truncate text-gray-500">
+                      <TableCell className="max-w-48 truncate text-[#0a2f5b]/35">
                         {tx.description || "—"}
                       </TableCell>
-                      <TableCell className="whitespace-nowrap text-gray-500">
+                      <TableCell className="whitespace-nowrap text-[#0a2f5b]/35">
                         {formatDate(tx.createdAt)}
                       </TableCell>
                     </TableRow>
@@ -206,8 +206,8 @@ export default function TransactionsPage() {
               </Table>
 
               {data && data.totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
-                  <p className="text-sm text-gray-500">
+                <div className="mt-4 flex items-center justify-between border-t border-[#0a2f5b]/[0.06] pt-4">
+                  <p className="text-sm text-[#0a2f5b]/40">
                     Side {data.page} af {data.totalPages} ({data.total} total)
                   </p>
                   <div className="flex gap-2">

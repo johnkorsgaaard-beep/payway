@@ -10,7 +10,7 @@ export default function DashboardLayout({
   return (
     <>
       <Sidebar />
-      <main className="ml-64 min-h-screen p-8">{children}</main>
+      <main className="ml-64 min-h-screen bg-[#f8fafc] p-8">{children}</main>
     </>
   );
 }

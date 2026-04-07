@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut,
   KanbanSquare,
+  Handshake,
 } from "lucide-react";
 
 const nav = [
@@ -20,6 +21,7 @@ const nav = [
   { href: "/transactions", label: "Transaktioner", icon: ArrowLeftRight },
   { href: "/merchants", label: "Butikker", icon: Store },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/crm", label: "CRM", icon: Handshake },
   { href: "/flow", label: "pwFLOW", icon: KanbanSquare },
   { href: "/fees", label: "Gebyrer", icon: Settings },
 ];
@@ -28,13 +30,11 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-      <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-6 dark:border-gray-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0a2f5b] text-white font-bold text-sm">
-          PW
-        </div>
-        <span className="text-lg font-bold text-gray-900 dark:text-white">
-          Payway Admin
+    <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0a2f5b]">
+      <div className="flex h-16 items-center gap-2.5 border-b border-white/[0.08] px-6">
+        <img src="/payway-icon.png" alt="PayWay" className="h-8 w-8 rounded-lg" />
+        <span className="text-[15px] font-bold text-white">
+          PayWay Admin
         </span>
       </div>
 
@@ -47,28 +47,28 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-all",
                 isActive
-                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                  ? "bg-[#2ec964] text-white shadow-lg shadow-[#2ec964]/20"
+                  : "text-white/50 hover:bg-white/[0.06] hover:text-white/80"
               )}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-[18px] w-[18px]" />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-gray-200 p-4 dark:border-gray-800">
+      <div className="border-t border-white/[0.08] p-4">
         <button
           onClick={() => {
             localStorage.removeItem("admin_token");
             window.location.href = "/";
           }}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-[18px] w-[18px]" />
           Log ud
         </button>
       </div>

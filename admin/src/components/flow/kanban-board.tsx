@@ -173,9 +173,9 @@ export function KanbanBoard({ board, state, setState }: KanbanBoardProps) {
 
           {/* Add Column */}
           {addingColumn ? (
-            <div className="w-72 shrink-0 rounded-2xl bg-gray-50 p-3 dark:bg-gray-900/60">
+            <div className="w-72 shrink-0 rounded-2xl bg-[#0a2f5b]/[0.02] p-3">
               <input
-                className="w-full rounded-lg border border-emerald-300 bg-white px-3 py-2 text-sm font-semibold outline-none dark:bg-gray-800 dark:text-white dark:focus:border-emerald-600"
+                className="w-full rounded-xl border border-[#2ec964]/30 bg-white px-3 py-2 text-sm font-semibold text-[#0a2f5b] outline-none focus:border-[#25a854]"
                 value={newColTitle}
                 onChange={(e) => setNewColTitle(e.target.value)}
                 onKeyDown={(e) => {
@@ -193,7 +193,7 @@ export function KanbanBoard({ board, state, setState }: KanbanBoardProps) {
           ) : (
             <button
               onClick={() => setAddingColumn(true)}
-              className="flex h-fit w-72 shrink-0 items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 py-8 text-sm font-medium text-gray-400 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-600 dark:border-gray-700 dark:hover:border-gray-600 dark:hover:bg-gray-900/40 dark:hover:text-gray-300"
+              className="flex h-fit w-72 shrink-0 items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#0a2f5b]/[0.08] py-8 text-sm font-medium text-[#0a2f5b]/30 transition-colors hover:border-[#0a2f5b]/20 hover:bg-[#0a2f5b]/[0.02] hover:text-[#0a2f5b]/70"
             >
               <Plus className="h-4 w-4" />
               Tilføj kolonne

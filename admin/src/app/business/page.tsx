@@ -88,13 +88,11 @@ function LanguageSwitcher({ locale, onChange }: { locale: Locale; onChange: (l: 
   );
 }
 
-const DASHBOARD_NAV_KEYS = [
-  { icon: BarChart3, key: "title" as const, active: true },
-  { icon: Users, key: "users" as const, active: false },
-  { icon: ArrowLeftRight, key: "transactions" as const, active: false },
-  { icon: Store, key: "stores" as const, active: false },
-  { icon: DollarSign, key: "analytics" as const, active: false },
-  { icon: Settings, key: "fees" as const, active: false },
+const SHOP_NAV = [
+  { icon: BarChart3, label: "Yvirlit", active: true },
+  { icon: ArrowLeftRight, label: "Transaksiónar", active: false },
+  { icon: Wallet, label: "Útgjaldingar", active: false },
+  { icon: Settings, label: "Stillingar", active: false },
 ];
 
 export default function BusinessPage() {
@@ -221,117 +219,125 @@ export default function BusinessPage() {
             </div>
           </div>
 
-          {/* ─── Dashboard Preview ─── */}
+          {/* ─── Shop Dashboard Preview ─── */}
           <div id="dashboard" className="relative mx-auto mt-16 max-w-5xl">
             <div className="overflow-hidden rounded-2xl border border-[#0a2f5b]/[0.08] bg-white shadow-2xl shadow-[#0a2f5b]/[0.06]">
               <div className="flex items-center gap-2 border-b border-[#0a2f5b]/[0.05] px-4 py-3">
                 <div className="h-3 w-3 rounded-full bg-[#ff6058]" />
                 <div className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
                 <div className="h-3 w-3 rounded-full bg-[#27c93f]" />
-                <span className="ml-3 text-[11px] font-medium text-[#0a2f5b]/25">admin.payway.fo</span>
+                <span className="ml-3 text-[11px] font-medium text-[#0a2f5b]/25">shop.payway.fo</span>
               </div>
 
               <div className="flex">
                 {/* Sidebar */}
-                <div className="hidden w-52 shrink-0 border-r border-[#0a2f5b]/[0.05] bg-[#fafcff] p-4 md:block">
-                  <div className="mb-5 flex items-center gap-2 px-2">
-                    <img src="/payway-icon.png" alt="PayWay" className="h-7 w-7 rounded-md" />
-                    <span className="text-[12px] font-bold text-[#0a2f5b]">PayWay Admin</span>
+                <div className="hidden w-52 shrink-0 border-r border-[#0a2f5b]/[0.05] bg-white p-4 md:block">
+                  <div className="mb-5 flex items-center gap-2.5 px-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#2ec964] to-[#1a8a45] text-white shadow-sm shadow-[#2ec964]/20">
+                      <Store className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <span className="text-[12px] font-bold text-[#0a2f5b]">Shop Admin</span>
+                      <p className="text-[8px] font-medium text-[#0a2f5b]/30">Títt Fyritøkjunavn</p>
+                    </div>
                   </div>
-                  {DASHBOARD_NAV_KEYS.map((item) => (
+                  {SHOP_NAV.map((item) => (
                     <div
-                      key={item.key}
-                      className={`mb-1 flex items-center gap-2.5 rounded-xl px-3 py-2 text-[11px] font-medium transition-colors ${
+                      key={item.label}
+                      className={`mb-1 flex items-center gap-2.5 rounded-xl px-3 py-2 text-[11px] font-medium ${
                         item.active
-                          ? "bg-[#0a2f5b] text-white shadow-sm shadow-[#0a2f5b]/20"
-                          : "text-[#0a2f5b]/40 hover:text-[#0a2f5b]/60"
+                          ? "bg-[#2ec964]/10 text-[#1a8a45] shadow-sm"
+                          : "text-[#0a2f5b]/35"
                       }`}
                     >
                       <item.icon className="h-3.5 w-3.5" />
-                      {t.biz.dashboard[item.key][l]}
+                      {item.label}
                     </div>
                   ))}
                 </div>
 
                 {/* Main content */}
-                <div className="flex-1 p-6">
+                <div className="flex-1 bg-[#f8fafc] p-6">
                   <div className="mb-1 flex items-center justify-between">
                     <div>
-                      <p className="text-[15px] font-bold text-[#0a2f5b]">
-                        <T k={t.biz.dashboard.title} locale={l} />
-                      </p>
-                      <p className="text-[11px] text-[#0a2f5b]/30">
-                        <T k={t.biz.dashboard.subtitle} locale={l} />
-                      </p>
+                      <p className="text-[15px] font-bold text-[#0a2f5b]">Yvirlit</p>
+                      <p className="text-[11px] text-[#0a2f5b]/30">Títt Fyritøkjunavn — Í dag</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-[#2ec964]/10 px-3 py-1">
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#2ec964]" />
+                      <span className="text-[10px] font-semibold text-[#1a8a45]">Búðin opin</span>
                     </div>
                   </div>
 
                   <div className="mt-4 grid grid-cols-4 gap-3">
                     {[
-                      { value: "2.800+", label: t.biz.stats.transactions, icon: ArrowLeftRight, trend: "+12%" },
-                      { value: "127", label: t.biz.stats.activeUsers, icon: Users, trend: "+8%" },
-                      { value: "14", label: t.biz.stats.merchants, icon: Store, trend: "+3" },
-                      { value: "99,9%", label: t.biz.stats.uptime, icon: Shield, trend: "" },
+                      { value: "3.245,00 kr.", label: "Søla í dag", icon: CreditCard, color: "bg-[#0a2f5b]", iconColor: "text-white", trend: "+18%" },
+                      { value: "27", label: "Tal av transaksiónum", icon: ArrowLeftRight, color: "bg-[#2ec964]", iconColor: "text-white", trend: "+5" },
+                      { value: "12.840 kr.", label: "Næsta útgjalding", icon: Wallet, color: "bg-[#f59e0b]", iconColor: "text-white", trend: "í morgin" },
+                      { value: "19", label: "Einstek kundar", icon: Users, color: "bg-[#0a2f5b]", iconColor: "text-white", trend: "+3" },
                     ].map((stat) => (
-                      <div key={stat.label[l]} className="rounded-xl border border-[#0a2f5b]/[0.05] bg-[#fafcff] p-3">
+                      <div key={stat.label} className="rounded-xl border border-[#0a2f5b]/[0.05] bg-white p-3">
                         <div className="flex items-center justify-between">
-                          <stat.icon className="h-3.5 w-3.5 text-[#0a2f5b]/25" />
-                          {stat.trend && (
-                            <span className="flex items-center gap-0.5 text-[9px] font-bold text-[#2ec964]">
-                              <TrendingUp className="h-2.5 w-2.5" />
-                              {stat.trend}
-                            </span>
-                          )}
+                          <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${stat.color}`}>
+                            <stat.icon className={`h-3 w-3 ${stat.iconColor}`} />
+                          </div>
+                          <span className="flex items-center gap-0.5 text-[9px] font-bold text-[#2ec964]">
+                            <TrendingUp className="h-2.5 w-2.5" />
+                            {stat.trend}
+                          </span>
                         </div>
                         <p className="mt-2 text-[18px] font-extrabold text-[#0a2f5b]">{stat.value}</p>
-                        <p className="text-[9px] font-medium text-[#0a2f5b]/30">{stat.label[l]}</p>
+                        <p className="text-[9px] font-medium text-[#0a2f5b]/30">{stat.label}</p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-[#0a2f5b]/[0.05] bg-[#fafcff] p-4">
-                      <p className="text-[11px] font-bold text-[#0a2f5b]/50">
-                        <T k={t.biz.dashboard.volumeByType} locale={l} />
-                      </p>
-                      <div className="mt-4 flex items-end gap-3 px-2">
-                        {[64, 48, 80, 32, 56, 72, 40].map((h, i) => (
-                          <div key={i} className="flex-1">
+                  <div className="mt-4 grid grid-cols-5 gap-3">
+                    {/* Sales chart */}
+                    <div className="col-span-3 rounded-xl border border-[#0a2f5b]/[0.05] bg-white p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-[11px] font-bold text-[#0a2f5b]/60">Søla pr. tíma</p>
+                          <p className="text-[9px] text-[#0a2f5b]/25">Í dag, DKK</p>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="h-2 w-2 rounded-full bg-[#0a2f5b]" />
+                          <span className="text-[9px] text-[#0a2f5b]/30">Í dag</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-end gap-1.5 px-1">
+                        {[20, 30, 25, 35, 40, 55, 70, 85, 90, 75, 60, 50].map((h, i) => (
+                          <div key={i} className="flex-1 flex flex-col items-center gap-1">
                             <div
-                              className={`rounded-md ${i % 2 === 0 ? "bg-[#0a2f5b]" : "bg-[#2ec964]"}`}
-                              style={{ height: `${h}px`, opacity: 0.15 + (h / 100) * 0.85 }}
+                              className="w-full rounded-md bg-[#0a2f5b]"
+                              style={{ height: `${h}px`, opacity: 0.3 + (h / 100) * 0.7 }}
                             />
+                            <span className="text-[7px] text-[#0a2f5b]/20">{String(i + 8).padStart(2, "0")}</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                    <div className="rounded-xl border border-[#0a2f5b]/[0.05] bg-[#fafcff] p-4">
-                      <p className="text-[11px] font-bold text-[#0a2f5b]/50">
-                        <T k={t.biz.dashboard.txByType} locale={l} />
-                      </p>
-                      <div className="mt-2 flex items-center justify-center py-2">
-                        <div className="relative h-[72px] w-[72px]">
-                          <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-                            <circle cx="18" cy="18" r="14" fill="none" stroke="#0a2f5b" strokeOpacity="0.06" strokeWidth="4" />
-                            <circle cx="18" cy="18" r="14" fill="none" stroke="#0a2f5b" strokeWidth="4" strokeDasharray="38 88" strokeLinecap="round" />
-                            <circle cx="18" cy="18" r="14" fill="none" stroke="#2ec964" strokeWidth="4" strokeDasharray="28 88" strokeDashoffset="-38" strokeLinecap="round" />
-                            <circle cx="18" cy="18" r="14" fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="18 88" strokeDashoffset="-66" strokeLinecap="round" />
-                          </svg>
-                        </div>
-                        <div className="ml-4 space-y-1.5">
-                          <div className="flex items-center gap-1.5">
-                            <div className="h-2 w-2 rounded-full bg-[#0a2f5b]" />
-                            <span className="text-[9px] text-[#0a2f5b]/40">P2P (43%)</span>
+
+                    {/* Quick actions */}
+                    <div className="col-span-2 rounded-xl border border-[#0a2f5b]/[0.05] bg-white p-4">
+                      <p className="text-[11px] font-bold text-[#0a2f5b]/60">Skjótar gerðir</p>
+                      <div className="mt-3 space-y-2">
+                        {[
+                          { icon: QrCode, label: "Vís búðar QR-kotu", desc: "Kundar skanna fyri at gjalda", color: "bg-[#0a2f5b]" },
+                          { icon: Wallet, label: "Sí útgjaldingar", desc: "Næsta: í morgin", color: "bg-[#f59e0b]" },
+                          { icon: Settings, label: "Búðarstillingar", desc: "Navn, adressu, kontu", color: "bg-[#0a2f5b]/60" },
+                        ].map((action) => (
+                          <div key={action.label} className="flex items-center gap-3 rounded-xl bg-[#0a2f5b]/[0.02] p-2.5">
+                            <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${action.color} text-white`}>
+                              <action.icon className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[10px] font-bold text-[#0a2f5b]">{action.label}</p>
+                              <p className="text-[8px] text-[#0a2f5b]/30">{action.desc}</p>
+                            </div>
+                            <ChevronRight className="h-3 w-3 shrink-0 text-[#0a2f5b]/20" />
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <div className="h-2 w-2 rounded-full bg-[#2ec964]" />
-                            <span className="text-[9px] text-[#0a2f5b]/40">Top-up (32%)</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <div className="h-2 w-2 rounded-full bg-[#f59e0b]" />
-                            <span className="text-[9px] text-[#0a2f5b]/40">Store (25%)</span>
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>

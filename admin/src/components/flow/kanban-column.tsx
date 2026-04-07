@@ -77,7 +77,7 @@ export function KanbanColumn({
     <div
       ref={sortableRef}
       style={style}
-      className={`flex w-72 shrink-0 flex-col rounded-2xl bg-gray-50 dark:bg-gray-900/60 ${
+      className={`flex w-72 shrink-0 flex-col rounded-2xl bg-[#0a2f5b]/[0.02] ${
         isDragging ? "opacity-50" : ""
       }`}
     >
@@ -86,14 +86,14 @@ export function KanbanColumn({
         <button
           {...attributes}
           {...listeners}
-          className="shrink-0 cursor-grab rounded p-0.5 text-gray-300 hover:text-gray-500 active:cursor-grabbing dark:text-gray-600 dark:hover:text-gray-400"
+          className="shrink-0 cursor-grab rounded p-0.5 text-[#0a2f5b]/20 hover:text-[#0a2f5b]/40 active:cursor-grabbing"
         >
           <GripVertical className="h-4 w-4" />
         </button>
 
         {isRenaming ? (
           <input
-            className="flex-1 rounded-lg border border-emerald-300 bg-white px-2 py-1 text-sm font-semibold text-gray-900 outline-none dark:bg-gray-800 dark:text-white"
+            className="flex-1 rounded-xl border border-[#2ec964]/30 bg-white px-2 py-1 text-sm font-semibold text-[#0a2f5b] outline-none"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
             onBlur={handleRename}
@@ -107,28 +107,28 @@ export function KanbanColumn({
             autoFocus
           />
         ) : (
-          <h3 className="flex-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <h3 className="flex-1 text-sm font-semibold text-[#0a2f5b]/70">
             {column.title}
           </h3>
         )}
 
-        <span className="rounded-md bg-gray-200 px-1.5 py-0.5 text-xs font-medium text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+        <span className="rounded-md bg-[#0a2f5b]/[0.08] px-1.5 py-0.5 text-xs font-medium text-[#0a2f5b]/40">
           {cards.length}
         </span>
 
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+            className="rounded-xl p-1 text-[#0a2f5b]/30 transition-colors hover:bg-[#0a2f5b]/[0.06] hover:text-[#0a2f5b]/70"
           >
             <MoreHorizontal className="h-4 w-4" />
           </button>
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 z-20 w-40 rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <div className="absolute right-0 top-8 z-20 w-40 rounded-xl border border-[#0a2f5b]/[0.06] bg-white py-1 shadow-lg">
                 <button
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-[#0a2f5b]/70 hover:bg-[#0a2f5b]/[0.02]"
                   onClick={() => {
                     setIsRenaming(true);
                     setRenameValue(column.title);
@@ -139,7 +139,7 @@ export function KanbanColumn({
                   Omdøb
                 </button>
                 <button
-                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50"
                   onClick={() => {
                     onDeleteColumn();
                     setShowMenu(false);
@@ -168,7 +168,7 @@ export function KanbanColumn({
         {isAdding ? (
           <div className="space-y-2">
             <textarea
-              className="w-full resize-none rounded-xl border border-gray-200 bg-white p-3 text-sm outline-none placeholder:text-gray-400 focus:border-emerald-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-emerald-600"
+              className="w-full resize-none rounded-xl border border-[#0a2f5b]/[0.06] bg-white p-3 text-sm outline-none placeholder:text-[#0a2f5b]/30 focus:border-[#2ec964]/30"
               rows={2}
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
@@ -188,7 +188,7 @@ export function KanbanColumn({
             <div className="flex gap-2">
               <button
                 onClick={handleAdd}
-                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                className="rounded-xl bg-[#25a854] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#1a8a45]"
               >
                 Tilføj
               </button>
@@ -197,7 +197,7 @@ export function KanbanColumn({
                   setNewTitle("");
                   setIsAdding(false);
                 }}
-                className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="rounded-xl p-1.5 text-[#0a2f5b]/30 hover:text-[#0a2f5b]/70"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -206,7 +206,7 @@ export function KanbanColumn({
         ) : (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex w-full items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            className="flex w-full items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-[#0a2f5b]/30 transition-colors hover:bg-[#0a2f5b]/[0.02] hover:text-[#0a2f5b]/70"
           >
             <Plus className="h-4 w-4" />
             Tilføj kort

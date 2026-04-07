@@ -32,7 +32,7 @@ export function KanbanCard({ card, onClick }: KanbanCardProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group cursor-pointer rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800 ${
+      className={`group cursor-pointer rounded-xl border border-[#0a2f5b]/[0.06] bg-white shadow-sm transition-shadow hover:shadow-md ${
         isDragging ? "z-50 opacity-50 shadow-lg" : ""
       }`}
       onClick={onClick}
@@ -44,20 +44,20 @@ export function KanbanCard({ card, onClick }: KanbanCardProps) {
         <button
           {...attributes}
           {...listeners}
-          className="mt-0.5 shrink-0 cursor-grab rounded p-0.5 text-gray-300 opacity-0 transition-opacity hover:text-gray-500 group-hover:opacity-100 active:cursor-grabbing dark:text-gray-600 dark:hover:text-gray-400"
+          className="mt-0.5 shrink-0 cursor-grab rounded p-0.5 text-[#0a2f5b]/20 opacity-0 transition-opacity hover:text-[#0a2f5b]/40 group-hover:opacity-100 active:cursor-grabbing"
           onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="h-4 w-4" />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-gray-900 dark:text-white">{card.title}</p>
+          <p className="text-sm font-medium text-[#0a2f5b]">{card.title}</p>
           {card.description && (
-            <p className="mt-0.5 truncate text-xs text-gray-400">{card.description}</p>
+            <p className="mt-0.5 truncate text-xs text-[#0a2f5b]/30">{card.description}</p>
           )}
           {totalCount > 0 && (
             <div className="mt-2 flex items-center gap-1.5">
-              <CheckSquare className={`h-3.5 w-3.5 ${checkedCount === totalCount ? "text-emerald-500" : "text-gray-400"}`} />
-              <span className={`text-xs font-medium ${checkedCount === totalCount ? "text-emerald-500" : "text-gray-400"}`}>
+              <CheckSquare className={`h-3.5 w-3.5 ${checkedCount === totalCount ? "text-[#2ec964]" : "text-[#0a2f5b]/30"}`} />
+              <span className={`text-xs font-medium ${checkedCount === totalCount ? "text-[#2ec964]" : "text-[#0a2f5b]/30"}`}>
                 {checkedCount}/{totalCount}
               </span>
             </div>

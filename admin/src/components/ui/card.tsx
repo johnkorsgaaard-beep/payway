@@ -12,7 +12,7 @@ export function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900",
+        "rounded-2xl border border-[#0a2f5b]/[0.06] bg-white p-6 shadow-sm shadow-[#0a2f5b]/[0.03]",
         className
       )}
     >
@@ -39,7 +39,7 @@ export function CardTitle({
   className?: string;
 }) {
   return (
-    <h3 className={cn("text-lg font-semibold text-gray-900 dark:text-white", className)}>
+    <h3 className={cn("text-lg font-semibold text-[#0a2f5b]", className)}>
       {children}
     </h3>
   );
@@ -53,7 +53,7 @@ export function CardDescription({
   className?: string;
 }) {
   return (
-    <p className={cn("text-sm text-gray-500 dark:text-gray-400", className)}>
+    <p className={cn("text-sm text-[#0a2f5b]/40", className)}>
       {children}
     </p>
   );
