@@ -33,9 +33,7 @@ export default function SelectRolePage() {
 
       <div className="relative w-full max-w-3xl">
         <div className="mb-10 text-center">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0a2f5b] shadow-lg shadow-[#0a2f5b]/20">
-            <span className="text-xl font-black text-white">P</span>
-          </div>
+          <img src="/payway-icon.png" alt="PayWay" className="mx-auto mb-5 h-14 w-14 rounded-2xl shadow-lg shadow-[#0a2f5b]/20" />
           <h1 className="text-3xl font-extrabold tracking-tight text-[#0a2f5b]">
             Velkommen til PayWay
           </h1>

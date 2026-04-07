@@ -17,6 +17,12 @@ import {
   Check,
   TrendingUp,
   Globe,
+  QrCode,
+  Wallet,
+  LineChart,
+  SmartphoneNfc,
+  BadgePercent,
+  Wrench,
 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import t, { type Locale, localeLabels, localeFlags } from "@/lib/i18n";
@@ -138,10 +144,16 @@ export default function BusinessPage() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher locale={l} onChange={setLocale} />
             <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#0a2f5b] px-5 py-2 text-sm font-semibold text-white shadow-md shadow-[#0a2f5b]/15 transition-all hover:shadow-lg hover:shadow-[#0a2f5b]/25"
+              href="/portal"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#0a2f5b]/10 px-4 py-2 text-sm font-medium text-[#0a2f5b]/70 transition-all hover:border-[#0a2f5b]/25 hover:text-[#0a2f5b]"
             >
               <T k={t.biz.nav.login} locale={l} />
+            </Link>
+            <Link
+              href="/business/opret"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#2ec964] px-5 py-2 text-sm font-bold text-white shadow-md shadow-[#2ec964]/20 transition-all hover:bg-[#25a854] hover:shadow-lg hover:shadow-[#2ec964]/30"
+            >
+              <T k={t.biz.nav.startFree} locale={l} />
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -181,8 +193,8 @@ export default function BusinessPage() {
 
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
-                href="/"
-                className="group inline-flex items-center gap-2 rounded-2xl bg-[#0a2f5b] px-8 py-4 text-[15px] font-semibold text-white shadow-lg shadow-[#0a2f5b]/20 transition-all hover:shadow-xl hover:shadow-[#0a2f5b]/30"
+                href="/business/opret"
+                className="group inline-flex items-center gap-2 rounded-2xl bg-[#2ec964] px-8 py-4 text-[15px] font-bold text-white shadow-lg shadow-[#2ec964]/25 transition-all hover:bg-[#25a854] hover:shadow-xl hover:shadow-[#2ec964]/30"
               >
                 <T k={t.biz.hero.openDashboard} locale={l} />
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -194,6 +206,18 @@ export default function BusinessPage() {
                 <T k={t.biz.hero.seeFeatures} locale={l} />
                 <ChevronRight className="h-4 w-4" />
               </a>
+            </div>
+
+            {/* USP Bubble */}
+            <div className="mt-8 flex justify-center">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-[#2ec964]/20 bg-[#2ec964]/[0.07] px-5 py-2.5 shadow-sm">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#2ec964]">
+                  <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                </div>
+                <span className="text-[14px] font-semibold text-[#0a2f5b]">
+                  <T k={t.biz.hero.uspBubble} locale={l} />
+                </span>
+              </div>
             </div>
           </div>
 
@@ -355,12 +379,12 @@ export default function BusinessPage() {
 
           <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: BarChart3, title: t.biz.features.analyticsTitle, desc: t.biz.features.analyticsDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
-              { icon: Shield, title: t.biz.features.securityTitle, desc: t.biz.features.securityDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
-              { icon: Zap, title: t.biz.features.instantTitle, desc: t.biz.features.instantDesc, accent: "from-[#f59e0b] to-[#d97706]" },
-              { icon: Users, title: t.biz.features.userMgmtTitle, desc: t.biz.features.userMgmtDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
-              { icon: Store, title: t.biz.features.onboardTitle, desc: t.biz.features.onboardDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
-              { icon: CreditCard, title: t.biz.features.feesTitle, desc: t.biz.features.feesDesc, accent: "from-[#f59e0b] to-[#d97706]" },
+              { icon: QrCode, title: t.biz.features.qrTitle, desc: t.biz.features.qrDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
+              { icon: Wallet, title: t.biz.features.payoutsTitle, desc: t.biz.features.payoutsDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
+              { icon: LineChart, title: t.biz.features.salesTitle, desc: t.biz.features.salesDesc, accent: "from-[#f59e0b] to-[#d97706]" },
+              { icon: SmartphoneNfc, title: t.biz.features.noTerminalTitle, desc: t.biz.features.noTerminalDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
+              { icon: BadgePercent, title: t.biz.features.lowFeesTitle, desc: t.biz.features.lowFeesDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
+              { icon: Wrench, title: t.biz.features.settingsTitle, desc: t.biz.features.settingsDesc, accent: "from-[#f59e0b] to-[#d97706]" },
             ].map((f) => (
               <div
                 key={f.title[l]}
@@ -393,13 +417,10 @@ export default function BusinessPage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
+          <div className="mx-auto mt-16 flex max-w-4xl flex-col items-center gap-0 md:flex-row md:items-stretch">
             {/* Store plan */}
-            <div className="rounded-2xl border border-[#0a2f5b]/[0.06] bg-white p-8 transition-all hover:shadow-lg hover:shadow-[#0a2f5b]/[0.04]">
-              <p className="text-[13px] font-semibold text-[#2ec964]">
-                <T k={t.biz.pricing.storesLabel} locale={l} />
-              </p>
-              <p className="mt-3 text-[40px] font-extrabold tracking-tight text-[#0a2f5b]">1–2%</p>
+            <div className="w-full rounded-2xl border border-[#0a2f5b]/[0.06] bg-white p-8 transition-all hover:shadow-lg hover:shadow-[#0a2f5b]/[0.04] md:rounded-r-none md:border-r-0">
+              <p className="text-[40px] font-extrabold tracking-tight text-[#0a2f5b]">1–2%</p>
               <p className="text-[14px] text-[#0a2f5b]/35">
                 <T k={t.biz.pricing.perTx} locale={l} />
               </p>
@@ -416,26 +437,25 @@ export default function BusinessPage() {
               </ul>
             </div>
 
-            {/* Platform plan */}
-            <div className="relative rounded-2xl border-2 border-[#0a2f5b] bg-white p-8 shadow-xl shadow-[#0a2f5b]/[0.06]">
-              <div className="absolute -top-3 right-6 rounded-full bg-[#0a2f5b] px-4 py-1 text-[11px] font-bold text-white">
-                <T k={t.biz.pricing.recommended} locale={l} />
+            {/* Plus connector */}
+            <div className="z-10 -my-4 flex items-center justify-center md:-mx-5 md:my-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#0a2f5b]/10 bg-white text-[20px] font-bold text-[#0a2f5b] shadow-lg">
+                +
               </div>
-              <p className="text-[13px] font-semibold text-[#0a2f5b]">
-                <T k={t.biz.pricing.platformLabel} locale={l} />
-              </p>
-              <p className="mt-3 text-[40px] font-extrabold tracking-tight text-[#0a2f5b]">
-                <T k={t.biz.pricing.contactUs} locale={l} />
-              </p>
-              <p className="text-[14px] text-[#0a2f5b]/35">
-                <T k={t.biz.pricing.customSolution} locale={l} />
-              </p>
-              <div className="my-6 h-px bg-[#0a2f5b]/10" />
+            </div>
+
+            {/* Platform plan */}
+            <div className="relative w-full rounded-2xl border-2 border-[#0a2f5b] bg-white p-8 shadow-xl shadow-[#0a2f5b]/[0.06] md:rounded-l-none">
+              <h3 className="text-[22px] font-extrabold tracking-tight text-[#0a2f5b]">
+                <T k={t.biz.pricing.platformTitle} locale={l} />
+              </h3>
+              <div className="mt-6 h-px bg-[#0a2f5b]/10" />
               <ul className="space-y-3">
                 {[
                   t.biz.pricing.platCheck1, t.biz.pricing.platCheck2,
                   t.biz.pricing.platCheck3, t.biz.pricing.platCheck4,
                   t.biz.pricing.platCheck5, t.biz.pricing.platCheck6,
+                  t.biz.pricing.platCheck7,
                 ].map((item) => (
                   <li key={item[l]} className="flex items-start gap-2.5">
                     <div className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-[#0a2f5b]/10">
@@ -469,7 +489,7 @@ export default function BusinessPage() {
               </p>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Link
-                  href="/"
+                  href="/business/opret"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#2ec964] px-8 py-4 text-[15px] font-bold text-white shadow-xl shadow-[#2ec964]/25 transition-all hover:bg-[#25a854] hover:shadow-2xl hover:shadow-[#2ec964]/30"
                 >
                   <T k={t.biz.cta.loginDashboard} locale={l} />
