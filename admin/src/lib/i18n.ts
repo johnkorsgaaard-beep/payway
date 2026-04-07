@@ -226,11 +226,21 @@ const translations = {
         da: "Kunder scanner din butiks QR-kode og betaler direkte fra PayWay-appen. Ingen kortterminal nødvendig.",
         en: "Customers scan your store QR code and pay directly from the PayWay app. No card terminal needed.",
       },
+      qrExtra: {
+        fo: "Kundar skanna títt QR-kotu og gjalda beinleiðis. Eingin kortterminal, eingin ventan. Prent kotu ella vís á skíggi.",
+        da: "Kunder scanner din QR-kode og betaler med det samme. Ingen kortterminal, ingen ventetid. Print koden eller vis den på en skærm.",
+        en: "Customers scan your QR code and pay instantly. No card terminal, no waiting. Print the code or show it on a screen.",
+      },
       payoutsTitle: { fo: "Dagligar útgjaldingar", da: "Daglige udbetalinger", en: "Daily payouts" },
       payoutsDesc: {
         fo: "Pengar frá sølum verða útgoldnir dagliga beinleiðis á títt bankakontu gjøgnum Stripe.",
         da: "Penge fra salg udbetales dagligt direkte til din bankkonto via Stripe.",
         en: "Sales revenue is paid out daily directly to your bank account via Stripe.",
+      },
+      payoutsExtra: {
+        fo: "Sølur verða samlaðar og sendar dagliga til títt bankakontu. Sí hvat er útgoldið, hvat bíðar og hvørji dag næsta útgjald kemur.",
+        da: "Salg samles og sendes dagligt til din bankkonto. Se hvad der er udbetalt, hvad der afventer og hvornår næste udbetaling kommer.",
+        en: "Sales are collected and sent daily to your bank account. See what's paid out, what's pending and when the next payout arrives.",
       },
       salesTitle: { fo: "Søluoverblik í real-time", da: "Salgsoverblik i real-time", en: "Real-time sales overview" },
       salesDesc: {
@@ -238,11 +248,21 @@ const translations = {
         da: "Se hver eneste transaktion i realtid. Følg med i omsætning, antal transaktioner og spidsbelastning.",
         en: "See every single transaction in real time. Track revenue, transaction count and peak hours.",
       },
+      salesExtra: {
+        fo: "Sí sølu pr. tíma, tal av transaksiónum og spitsstundir. Útflyt rapportar sum CSV og filtrera eftir dato ella kundum.",
+        da: "Se salg pr. time, antal transaktioner og spidsbelastning. Eksportér rapporter som CSV og filtrer efter dato eller kunde.",
+        en: "See sales per hour, transaction count and peak hours. Export reports as CSV and filter by date or customer.",
+      },
       noTerminalTitle: { fo: "Eingin kortterminal", da: "Ingen kortterminal", en: "No card terminal" },
       noTerminalDesc: {
         fo: "Spar pengar á dýrar kortterminal-loysnir. PayWay virkar beinleiðis við kundarnas telefón.",
         da: "Spar penge på dyre kortterminal-løsninger. PayWay virker direkte med kundernes telefon.",
         en: "Save money on expensive card terminal solutions. PayWay works directly with customers' phones.",
+      },
+      noTerminalExtra: {
+        fo: "Eingi kortterminal, eingi leiga, eingi uppsetan. Kundar gjalda frá teirra egnu telefón. Tað einasta tú tørvar er ein QR-kota.",
+        da: "Ingen kortterminal, ingen leje, ingen opsætning. Kunder betaler fra deres egen telefon. Det eneste du behøver er en QR-kode.",
+        en: "No card terminal, no rental, no setup. Customers pay from their own phone. All you need is a QR code.",
       },
       lowFeesTitle: { fo: "Lágar gebyrar", da: "Lave gebyrer", en: "Low fees" },
       lowFeesDesc: {
@@ -250,11 +270,21 @@ const translations = {
         da: "Kun 1–2% pr. transaktion. Ingen fast månedlig afgift, ingen skjulte omkostninger.",
         en: "Only 1–2% per transaction. No fixed monthly fee, no hidden costs.",
       },
+      lowFeesExtra: {
+        fo: "Bert 1–2% pr. transaksiónina. Eingi mánaðarlig avgift, eingi binding. Alt inkluderat: dashboard, QR-kota, stuðul.",
+        da: "Kun 1–2% pr. transaktion. Ingen månedlig afgift, ingen binding. Alt inkluderet: dashboard, QR-kode, support.",
+        en: "Only 1–2% per transaction. No monthly fee, no commitment. Everything included: dashboard, QR code, support.",
+      },
       settingsTitle: { fo: "Búðarstillingar", da: "Butiksindstillinger", en: "Store settings" },
       settingsDesc: {
         fo: "Stýr títt kontu, bankuupplýsingar og búðaradressuna sjálv/ur frá dashboardið.",
         da: "Administrer din konto, bankoplysninger og butiksadresse selv fra dashboardet.",
         en: "Manage your account, bank details and store address yourself from the dashboard.",
+      },
+      settingsExtra: {
+        fo: "Broyt búðarnavn, adressu og bankukontu sjálv/ur. Download QR-kotu, sí gebyr og stýr alt — uttan at kontakta okkum.",
+        da: "Skift butiksnavn, adresse og bankkonto selv. Download QR-kode, se gebyr og administrer alt — uden at kontakte os.",
+        en: "Change store name, address and bank account yourself. Download QR code, see fees and manage everything — without contacting us.",
       },
     },
     pricing: {

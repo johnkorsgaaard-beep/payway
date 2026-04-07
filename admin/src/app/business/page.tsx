@@ -379,22 +379,32 @@ export default function BusinessPage() {
 
           <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: QrCode, title: t.biz.features.qrTitle, desc: t.biz.features.qrDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
-              { icon: Wallet, title: t.biz.features.payoutsTitle, desc: t.biz.features.payoutsDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
-              { icon: LineChart, title: t.biz.features.salesTitle, desc: t.biz.features.salesDesc, accent: "from-[#f59e0b] to-[#d97706]" },
-              { icon: SmartphoneNfc, title: t.biz.features.noTerminalTitle, desc: t.biz.features.noTerminalDesc, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
-              { icon: BadgePercent, title: t.biz.features.lowFeesTitle, desc: t.biz.features.lowFeesDesc, accent: "from-[#2ec964] to-[#1a8a45]" },
-              { icon: Wrench, title: t.biz.features.settingsTitle, desc: t.biz.features.settingsDesc, accent: "from-[#f59e0b] to-[#d97706]" },
+              { icon: QrCode, title: t.biz.features.qrTitle, desc: t.biz.features.qrDesc, extra: t.biz.features.qrExtra, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
+              { icon: Wallet, title: t.biz.features.payoutsTitle, desc: t.biz.features.payoutsDesc, extra: t.biz.features.payoutsExtra, accent: "from-[#2ec964] to-[#1a8a45]" },
+              { icon: LineChart, title: t.biz.features.salesTitle, desc: t.biz.features.salesDesc, extra: t.biz.features.salesExtra, accent: "from-[#f59e0b] to-[#d97706]" },
+              { icon: SmartphoneNfc, title: t.biz.features.noTerminalTitle, desc: t.biz.features.noTerminalDesc, extra: t.biz.features.noTerminalExtra, accent: "from-[#0a2f5b] to-[#1a6fb5]" },
+              { icon: BadgePercent, title: t.biz.features.lowFeesTitle, desc: t.biz.features.lowFeesDesc, extra: t.biz.features.lowFeesExtra, accent: "from-[#2ec964] to-[#1a8a45]" },
+              { icon: Wrench, title: t.biz.features.settingsTitle, desc: t.biz.features.settingsDesc, extra: t.biz.features.settingsExtra, accent: "from-[#f59e0b] to-[#d97706]" },
             ].map((f) => (
-              <div
-                key={f.title[l]}
-                className="group rounded-2xl border border-[#0a2f5b]/[0.05] bg-white p-7 transition-all duration-300 hover:border-[#0a2f5b]/[0.1] hover:shadow-xl hover:shadow-[#0a2f5b]/[0.04] hover:-translate-y-0.5"
-              >
-                <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${f.accent} text-white shadow-md`}>
-                  <f.icon className="h-5 w-5" />
+              <div key={f.title[l]} className="group [perspective:1000px]">
+                <div className="relative h-[220px] transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front */}
+                  <div className="absolute inset-0 rounded-2xl border border-[#0a2f5b]/[0.05] bg-white p-7 [backface-visibility:hidden]">
+                    <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${f.accent} text-white shadow-md`}>
+                      <f.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="text-[16px] font-bold text-[#0a2f5b]">{f.title[l]}</h3>
+                    <p className="mt-2 text-[14px] leading-relaxed text-[#0a2f5b]/40">{f.desc[l]}</p>
+                  </div>
+                  {/* Back */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#2ec964] to-[#1a8a45] p-7 text-white shadow-xl [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
+                      <f.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="text-[15px] font-bold">{f.title[l]}</h3>
+                    <p className="mt-2 text-[13px] leading-relaxed text-white/80">{f.extra[l]}</p>
+                  </div>
                 </div>
-                <h3 className="text-[16px] font-bold text-[#0a2f5b]">{f.title[l]}</h3>
-                <p className="mt-2 text-[14px] leading-relaxed text-[#0a2f5b]/40">{f.desc[l]}</p>
               </div>
             ))}
           </div>
@@ -533,6 +543,7 @@ export default function BusinessPage() {
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
