@@ -29,7 +29,7 @@ export function TableHead({
   return (
     <thead
       className={cn(
-        "border-b border-gray-200 bg-gray-50 text-xs uppercase text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400",
+        "border-b border-[#0a2f5b]/[0.06] text-xs uppercase text-[#0a2f5b]/35",
         className
       )}
     >
@@ -45,7 +45,7 @@ export function TableBody({
   children: ReactNode;
   className?: string;
 }) {
-  return <tbody className={cn("divide-y divide-gray-200 dark:divide-gray-700", className)}>{children}</tbody>;
+  return <tbody className={cn("divide-y divide-[#0a2f5b]/[0.04]", className)}>{children}</tbody>;
 }
 
 export function TableRow({
@@ -58,7 +58,7 @@ export function TableRow({
   return (
     <tr
       className={cn(
-        "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
+        "hover:bg-[#0a2f5b]/[0.02] transition-colors",
         className
       )}
     >
@@ -77,7 +77,7 @@ export function TableCell({
   return (
     <td
       className={cn(
-        "px-4 py-3 text-gray-700 dark:text-gray-300",
+        "px-4 py-3 text-[#0a2f5b]/60",
         className
       )}
     >

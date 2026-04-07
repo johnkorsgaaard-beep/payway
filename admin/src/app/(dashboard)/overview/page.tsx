@@ -101,7 +101,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
       </div>
     );
   }
@@ -122,11 +122,11 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Dashboard
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Oversigt over Payway platformen
+        <p className="text-[#0a2f5b]/40">
+          Oversigt over PayWay platformen
         </p>
       </div>
 
@@ -134,23 +134,23 @@ export default function DashboardPage() {
         <StatCard
           title="Brugere"
           value={data.totalUsers.toLocaleString("da-DK")}
-          icon={<Users className="h-6 w-6 text-emerald-600" />}
+          icon={<Users className="h-6 w-6 text-[#0a2f5b]/50" />}
         />
         <StatCard
           title="Butikker"
           value={data.totalMerchants.toLocaleString("da-DK")}
-          icon={<Store className="h-6 w-6 text-emerald-600" />}
+          icon={<Store className="h-6 w-6 text-[#2ec964]" />}
         />
         <StatCard
           title="Transaktioner"
           value={data.totalTransactions.toLocaleString("da-DK")}
-          icon={<ArrowLeftRight className="h-6 w-6 text-emerald-600" />}
+          icon={<ArrowLeftRight className="h-6 w-6 text-[#0a2f5b]/50" />}
         />
         <StatCard
           title="Samlet omsætning"
           value={formatDKK(data.totalVolume)}
           subtitle={`Gebyrer: ${formatDKK(data.totalFees)}`}
-          icon={<DollarSign className="h-6 w-6 text-emerald-600" />}
+          icon={<DollarSign className="h-6 w-6 text-[#2ec964]" />}
         />
       </div>
 
@@ -163,16 +163,17 @@ export default function DashboardPage() {
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="name" fontSize={12} />
-                  <YAxis fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0a2f5b10" />
+                  <XAxis dataKey="name" fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <YAxis fontSize={12} tick={{ fill: "#0a2f5b80" }} />
                   <Tooltip
                     formatter={(value) =>
                       `${Number(value).toLocaleString("da-DK")} DKK`
                     }
+                    contentStyle={{ borderRadius: "12px", border: "1px solid #0a2f5b10", boxShadow: "0 4px 12px #0a2f5b08" }}
                   />
-                  <Bar dataKey="volume" fill="#0a2f5b" radius={[4, 4, 0, 0]} name="Volumen" />
-                  <Bar dataKey="fees" fill="#2ec964" radius={[4, 4, 0, 0]} name="Gebyrer" />
+                  <Bar dataKey="volume" fill="#0a2f5b" radius={[6, 6, 0, 0]} name="Volumen" />
+                  <Bar dataKey="fees" fill="#2ec964" radius={[6, 6, 0, 0]} name="Gebyrer" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -203,7 +204,7 @@ export default function DashboardPage() {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #0a2f5b10" }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -219,7 +220,7 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 text-left text-xs uppercase text-gray-500 dark:border-gray-700">
+                <tr className="border-b border-[#0a2f5b]/[0.06] text-left text-xs uppercase text-[#0a2f5b]/35">
                   <th className="px-4 py-3">Type</th>
                   <th className="px-4 py-3">Fra</th>
                   <th className="px-4 py-3">Til</th>
@@ -228,24 +229,24 @@ export default function DashboardPage() {
                   <th className="px-4 py-3">Dato</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-[#0a2f5b]/[0.04]">
                 {data.recentTransactions.map((tx) => (
                   <tr
                     key={tx.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    className="hover:bg-[#0a2f5b]/[0.02] transition-colors"
                   >
                     <td className="px-4 py-3">
                       <Badge variant="info">
                         {TYPE_LABELS[tx.type] || tx.type}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                    <td className="px-4 py-3 text-[#0a2f5b]/60">
                       {tx.fromWallet?.user?.name || "—"}
                     </td>
-                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                    <td className="px-4 py-3 text-[#0a2f5b]/60">
                       {tx.toWallet?.user?.name || "—"}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-white">
+                    <td className="px-4 py-3 text-right font-medium text-[#0a2f5b]">
                       {formatDKK(tx.amount)}
                     </td>
                     <td className="px-4 py-3">
@@ -253,7 +254,7 @@ export default function DashboardPage() {
                         {tx.status}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3 text-[#0a2f5b]/35">
                       {formatDate(tx.createdAt)}
                     </td>
                   </tr>

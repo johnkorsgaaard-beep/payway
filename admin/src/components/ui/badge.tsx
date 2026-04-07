@@ -4,11 +4,12 @@ import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
 const variants: Record<string, string> = {
-  default: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-  success: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  warning: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  danger: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  default: "bg-[#0a2f5b]/[0.06] text-[#0a2f5b]/70",
+  success: "bg-[#2ec964]/10 text-[#1a8a45]",
+  warning: "bg-amber-50 text-amber-700",
+  danger: "bg-red-50 text-red-600",
+  info: "bg-[#0a2f5b]/[0.06] text-[#0a2f5b]",
+  secondary: "bg-[#0a2f5b]/[0.04] text-[#0a2f5b]/50",
 };
 
 interface BadgeProps {

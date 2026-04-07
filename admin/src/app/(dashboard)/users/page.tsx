@@ -106,11 +106,11 @@ export default function UsersPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Brugere
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Administrer alle Payway-brugere
+        <p className="text-[#0a2f5b]/40">
+          Administrer alle PayWay-brugere
         </p>
       </div>
 
@@ -119,13 +119,13 @@ export default function UsersPage() {
           <div className="flex items-center justify-between">
             <CardTitle>Alle brugere ({data?.total || 0})</CardTitle>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#0a2f5b]/25" />
               <input
                 type="text"
                 placeholder="Søg navn eller telefon..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800"
+                className="rounded-xl border border-[#0a2f5b]/[0.08] bg-white py-2 pl-10 pr-4 text-sm text-[#0a2f5b] placeholder-[#0a2f5b]/25 focus:border-[#2ec964]/30 focus:outline-none focus:ring-1 focus:ring-[#2ec964]/10"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function UsersPage() {
         <CardContent>
           {loading ? (
             <div className="flex h-48 items-center justify-center">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+              <div className="h-6 w-6 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
             </div>
           ) : (
             <>
@@ -153,7 +153,7 @@ export default function UsersPage() {
                 <TableBody>
                   {filteredUsers.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell className="font-medium text-gray-900 dark:text-white">
+                      <TableCell className="font-medium text-[#0a2f5b]">
                         {user.name || "—"}
                       </TableCell>
                       <TableCell className="font-mono">{user.phone}</TableCell>
@@ -175,7 +175,7 @@ export default function UsersPage() {
                           {user.isActive ? "Aktiv" : "Deaktiveret"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-500">
+                      <TableCell className="text-[#0a2f5b]/35">
                         {formatDate(user.createdAt)}
                       </TableCell>
                       <TableCell>
@@ -193,8 +193,8 @@ export default function UsersPage() {
               </Table>
 
               {data && data.totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
-                  <p className="text-sm text-gray-500">
+                <div className="mt-4 flex items-center justify-between border-t border-[#0a2f5b]/[0.06] pt-4">
+                  <p className="text-sm text-[#0a2f5b]/40">
                     Side {data.page} af {data.totalPages}
                   </p>
                   <div className="flex gap-2">

@@ -108,10 +108,10 @@ export default function MerchantsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Butikker
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-[#0a2f5b]/40">
           Administrer tilsluttede butikker og deres gebyrer
         </p>
       </div>
@@ -119,14 +119,14 @@ export default function MerchantsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <Store className="h-5 w-5 text-emerald-600" />
+            <Store className="h-5 w-5 text-[#2ec964]" />
             <CardTitle>Alle butikker ({data?.total || 0})</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="flex h-48 items-center justify-center">
-              <div className="h-6 w-6 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+              <div className="h-6 w-6 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
             </div>
           ) : (
             <Table>
@@ -147,11 +147,11 @@ export default function MerchantsPage() {
                   <TableRow key={m.id}>
                     <TableCell>
                       <div>
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-[#0a2f5b]">
                           {m.businessName}
                         </span>
                         {m.description && (
-                          <p className="text-xs text-gray-400">{m.description}</p>
+                          <p className="text-xs text-[#0a2f5b]/30">{m.description}</p>
                         )}
                       </div>
                     </TableCell>
@@ -160,7 +160,7 @@ export default function MerchantsPage() {
                     <TableCell>
                       <button
                         onClick={() => updateFee(m.id, m.feeRate)}
-                        className="cursor-pointer rounded bg-gray-100 px-2 py-0.5 font-mono text-sm hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                        className="cursor-pointer rounded-lg bg-[#0a2f5b]/[0.04] px-2 py-0.5 font-mono text-sm text-[#0a2f5b] hover:bg-[#0a2f5b]/[0.08]"
                       >
                         {m.feeRate}%
                       </button>
@@ -171,7 +171,7 @@ export default function MerchantsPage() {
                         {m.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-gray-500">
+                    <TableCell className="text-[#0a2f5b]/35">
                       {formatDate(m.createdAt)}
                     </TableCell>
                     <TableCell>

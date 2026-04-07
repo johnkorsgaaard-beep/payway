@@ -134,7 +134,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
       </div>
     );
   }
@@ -152,10 +152,10 @@ export default function AnalyticsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Analytics
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-[#0a2f5b]/40">
           Detaljeret oversigt over platformens performance
         </p>
       </div>
@@ -166,25 +166,25 @@ export default function AnalyticsPage() {
           title="Total profit (gebyrer)"
           value={formatDKK(data.totalFees)}
           subtitle={`Heraf butik: ${formatDKK(data.merchantPayments.totalProfit)}`}
-          icon={<TrendingUp className="h-6 w-6 text-emerald-600" />}
+          icon={<TrendingUp className="h-6 w-6 text-[#2ec964]" />}
         />
         <StatCard
           title="Gns. transaktion (butik)"
           value={formatDKK(data.merchantPayments.avgAmount)}
           subtitle={`${data.merchantPayments.count} betalinger`}
-          icon={<Store className="h-6 w-6 text-emerald-600" />}
+          icon={<Store className="h-6 w-6 text-[#0a2f5b]/50" />}
         />
         <StatCard
           title="P2P volume"
           value={formatDKK(data.p2p.totalVolume)}
           subtitle={`${data.p2p.count} overførsler · gns. ${formatDKK(data.p2p.avgAmount)}`}
-          icon={<Repeat className="h-6 w-6 text-emerald-600" />}
+          icon={<Repeat className="h-6 w-6 text-[#0a2f5b]/50" />}
         />
         <StatCard
           title="Brugere / Butikker"
           value={data.totalUsers.toString()}
           subtitle={`${data.totalMerchants} aktive butikker`}
-          icon={<Users className="h-6 w-6 text-emerald-600" />}
+          icon={<Users className="h-6 w-6 text-[#2ec964]" />}
         />
       </div>
 
@@ -229,9 +229,9 @@ export default function AnalyticsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={DEMO_DAILY_DATA}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="date" fontSize={12} />
-                  <YAxis fontSize={12} tickFormatter={(v) => `${(v / 100).toFixed(0)}`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0a2f5b10" />
+                  <XAxis dataKey="date" fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <YAxis fontSize={12} tick={{ fill: "#0a2f5b80" }} tickFormatter={(v) => `${(v / 100).toFixed(0)}`} />
                   <Tooltip
                     formatter={(value) => formatDKK(Number(value))}
                     labelFormatter={(label) => `Dato: ${label}`}
@@ -261,7 +261,7 @@ export default function AnalyticsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b text-gray-500 dark:text-gray-400">
+                <tr className="border-b border-[#0a2f5b]/[0.06] text-[#0a2f5b]/35">
                   <th className="pb-3 font-medium">Butik</th>
                   <th className="pb-3 font-medium text-right">Fee</th>
                   <th className="pb-3 font-medium text-right">Antal</th>
@@ -273,7 +273,7 @@ export default function AnalyticsPage() {
               <tbody>
                 {data.profitByMerchant.map((m) => (
                   <tr key={m.id} className="border-b last:border-0">
-                    <td className="py-3 font-medium text-gray-900 dark:text-white">
+                    <td className="py-3 font-medium text-[#0a2f5b]">
                       {m.businessName}
                     </td>
                     <td className="py-3 text-right">
@@ -281,16 +281,16 @@ export default function AnalyticsPage() {
                         {m.feeRate}%
                       </Badge>
                     </td>
-                    <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                    <td className="py-3 text-right text-[#0a2f5b]/50">
                       {m.transactionCount}
                     </td>
-                    <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                    <td className="py-3 text-right text-[#0a2f5b]/50">
                       {formatDKK(m.totalVolume)}
                     </td>
-                    <td className="py-3 text-right text-gray-600 dark:text-gray-300">
+                    <td className="py-3 text-right text-[#0a2f5b]/50">
                       {formatDKK(m.avgTransaction)}
                     </td>
-                    <td className="py-3 text-right font-semibold text-green-600">
+                    <td className="py-3 text-right font-semibold text-[#2ec964]">
                       {formatDKK(m.totalProfit)}
                     </td>
                   </tr>
@@ -308,7 +308,7 @@ export default function AnalyticsPage() {
                       {formatDKK(data.profitByMerchant.reduce((s, m) => s + m.totalVolume, 0))}
                     </td>
                     <td className="pt-3 text-right" />
-                    <td className="pt-3 text-right text-green-600">
+                    <td className="pt-3 text-right text-[#2ec964]">
                       {formatDKK(data.profitByMerchant.reduce((s, m) => s + m.totalProfit, 0))}
                     </td>
                   </tr>
@@ -329,10 +329,10 @@ export default function AnalyticsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={DEMO_DAILY_DATA}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="date" fontSize={12} />
-                  <YAxis fontSize={12} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0a2f5b10" />
+                  <XAxis dataKey="date" fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <YAxis fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #0a2f5b10" }} />
                   <Line
                     type="monotone"
                     dataKey="transactions"
@@ -355,10 +355,10 @@ export default function AnalyticsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={DEMO_DAILY_DATA}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="date" fontSize={12} />
-                  <YAxis fontSize={12} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0a2f5b10" />
+                  <XAxis dataKey="date" fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <YAxis fontSize={12} tick={{ fill: "#0a2f5b80" }} />
+                  <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #0a2f5b10" }} />
                   <Bar
                     dataKey="users"
                     fill="#8b5cf6"

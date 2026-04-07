@@ -103,7 +103,7 @@ export default function FeesPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2ec964] border-t-transparent" />
       </div>
     );
   }
@@ -111,10 +111,10 @@ export default function FeesPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[#0a2f5b]">
           Gebyrer
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-[#0a2f5b]/40">
           Konfigurer platformens gebyrstruktur
         </p>
       </div>
@@ -129,7 +129,7 @@ export default function FeesPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Settings className="h-5 w-5 text-emerald-600" />
+                    <Settings className="h-5 w-5 text-[#2ec964]" />
                     <div>
                       <CardTitle>{label.title}</CardTitle>
                       <CardDescription>{label.description}</CardDescription>
@@ -144,7 +144,7 @@ export default function FeesPage() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <label className="block text-sm font-medium text-[#0a2f5b]/50">
                         Procent (%)
                       </label>
                       {isEditing ? (
@@ -158,16 +158,16 @@ export default function FeesPage() {
                               [fee.id]: { ...prev[fee.id], percentage: e.target.value },
                             }))
                           }
-                          className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-lg font-semibold dark:border-gray-700 dark:bg-gray-800"
+                          className="mt-1 w-full rounded-xl border border-[#0a2f5b]/[0.08] px-3 py-2 text-lg font-semibold text-[#0a2f5b]"
                         />
                       ) : (
-                        <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+                        <p className="mt-1 text-3xl font-bold text-[#0a2f5b]">
                           {fee.percentage}%
                         </p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <label className="block text-sm font-medium text-[#0a2f5b]/50">
                         Fast beløb
                       </label>
                       {isEditing ? (
@@ -180,10 +180,10 @@ export default function FeesPage() {
                               [fee.id]: { ...prev[fee.id], fixedAmount: e.target.value },
                             }))
                           }
-                          className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-lg font-semibold dark:border-gray-700 dark:bg-gray-800"
+                          className="mt-1 w-full rounded-xl border border-[#0a2f5b]/[0.08] px-3 py-2 text-lg font-semibold text-[#0a2f5b]"
                         />
                       ) : (
-                        <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+                        <p className="mt-1 text-3xl font-bold text-[#0a2f5b]">
                           {fee.fixedAmount > 0 ? formatDKK(fee.fixedAmount) : "—"}
                         </p>
                       )}
