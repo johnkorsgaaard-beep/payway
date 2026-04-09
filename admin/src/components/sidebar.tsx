@@ -14,6 +14,7 @@ import {
   KanbanSquare,
   Handshake,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 const nav = [
   { href: "/overview", label: "Dashboard", icon: LayoutDashboard },
@@ -28,6 +29,7 @@ const nav = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0a2f5b]">
@@ -62,9 +64,9 @@ export function Sidebar() {
 
       <div className="border-t border-white/[0.08] p-4">
         <button
-          onClick={() => {
-            localStorage.removeItem("admin_token");
-            window.location.href = "/";
+          onClick={async () => {
+            await signOut();
+            window.location.href = "/portal";
           }}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70"
         >
