@@ -58,18 +58,7 @@ export default function UsersPage() {
       .get<UsersResponse>(`/admin/users?page=${p}&limit=20`)
       .then(setData)
       .catch(() => {
-        setData({
-          users: [
-            { id: "1", phone: "+298000001", name: "Payway Admin", role: "ADMIN", kycStatus: "VERIFIED", isActive: true, createdAt: "2026-01-15T10:00:00Z", wallet: { balance: 0, status: "ACTIVE" } },
-            { id: "2", phone: "+298123456", name: "Demo User", role: "USER", kycStatus: "BASIC", isActive: true, createdAt: "2026-02-01T12:00:00Z", wallet: { balance: 50000, status: "ACTIVE" } },
-            { id: "3", phone: "+298654321", name: "Café Nólsoy", role: "MERCHANT", kycStatus: "VERIFIED", isActive: true, createdAt: "2026-02-10T09:00:00Z", wallet: { balance: 125000, status: "ACTIVE" } },
-            { id: "4", phone: "+298111222", name: "Anna Hansen", role: "USER", kycStatus: "BASIC", isActive: true, createdAt: "2026-03-01T14:30:00Z", wallet: { balance: 32500, status: "ACTIVE" } },
-            { id: "5", phone: "+298333444", name: "Jóhan Petersen", role: "USER", kycStatus: "NONE", isActive: false, createdAt: "2026-03-15T08:00:00Z", wallet: { balance: 0, status: "FROZEN" } },
-          ],
-          total: 5,
-          page: 1,
-          totalPages: 1,
-        });
+        setData({ users: [], total: 0, page: 1, totalPages: 1 });
       })
       .finally(() => setLoading(false));
   };

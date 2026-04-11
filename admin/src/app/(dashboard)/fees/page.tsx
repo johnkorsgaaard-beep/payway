@@ -74,12 +74,7 @@ export default function FeesPage() {
       .get<FeeConfig[]>("/admin/fees")
       .then(setFees)
       .catch(() => {
-        setFees([
-          { id: "f1", name: "topup_fee", percentage: 2.0, fixedAmount: 0, isActive: true },
-          { id: "f2", name: "p2p_fee", percentage: 0.0, fixedAmount: 0, isActive: true },
-          { id: "f3", name: "merchant_fee", percentage: 2.5, fixedAmount: 0, isActive: true },
-          { id: "f4", name: "withdrawal_fee", percentage: 0.0, fixedAmount: 500, isActive: true },
-        ]);
+        setFees([]);
       })
       .finally(() => setLoading(false));
   }, []);

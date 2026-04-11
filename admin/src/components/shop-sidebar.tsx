@@ -16,6 +16,8 @@ import {
 import { useState, useEffect, useRef } from "react";
 import t, { type Locale, localeLabels, localeFlags } from "@/lib/i18n";
 import { useLocale } from "@/lib/locale-context";
+import { useAuth } from "@/lib/auth-context";
+import { useMerchant } from "@/lib/use-merchant";
 
 const navKeys = [
   { href: "/shop", key: "overview" as const, icon: LayoutDashboard },
@@ -27,6 +29,8 @@ const navKeys = [
 export function ShopSidebar() {
   const pathname = usePathname();
   const { locale, setLocale } = useLocale();
+  const { signOut } = useAuth();
+  const { merchant } = useMerchant();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +50,7 @@ export function ShopSidebar() {
         </div>
         <div>
           <span className="text-[15px] font-bold text-[#0a2f5b]">Shop Admin</span>
-          <p className="text-[10px] font-medium text-[#0a2f5b]/30">Café Nólsoy</p>
+          <p className="text-[10px] font-medium text-[#0a2f5b]/30">{merchant?.name || "..."}</p>
         </div>
       </div>
 
@@ -108,7 +112,7 @@ export function ShopSidebar() {
         </div>
 
         <button
-          onClick={() => { window.location.href = "/"; }}
+          onClick={() => { signOut(); window.location.href = "/portal"; }}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#0a2f5b]/40 transition-colors hover:bg-[#0a2f5b]/[0.03] hover:text-[#0a2f5b]/70"
         >
           <LogOut className="h-[18px] w-[18px]" />
