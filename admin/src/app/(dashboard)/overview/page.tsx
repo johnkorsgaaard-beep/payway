@@ -76,23 +76,13 @@ export default function DashboardPage() {
       .then(setData)
       .catch(() => {
         setData({
-          totalUsers: 127,
-          totalMerchants: 14,
-          totalTransactions: 2843,
-          totalVolume: 4285000,
-          totalFees: 58200,
-          volumeByType: [
-            { type: "TOPUP", _sum: { amount: 1850000, fee: 18500 }, _count: 892 },
-            { type: "P2P", _sum: { amount: 1235000, fee: 3200 }, _count: 1205 },
-            { type: "MERCHANT_PAYMENT", _sum: { amount: 1200000, fee: 36500 }, _count: 746 },
-          ],
-          recentTransactions: [
-            { id: "1", amount: 15000, fee: 0, type: "P2P", status: "COMPLETED", createdAt: new Date().toISOString(), fromWallet: { user: { name: "Anna Hansen" } }, toWallet: { user: { name: "Jóhan Petersen" } } },
-            { id: "2", amount: 8500, fee: 128, type: "MERCHANT_PAYMENT", status: "COMPLETED", createdAt: new Date().toISOString(), fromWallet: { user: { name: "Maria Olsen" } }, toWallet: { user: { name: "Café Nólsoy" } } },
-            { id: "3", amount: 50000, fee: 500, type: "TOPUP", status: "COMPLETED", createdAt: new Date().toISOString(), toWallet: { user: { name: "Bárður Joensen" } } },
-            { id: "4", amount: 3200, fee: 48, type: "MERCHANT_PAYMENT", status: "COMPLETED", createdAt: new Date().toISOString(), fromWallet: { user: { name: "Súsanna Dam" } }, toWallet: { user: { name: "Rúsdrekkasøla" } } },
-            { id: "5", amount: 20000, fee: 0, type: "P2P", status: "PENDING", createdAt: new Date().toISOString(), fromWallet: { user: { name: "Hanus Djurhuus" } }, toWallet: { user: { name: "Elin Jacobsen" } } },
-          ],
+          totalUsers: 0,
+          totalMerchants: 0,
+          totalTransactions: 0,
+          totalVolume: 0,
+          totalFees: 0,
+          volumeByType: [],
+          recentTransactions: [],
         });
       })
       .finally(() => setLoading(false));

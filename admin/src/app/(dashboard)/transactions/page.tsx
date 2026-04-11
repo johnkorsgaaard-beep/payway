@@ -71,18 +71,7 @@ export default function TransactionsPage() {
       .get<TransactionsResponse>(url)
       .then(setData)
       .catch(() => {
-        setData({
-          transactions: [
-            { id: "t1", amount: 15000, fee: 0, type: "P2P", status: "COMPLETED", description: "Aftensmad", createdAt: "2026-04-03T18:30:00Z", fromWallet: { user: { id: "u1", name: "Anna Hansen", phone: "+298111222" } }, toWallet: { user: { id: "u2", name: "Jóhan Petersen", phone: "+298333444" } } },
-            { id: "t2", amount: 8500, fee: 128, type: "MERCHANT_PAYMENT", status: "COMPLETED", description: "Kaffe og kage", createdAt: "2026-04-03T15:20:00Z", fromWallet: { user: { id: "u3", name: "Maria Olsen", phone: "+298555666" } }, toWallet: { user: { id: "u4", name: "Café Nólsoy", phone: "+298654321" } } },
-            { id: "t3", amount: 50000, fee: 500, type: "TOPUP", status: "COMPLETED", description: "Wallet top-up", createdAt: "2026-04-03T12:00:00Z", fromWallet: null, toWallet: { user: { id: "u5", name: "Bárður Joensen", phone: "+298777888" } } },
-            { id: "t4", amount: 200000, fee: 0, type: "WITHDRAWAL", status: "PENDING", description: "Payout to bank", createdAt: "2026-04-03T10:00:00Z", fromWallet: { user: { id: "u4", name: "Café Nólsoy", phone: "+298654321" } }, toWallet: null },
-            { id: "t5", amount: 3200, fee: 48, type: "MERCHANT_PAYMENT", status: "FAILED", description: "Insufficient funds", createdAt: "2026-04-02T22:15:00Z", fromWallet: { user: { id: "u6", name: "Súsanna Dam", phone: "+298999000" } }, toWallet: { user: { id: "u7", name: "SMS Bókhandil", phone: "+298111000" } } },
-          ],
-          total: 5,
-          page: 1,
-          totalPages: 1,
-        });
+        setData({ transactions: [], total: 0, page: 1, totalPages: 1 });
       })
       .finally(() => setLoading(false));
   };
