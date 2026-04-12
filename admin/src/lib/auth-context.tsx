@@ -63,6 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getUser().then(async ({ data: { user: u }, error }) => {
       if (cancelled) return;
       if (error || !u) {
+        // Clear stale/invalid session tokens so the error doesn't recur
+        await supabase.auth.signOut().catch(() => {});
         setState("unauthenticated");
         return;
       }

@@ -1,5 +1,5 @@
 export const API_URL = __DEV__
-  ? 'http://localhost:3000/api'
+  ? 'http://192.168.11.231:3000/api'
   : 'https://api.payway.fo/api';
 
 export const COLORS_LIGHT = {

@@ -65,10 +65,10 @@ export function useAuth() {
   }, []);
 
   const register = useCallback(
-    async (firebaseToken: string, phone: string, name: string) => {
+    async (email: string, password: string, name: string, phone?: string) => {
       const res = await api.post<{ user: User; token: string; refreshToken: string }>(
         '/auth/register',
-        { firebaseToken, phone, name }
+        { email, password, name, phone }
       );
       await setTokens(res.token, res.refreshToken);
       setGlobalUser(res.user);
@@ -78,10 +78,10 @@ export function useAuth() {
   );
 
   const login = useCallback(
-    async (firebaseToken: string) => {
+    async (email: string, password: string) => {
       const res = await api.post<{ user: User; token: string; refreshToken: string }>(
         '/auth/login',
-        { firebaseToken }
+        { email, password }
       );
       await setTokens(res.token, res.refreshToken);
       setGlobalUser(res.user);

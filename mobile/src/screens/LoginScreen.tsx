@@ -17,36 +17,36 @@ import { useAuth } from '../store/auth';
 
 export function LoginScreen({ navigation }: any) {
   const C = useColors();
-  const [phone, setPhone] = useState('+298');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('+298');
   const [isRegistering, setIsRegistering] = useState(false);
-  const [smsCode, setSmsCode] = useState('');
-  const [step, setStep] = useState<'phone' | 'code'>('phone');
-  const { register, login, isLoading, skipLogin } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { register, login, skipLogin } = useAuth();
 
-  const handleSendCode = () => {
-    if (phone.length < 9) {
-      Alert.alert('Fejl', 'Indtast et gyldigt telefonnummer');
+  const handleSubmit = async () => {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert('Fejl', 'Indtast email og adgangskode');
       return;
     }
-    setStep('code');
-  };
 
-  const handleVerifyCode = async () => {
+    if (isRegistering && !name.trim()) {
+      Alert.alert('Fejl', 'Indtast dit navn');
+      return;
+    }
+
+    setLoading(true);
     try {
-      const mockFirebaseToken = `mock_token_${phone}_${Date.now()}`;
-
       if (isRegistering) {
-        if (!name.trim()) {
-          Alert.alert('Fejl', 'Indtast dit navn');
-          return;
-        }
-        await register(mockFirebaseToken, phone, name);
+        await register(email.trim(), password, name.trim(), phone.length > 4 ? phone : undefined);
       } else {
-        await login(mockFirebaseToken);
+        await login(email.trim(), password);
       }
     } catch (err: any) {
       Alert.alert('Fejl', err.message || 'Noget gik galt');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,85 +69,78 @@ export function LoginScreen({ navigation }: any) {
           <Text style={[styles.demoButtonText, { color: C.accent }]}>Kom ind uden login</Text>
         </TouchableOpacity>
 
-        {step === 'phone' ? (
-          <View style={styles.form}>
-            <Text style={[styles.label, { color: C.text }]}>Telefonnummer</Text>
-            <TextInput
-              style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              placeholder="+298 XXXXXX"
-              placeholderTextColor={C.textLight}
-            />
+        <View style={styles.form}>
+          <Text style={[styles.label, { color: C.text }]}>Email</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="din@email.com"
+            placeholderTextColor={C.textLight}
+          />
 
-            {isRegistering && (
-              <>
-                <Text style={[styles.label, { color: C.text }]}>Navn</Text>
-                <TextInput
-                  style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Dit fulde navn"
-                  placeholderTextColor={C.textLight}
-                  autoCapitalize="words"
-                />
-              </>
-            )}
+          <Text style={[styles.label, { color: C.text }]}>Adgangskode</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="Mindst 6 tegn"
+            placeholderTextColor={C.textLight}
+          />
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: C.accent }]}
-              onPress={handleSendCode}
-              disabled={isLoading}
-            >
-              <Text style={styles.buttonText}>Send SMS-kode</Text>
-            </TouchableOpacity>
+          {isRegistering && (
+            <>
+              <Text style={[styles.label, { color: C.text }]}>Navn</Text>
+              <TextInput
+                style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
+                value={name}
+                onChangeText={setName}
+                placeholder="Dit fulde navn"
+                placeholderTextColor={C.textLight}
+                autoCapitalize="words"
+              />
 
-            <TouchableOpacity
-              style={styles.switchButton}
-              onPress={() => setIsRegistering(!isRegistering)}
-            >
-              <Text style={[styles.switchText, { color: C.accent }]}>
-                {isRegistering
-                  ? 'Har du allerede en konto? Log ind'
-                  : 'Ny bruger? Opret konto'}
+              <Text style={[styles.label, { color: C.text }]}>Telefonnummer (valgfrit)</Text>
+              <TextInput
+                style={[styles.input, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                placeholder="+298 XXXXXX"
+                placeholderTextColor={C.textLight}
+              />
+            </>
+          )}
+
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: C.accent }]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>
+                {isRegistering ? 'Opret konto' : 'Log ind'}
               </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.form}>
-            <Text style={[styles.label, { color: C.text }]}>SMS-kode</Text>
-            <TextInput
-              style={[styles.input, styles.codeInput, { backgroundColor: C.surface, borderColor: C.border, color: C.text }]}
-              value={smsCode}
-              onChangeText={setSmsCode}
-              keyboardType="number-pad"
-              placeholder="000000"
-              placeholderTextColor={C.textLight}
-              maxLength={6}
-              textAlign="center"
-            />
+            )}
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: C.accent }]}
-              onPress={handleVerifyCode}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Bekræft</Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.switchButton}
-              onPress={() => setStep('phone')}
-            >
-              <Text style={[styles.switchText, { color: C.accent }]}>Tilbage</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          <TouchableOpacity
+            style={styles.switchButton}
+            onPress={() => setIsRegistering(!isRegistering)}
+          >
+            <Text style={[styles.switchText, { color: C.accent }]}>
+              {isRegistering
+                ? 'Har du allerede en konto? Log ind'
+                : 'Ny bruger? Opret konto'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -189,11 +182,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: 14,
     fontSize: 16,
-  },
-  codeInput: {
-    fontSize: 24,
-    letterSpacing: 8,
-    fontWeight: '700',
   },
   button: {
     borderRadius: 12,
