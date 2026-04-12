@@ -48,6 +48,9 @@ export async function POST(req: Request) {
 
   const user = await buildUserResponse(supabase, userId);
 
+  // Send welcome email via Resend (non-blocking)
+  sendWelcomeEmail(supabase, email, name || "").catch(() => {});
+
   return NextResponse.json(
     {
       user,
@@ -56,4 +59,38 @@ export async function POST(req: Request) {
     },
     { status: 201 }
   );
+}
+
+async function sendWelcomeEmail(
+  supabase: ReturnType<typeof getServiceClient>,
+  to: string,
+  name: string
+) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return;
+
+  const { data: template } = await supabase
+    .from("email_templates")
+    .select("subject, body")
+    .eq("type", "welcome")
+    .single();
+
+  if (!template) return;
+
+  const subject = template.subject.replaceAll("{{name}}", name);
+  const body = template.body.replaceAll("{{name}}", name);
+
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM_EMAIL || "PayWay <onboarding@resend.dev>",
+      to,
+      subject,
+      html: body,
+    }),
+  });
 }

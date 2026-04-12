@@ -13,6 +13,7 @@ import {
   LogOut,
   KanbanSquare,
   Handshake,
+  Mail,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -24,6 +25,7 @@ const nav = [
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/crm", label: "CRM", icon: Handshake },
   { href: "/flow", label: "pwFLOW", icon: KanbanSquare },
+  { href: "/emails", label: "Email-skabeloner", icon: Mail },
   { href: "/fees", label: "Gebyrer", icon: Settings },
 ];
 

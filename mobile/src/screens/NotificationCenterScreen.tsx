@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING } from '../utils/constants';
 import { useColors } from '../utils/theme';
+import { api } from '../services/api';
+import { getToken } from '../services/api';
 
 interface Notification {
   id: string;
@@ -18,81 +21,6 @@ interface Notification {
   read: boolean;
   timestamp: Date;
 }
-
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: '1',
-    type: 'payment_received',
-    title: 'Du har modtaget 150,00 kr.',
-    body: 'Fra @anders – "Tak for i går!"',
-    read: false,
-    timestamp: new Date(Date.now() - 1000 * 60 * 5),
-  },
-  {
-    id: '2',
-    type: 'request',
-    title: 'Anmodning om 75,00 kr.',
-    body: '@sara har anmodet om penge – "Din halvdel af middagen"',
-    read: false,
-    timestamp: new Date(Date.now() - 1000 * 60 * 20),
-  },
-  {
-    id: '3',
-    type: 'group',
-    title: 'Ny udgift i "Fredag pizza"',
-    body: 'Magnus tilføjede "Første runde" – 250,00 kr.',
-    read: false,
-    timestamp: new Date(Date.now() - 1000 * 60 * 45),
-  },
-  {
-    id: '4',
-    type: 'payment_sent',
-    title: 'Du har sendt 42,50 kr.',
-    body: 'Til Café Nólsoy – QR-betaling',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-  },
-  {
-    id: '5',
-    type: 'kyc',
-    title: 'Identitet verificeret',
-    body: 'Din konto er nu fuldt godkendt. Du har adgang til alle funktioner.',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
-  },
-  {
-    id: '6',
-    type: 'topup',
-    title: 'Wallet fyldt op',
-    body: '500,00 kr. tilføjet fra Visa •4242',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8),
-  },
-  {
-    id: '7',
-    type: 'payment_received',
-    title: 'Du har modtaget 1.200,00 kr.',
-    body: 'Fra @jónas – huslejebidrag',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-  },
-  {
-    id: '8',
-    type: 'system',
-    title: 'Velkommen til PayWay!',
-    body: 'Tak fordi du bruger PayWay. Udforsk appen og send din første betaling.',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
-  },
-  {
-    id: '9',
-    type: 'group',
-    title: 'Du blev tilføjet til "Sommerferie 2026"',
-    body: 'Anna oprettede en ny gruppe med 5 medlemmer.',
-    read: true,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72),
-  },
-];
 
 function formatTimeAgo(date: Date): string {
   const mins = Math.floor((Date.now() - date.getTime()) / 60000);
@@ -118,15 +46,45 @@ export function NotificationCenterScreen() {
     request: { icon: 'download-outline', color: C.accent, bg: '#e8faf0' },
   };
 
-  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const token = await getToken();
+      if (!token) { setLoading(false); return; }
+      const res = await api.get<{ notifications: Array<{ id: string; type: string; title: string; body: string; is_read: boolean; created_at: string }> }>('/notifications?limit=50');
+      setNotifications(
+        (res.notifications || []).map((n) => ({
+          id: n.id,
+          type: n.type as Notification['type'],
+          title: n.title,
+          body: n.body,
+          read: n.is_read,
+          timestamp: new Date(n.created_at),
+        }))
+      );
+    } catch {
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const markAllRead = () => {
+    const unread = notifications.filter((n) => !n.read);
+    unread.forEach((n) => {
+      api.put(`/notifications/${n.id}`, { is_read: true }).catch(() => {});
+    });
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
   const markRead = (id: string) => {
+    api.put(`/notifications/${id}`, { is_read: true }).catch(() => {});
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
@@ -156,6 +114,14 @@ export function NotificationCenterScreen() {
       </TouchableOpacity>
     );
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.empty, { backgroundColor: C.background }]}>
+        <ActivityIndicator size="large" color={C.accent} />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: C.background }]}>

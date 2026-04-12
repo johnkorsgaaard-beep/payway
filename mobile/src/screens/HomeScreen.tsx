@@ -54,14 +54,7 @@ export function HomeScreen({ navigation }: any) {
       );
       setTransactions(res.transactions);
     } catch {
-      setTransactions([
-        { id: '1', amount: 15000, type: 'P2P', status: 'COMPLETED', description: 'Tak for mad!', direction: 'outgoing', createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), toWallet: { user: { name: 'Magnus Hansen' } } },
-        { id: '2', amount: 7500, type: 'P2P', status: 'COMPLETED', description: 'Biografbilletter', direction: 'incoming', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), fromWallet: { user: { name: 'Sara Petersen' } } },
-        { id: '3', amount: 34900, type: 'MERCHANT_PAYMENT', status: 'COMPLETED', description: 'Café Nólsoy', direction: 'outgoing', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(), toWallet: { user: { name: 'Café Nólsoy' } } },
-        { id: '4', amount: 50000, type: 'TOPUP', status: 'COMPLETED', description: 'Wallet top-up', direction: 'incoming', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), fromWallet: { user: { name: 'Visa •4242' } } },
-        { id: '5', amount: 2500, type: 'P2P', status: 'COMPLETED', description: 'Kaffe ☕', direction: 'outgoing', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(), toWallet: { user: { name: 'Jónas Djurhuus' } } },
-        { id: '6', amount: 12000, type: 'P2P', status: 'COMPLETED', description: '', direction: 'incoming', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), fromWallet: { user: { name: 'Anna Olsen' } } },
-      ]);
+      setTransactions([]);
     }
   }, [refreshUser]);
 
